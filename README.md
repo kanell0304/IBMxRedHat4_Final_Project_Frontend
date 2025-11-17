@@ -1,1 +1,1 @@
-README.md
+backend 폴더 바로 아래에 .env 만들기
