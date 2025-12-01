@@ -7,7 +7,7 @@ function App() {
   return (
     <div>
       <h2>
-        AWS Frontend 배포 테스트
+        AWS Frontend 배포 테스트 화면
       </h2>
       <div className="card">
         <button onClick={() => setMst("정상적으로 작동하는 중~")}>{msg}</button>
