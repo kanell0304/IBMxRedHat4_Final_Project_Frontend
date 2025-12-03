@@ -14,7 +14,7 @@ function App() {
   const [error, setError] = useState(null);
 
   // API 기본 URL
-  const API_BASE_URL = 'http://43.200.166.166:8081';
+  const API_BASE_URL = 'http://teamproject-alb-1327024039.ap-northeast-2.elb.amazonaws.com';
   // const API_BASE_URL = '';
 
   // Health Check API 호출
