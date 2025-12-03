@@ -7,6 +7,7 @@ function App() {
   
   // 상태 관리
   const [healthStatus, setHealthStatus] = useState(null);
+  const [serverHealthStatus, setServerHealthStatus] = useState(null);
   const [analysisResult, setAnalysisResult] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const [estimatedSyllables, setEstimatedSyllables] = useState('');
@@ -24,6 +25,19 @@ function App() {
     try {
       const response = await axios.get(`${API_BASE_URL}/voice/health`);
       setHealthStatus(response.data);
+    } catch (err) {
+      setError(`Health check 실패: ${err.response?.data?.detail || err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleServerHealthCheck = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await axios.get(`${API_BASE_URL}/health`);
+      setServerHealthStatus(response.data);
     } catch (err) {
       setError(`Health check 실패: ${err.response?.data?.detail || err.message}`);
     } finally {
@@ -83,6 +97,19 @@ function App() {
 
       <div className="card">
         <h3>서버 상태 확인</h3>
+        <button onClick={handleServerHealthCheck} disabled={loading}>
+          Health Check
+        </button>
+        
+        {serverHealthStatus && (
+          <div style={{ marginTop: '10px', textAlign: 'left' }}>
+            <p><strong>Status:</strong> {serverHealthStatus.status}</p>
+          </div>
+        )}
+      </div>
+
+      <div className="card">
+        <h3>모델 상태 확인</h3>
         <button onClick={handleHealthCheck} disabled={loading}>
           Health Check
         </button>
