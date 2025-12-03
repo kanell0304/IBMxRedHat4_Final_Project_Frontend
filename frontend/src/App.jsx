@@ -14,7 +14,7 @@ function App() {
   const [error, setError] = useState(null);
 
   // API 기본 URL
-  const API_BASE_URL = 'http://54.180.253.161:8081';
+  const API_BASE_URL = 'http://43.200.166.166:8081';
 
   // Health Check API 호출
   const handleHealthCheck = async () => {
