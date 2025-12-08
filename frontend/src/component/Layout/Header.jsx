@@ -56,7 +56,7 @@ export default function Header() {
     <header className="bg-white shadow-sm sticky top-0 z-50 border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          <Link to="/"><img src={logo} alt="formz logo" className='w-30' /></Link>
+          <Link to="/"><img src={logo} alt="formz logo" className='w-30 h-10' /></Link>
 
           <nav className="flex items-center space-x-4">
             {isLoggedIn ? (

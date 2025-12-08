@@ -3,13 +3,14 @@ import LoginPage from './component/Pages/LoginPage.jsx';
 import MainPage from './component/Pages/MainPage.jsx';
 import KakaoCallback from './component/Pages/KakaoCallback.jsx';
 import Information from './component/Interview/Information';
+import MainLayout from './component/Layout/MainLayout.jsx';
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
         {/* 메인페이지 */}
-        <Route path="/" element={<MainPage />}></Route>
+        <Route path="/" element={<MainLayout><MainPage /></MainLayout>}></Route>
 
         {/* 로그인 페이지(임시) */}
         <Route path="/login" element={<LoginPage />} />
