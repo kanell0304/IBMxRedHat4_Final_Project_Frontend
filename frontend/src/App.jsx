@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import './App.css'
 import KakaoLoginButton from './component/User/KakaoLoginButton'
 import KakaoCallback from './pages/KakaoCallback'
+import Information from './component/Interview/Information';
 
 function HomePage() {
   return (
@@ -52,6 +53,7 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/user/kakao" element={<KakaoCallback />} />
+        <Route path="/interview/info" element={<Information />}></Route>
       </Routes>
     </BrowserRouter>
   )
