@@ -28,6 +28,7 @@ const KakaoCallback = () => {
           headers: {
             'Content-Type': 'application/json',
           },
+          credentials: 'include', // 쿠키 포함
           body: JSON.stringify({ code }),
         });
         
@@ -38,10 +39,8 @@ const KakaoCallback = () => {
 
         const data = await response.json();
         
-        // 토큰 저장
-        localStorage.setItem('access_token', data.access_token);
-        localStorage.setItem('refresh_token', data.refresh_token);
-
+        // 토큰은 자동으로 쿠키에 저장됨 (localStorage 사용 안 함)
+        
         setStatus(data.is_new_user 
           ? '카카오 회원가입 완료! 메인 페이지로 이동합니다...' 
           : '로그인 성공! 메인 페이지로 이동합니다...'
