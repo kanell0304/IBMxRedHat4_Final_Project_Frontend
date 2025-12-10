@@ -21,9 +21,12 @@ const KakaoCallback = () => {
       }
 
       try {
-        const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-        
-        const response = await fetch(`${API_BASE_URL}/users/kakao/callback`, {
+        const API_BASE =
+          import.meta.env.VITE_API_BASE ||
+          import.meta.env.VITE_API_BASE_URL ||
+          'http://localhost:8081';
+
+        const response = await fetch(`${API_BASE}/users/kakao/callback`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -33,8 +36,14 @@ const KakaoCallback = () => {
         });
         
         if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.detail || '로그인 실패');
+          let detail = '로그인 실패';
+          try {
+            const errorData = await response.json();
+            detail = errorData?.detail || detail;
+          } catch (e) {
+            // 응답이 JSON이 아닐 때
+          }
+          throw new Error(`[${response.status}] ${detail}`);
         }
 
         const data = await response.json();

@@ -40,10 +40,21 @@ const Job = () => {
     try {
       const data = await startInterview(selectedJob);
       setQuestions(data.questions || []);
+      const payload = {
+        interviewId: data.interview_id || data.interviewId,
+        questions: data.questions || [],
+        selectedJob,
+      };
+      sessionStorage.setItem('interviewSession', JSON.stringify(payload));
+      navigate('/interview', { state: payload });
       console.log('Interview created:', data);
     } catch (err) {
-      const msg = err?.response?.data?.detail || '면접 생성 중 오류가 발생했습니다.';
-      setError(msg);
+      const status = err?.response?.status;
+      const detail = err?.response?.data?.detail;
+      const msg = detail || err?.message || '면접 생성 중 오류가 발생했습니다.';
+      const finalMsg = status ? `[${status}] ${msg}` : msg;
+      console.error('Interview start error:', err?.response || err);
+      setError(finalMsg);
     } finally {
       setLoading(false);
     }

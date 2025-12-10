@@ -5,6 +5,7 @@ import KakaoCallback from './component/Pages/KakaoCallback.jsx';
 import Information from './component/Interview/Information';
 import MainLayout from './component/Layout/MainLayout.jsx';
 import Job from './component/Interview/Job.jsx';
+import Interview from './component/Interview/Interview.jsx';
 
 
 export default function App() {
@@ -22,6 +23,7 @@ export default function App() {
         {/* 인터뷰 */}
         <Route path="/interview/info" element={<Information />}></Route>
         <Route path="interview/job" element={<Job/>} />
+        <Route path="/interview" element={<Interview />} />
 
       </Routes>
     </BrowserRouter>
