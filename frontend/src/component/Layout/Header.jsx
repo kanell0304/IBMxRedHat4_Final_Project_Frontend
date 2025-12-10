@@ -23,7 +23,7 @@ export default function Header() {
         setIsLoggedIn(true);
         setUsername(res.data.username);
         
-        // 프로필 이미지 URL이 있으면 설정 (백엔드에서 URL 직접 제공)
+        // 프로필 이미지 URL이 있으면 설정
         if (res.data.profile_image_url) {
           setProfileImage(`http://localhost:8081${res.data.profile_image_url}`);
         } else {

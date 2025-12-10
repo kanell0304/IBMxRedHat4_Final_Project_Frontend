@@ -5,6 +5,7 @@ const KakaoCallback = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [status, setStatus] = useState('처리 중...');
+  const [isError, setIsError] = useState(false);
   const hasProcessed = useRef(false);
 
   useEffect(() => {
@@ -16,7 +17,8 @@ const KakaoCallback = () => {
 
       if (!code) {
         setStatus('카카오 로그인 실패: 인가 코드가 없습니다.');
-        setTimeout(() => navigate('/'), 2000);
+        setIsError(true);
+        setTimeout(() => navigate('/login'), 2000);
         return;
       }
 
@@ -31,24 +33,48 @@ const KakaoCallback = () => {
           headers: {
             'Content-Type': 'application/json',
           },
-          credentials: 'include', // 쿠키 포함
+          credentials: 'include',
           body: JSON.stringify({ code }),
         });
         
         if (!response.ok) {
-          let detail = '로그인 실패';
+          let errorData = null;
+          let errorMessage = '로그인 실패';
+          
           try {
-            const errorData = await response.json();
-            detail = errorData?.detail || detail;
+            errorData = await response.json();
+            console.log('에러 응답:', errorData); // 디버깅용
+            
+            // 구조화된 에러 응답 파싱
+            if (errorData?.detail) {
+              // detail이 객체인 경우 (백엔드 수정 후)
+              if (typeof errorData.detail === 'object') {
+                errorMessage = errorData.detail.message || errorData.detail.error || errorMessage;
+                
+                // 이메일 동의 에러 특별 처리
+                if (errorData.detail.error === 'EMAIL_REQUIRED') {
+                  setStatus('이메일 제공 동의가 필요합니다');
+                  setIsError(true);
+                  alert('카카오 로그인 시 이메일 제공 동의가 필요합니다.\n\n다시 시도해주세요.');
+                  setTimeout(() => navigate('/login'), 2000);
+                  return;
+                }
+              } 
+              // detail이 문자열인 경우 (기존 방식)
+              else if (typeof errorData.detail === 'string') {
+                errorMessage = errorData.detail;
+              }
+            }
           } catch (e) {
-            // 응답이 JSON이 아닐 때
+            console.error('에러 응답 파싱 실패:', e);
           }
-          throw new Error(`[${response.status}] ${detail}`);
+          
+          throw new Error(`[${response.status}] ${errorMessage}`);
         }
 
         const data = await response.json();
         
-        // 토큰은 자동으로 쿠키에 저장됨 (localStorage 사용 안 함)
+        // 토큰은 자동으로 쿠키에 저장됨
         
         setStatus(data.is_new_user 
           ? '카카오 회원가입 완료! 메인 페이지로 이동합니다...' 
@@ -56,9 +82,17 @@ const KakaoCallback = () => {
         );
         
         setTimeout(() => navigate('/'), 1000);
+        
       } catch (error) {
-        setStatus(`로그인 중 오류가 발생했습니다: ${error.message}`);
-        setTimeout(() => navigate('/'), 3000);
+        console.error('카카오 로그인 에러:', error);
+        setStatus(`로그인 중 오류가 발생했습니다`);
+        setIsError(true);
+        
+        // 에러 메시지 표시
+        const errorMsg = error.message || '알 수 없는 오류가 발생했습니다.';
+        alert(errorMsg);
+        
+        setTimeout(() => navigate('/login'), 2000);
       }
     };
 
@@ -72,17 +106,36 @@ const KakaoCallback = () => {
       alignItems: 'center',
       justifyContent: 'center',
       minHeight: '100vh',
-      gap: '20px'
+      gap: '20px',
+      backgroundColor: '#f9fafb'
     }}>
       <div style={{
         width: '50px',
         height: '50px',
         border: '5px solid #f3f3f3',
-        borderTop: '5px solid #FEE500',
+        borderTop: isError ? '5px solid #ef4444' : '5px solid #FEE500',
         borderRadius: '50%',
-        animation: 'spin 1s linear infinite'
+        animation: isError ? 'none' : 'spin 1s linear infinite'
       }} />
-      <p style={{ fontSize: '18px', color: '#333' }}>{status}</p>
+      <p style={{ 
+        fontSize: '18px', 
+        color: isError ? '#ef4444' : '#333',
+        fontWeight: '500',
+        textAlign: 'center',
+        padding: '0 20px'
+      }}>
+        {status}
+      </p>
+      {isError && (
+        <p style={{
+          fontSize: '14px',
+          color: '#6b7280',
+          textAlign: 'center',
+          padding: '0 20px'
+        }}>
+          잠시 후 로그인 페이지로 이동합니다...
+        </p>
+      )}
       <style>
         {`
           @keyframes spin {
