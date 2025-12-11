@@ -73,7 +73,6 @@ export default function PresentationDetail() {
 
         <div className="bg-white rounded-2xl shadow-xl p-8 mb-6">
           <h2 className="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-            {/* <span>📊</span> */}
             <span>전반적인 평가</span>
           </h2>
           <p className="text-gray-700 leading-relaxed whitespace-pre-line">
@@ -83,7 +82,6 @@ export default function PresentationDetail() {
 
         <div className="bg-white rounded-2xl shadow-xl p-8 mb-6">
           <h2 className="text-2xl font-bold text-green-600 mb-4 flex items-center gap-2">
-            {/* <span>✨</span> */}
             <span>잘한 점</span>
           </h2>
           <div className="bg-green-50 rounded-lg p-4">
@@ -95,7 +93,6 @@ export default function PresentationDetail() {
 
         <div className="bg-white rounded-2xl shadow-xl p-8 mb-6">
           <h2 className="text-2xl font-bold text-orange-600 mb-4 flex items-center gap-2">
-            {/* <span>💡</span> */}
             <span>개선할 점</span>
           </h2>
           <div className="bg-orange-50 rounded-lg p-4">
@@ -107,7 +104,6 @@ export default function PresentationDetail() {
 
         <div className="bg-white rounded-2xl shadow-xl p-8 mb-6">
           <h2 className="text-2xl font-bold text-blue-600 mb-4 flex items-center gap-2">
-            {/* <span>🎯</span> */}
             <span>구체적인 조언</span>
           </h2>
           <div className="bg-blue-50 rounded-lg p-4">
@@ -119,7 +115,6 @@ export default function PresentationDetail() {
 
         <div className="bg-white rounded-2xl shadow-xl p-8 mb-6">
           <h2 className="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-            {/* <span>📈</span> */}
             <span>측정 수치</span>
           </h2>
           <div className="grid md:grid-cols-2 gap-4">
