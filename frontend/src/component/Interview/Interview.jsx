@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { submitInterviewAnswer } from './JobAPI';
+import { uploadAnswer, getIDetail } from './JobAPI';
 
 const Interview = () => {
   const navigate = useNavigate();
@@ -30,6 +30,7 @@ const Interview = () => {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [status, setStatus] = useState('');
+  const [answerMap, setAnswerMap] = useState({});
   const recorderRef = useRef(null);
   const chunksRef = useRef([]);
 
@@ -42,6 +43,7 @@ const Interview = () => {
   }, [initialSession]);
 
   const currentQuestion = questions[currentIndex];
+  const currentAnswerId = currentQuestion ? answerMap[currentQuestion.q_id || currentQuestion.id] : null;
 
   useEffect(() => {
     return () => {
@@ -51,6 +53,25 @@ const Interview = () => {
       if (audioUrl) URL.revokeObjectURL(audioUrl);
     };
   }, [audioUrl]);
+
+  useEffect(() => {
+    const loadAnswers = async () => {
+      if (!interviewId) return;
+      try {
+        const detail = await getIDetail(interviewId);
+        const map = {};
+        (detail.answers || []).forEach((ans) => {
+          if (ans.q_id != null) {
+            map[ans.q_id] = ans.i_answer_id;
+          }
+        });
+        setAnswerMap(map);
+      } catch (err) {
+        setError('답변 정보를 불러오지 못했습니다.');
+      }
+    };
+    loadAnswers();
+  }, [interviewId]);
 
   const startRecording = async () => {
     setError('');
@@ -104,15 +125,14 @@ const Interview = () => {
   };
 
   const submitAnswer = async () => {
-    if (!currentQuestion) {
-      setError('질문을 불러오지 못했습니다.');
+    if (!currentQuestion || !currentAnswerId) {
+      setError('질문 또는 답변 정보를 불러오지 못했습니다.');
       return;
     }
-    const questionId = currentQuestion.q_id || currentQuestion.id;
     const audioFile =
       uploadedFile ||
       (recordedBlob
-        ? new File([recordedBlob], `answer-${questionId}.webm`, { type: recordedBlob.type || 'audio/webm' })
+        ? new File([recordedBlob], `answer-${currentAnswerId}.webm`, { type: recordedBlob.type || 'audio/webm' })
         : null);
 
     setError('');
@@ -125,11 +145,7 @@ const Interview = () => {
 
     try {
       setSubmitting(true);
-      await submitInterviewAnswer({
-        interviewId,
-        questionId,
-        audioFile,
-      });
+      await uploadAnswer({ answerId: currentAnswerId, audioFile });
       setStatus('답변이 전송되었습니다.');
       setRecordedBlob(null);
       setUploadedFile(null);

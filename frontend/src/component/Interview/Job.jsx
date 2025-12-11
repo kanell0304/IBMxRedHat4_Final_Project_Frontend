@@ -1,49 +1,45 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { startInterview } from './JobAPI';
+import { createInterview } from './JobAPI';
 import { baseBtn, difficultyOptions, jobOptions, questionTypes, selectedBtn } from './options';
 
 const Job = () => {
   const navigate = useNavigate();
-  const [selectedJob, setSelectedJob] = useState({ question_type: '', difficulty: '중간', job_group: '', job_role: '' });
+  const [iForm, setIForm] = useState({ question_type: '', difficulty: '중간', job_group: '', job_role: '' });
   const [loading, setLoading] = useState(false);
-  const [questions, setQuestions] = useState([]);
-  const [error, setError] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
 
-  const chooseType = (type) => {
+  const selectQuestionType = (type) => {
     const isCommon = type === '공통질문만';
-    setSelectedJob({ question_type: type, difficulty: isCommon ? '' : '중간', job_group: '', job_role: '' });
-    setQuestions([]);
-    setError('');
+    setIForm({ question_type: type, difficulty: isCommon ? '' : '중간', job_group: '', job_role: '' });
+    setErrorMsg('');
   };
 
-  const chooseDifficulty = (level) => {
-    setSelectedJob((prev) => ({ ...prev, difficulty: level }));
-    setError('');
+  const selectDifficulty = (level) => {
+    setIForm((prev) => ({ ...prev, difficulty: level }));
+    setErrorMsg('');
   };
 
-  const chooseGroup = (group) => {
-    setSelectedJob((prev) => ({ ...prev, job_group: group, job_role: '' }));
-    setQuestions([]);
-    setError('');
+  const selectJobGroup = (group) => {
+    setIForm((prev) => ({ ...prev, job_group: group, job_role: '' }));
+    setErrorMsg('');
   };
 
-  const chooseRole = (role) => {
-    setSelectedJob((prev) => ({ ...prev, job_role: role }));
-    setError('');
+  const selectJobRole = (role) => {
+    setIForm((prev) => ({ ...prev, job_role: role }));
+    setErrorMsg('');
   };
 
-  // 인터뷰 시작
-  const beginInterview = async () => {
+  const i_start = async () => {
     setLoading(true);
-    setError('');
+    setErrorMsg('');
     try {
-      const data = await startInterview(selectedJob);
-      setQuestions(data.questions || []);
+      const data = await createInterview(iForm);
+      const resolvedInterviewId = data.i_id || data.interview_id || data.interviewId;
       const payload = {
-        interviewId: data.interview_id || data.interviewId,
+        interviewId: resolvedInterviewId,
         questions: data.questions || [],
-        selectedJob,
+        interviewForm: iForm,
       };
       sessionStorage.setItem('interviewSession', JSON.stringify(payload));
       navigate('/interview', { state: payload });
@@ -54,20 +50,20 @@ const Job = () => {
       const msg = detail || err?.message || '면접 생성 중 오류가 발생했습니다.';
       const finalMsg = status ? `[${status}] ${msg}` : msg;
       console.error('Interview start error:', err?.response || err);
-      setError(finalMsg);
+      setErrorMsg(finalMsg);
     } finally {
       setLoading(false);
     }
   };
 
   const groupKeys = Object.keys(jobOptions);
-  const roleOptions = selectedJob.job_group ? jobOptions[selectedJob.job_group] : [];
-  const isCommonOnly = selectedJob.question_type === '공통질문만';
+  const roleOptions = iForm.job_group ? jobOptions[iForm.job_group] : [];
+  const isCommonOnly = iForm.question_type === '공통질문만';
   const canStart =
-    selectedJob.question_type &&
-    (isCommonOnly || selectedJob.difficulty) &&
-    (isCommonOnly || (selectedJob.job_group && selectedJob.job_role));
-  const difficultyIndex = difficultyOptions.findIndex((opt) => opt.key === selectedJob.difficulty);
+    iForm.question_type &&
+    (isCommonOnly || iForm.difficulty) &&
+    (isCommonOnly || (iForm.job_group && iForm.job_role));
+  const difficultyIndex = difficultyOptions.findIndex((opt) => opt.key === iForm.difficulty);
   const difficultyValue = difficultyIndex >= 0 ? difficultyIndex : 1;
   const difficultyPercent =
     difficultyOptions.length > 1 ? (difficultyValue / (difficultyOptions.length - 1)) * 100 : 0;
@@ -104,9 +100,8 @@ const Job = () => {
                   <button
                     key={type.key}
                     type="button"
-                    onClick={() => chooseType(type.key)}
-                    className={`${baseBtn} ${selectedJob.question_type === type.key ? selectedBtn : ''}`}
-                >
+                    onClick={() => selectQuestionType(type.key)}
+                    className={`${baseBtn} ${iForm.question_type === type.key ? selectedBtn : ''}`}>
                   <div className="text-sm font-bold">{type.label}</div>
                   <div className="text-[11px] text-slate-500 font-medium mt-0.5">{type.desc}</div>
                 </button>
@@ -114,7 +109,7 @@ const Job = () => {
             </div>
           </div>
 
-          {selectedJob.question_type && !isCommonOnly && (
+          {iForm.question_type && !isCommonOnly && (
             <div>
               <div className="flex items-center gap-2 mb-3">
                 <span className="w-8 h-8 rounded-full bg-blue-600 text-white text-xs font-bold inline-flex items-center justify-center shadow-sm shadow-blue-200">2</span>
@@ -128,28 +123,14 @@ const Job = () => {
                       style={{ width: `${difficultyPercent}%` }}
                     />
                   </div>
-                  <div
-                    className="absolute top-1/2 -translate-y-1/2 transition-all duration-200"
-                    style={{ left: `calc(${difficultyPercent}% - 12px)` }}
-                  >
+                  <div className="absolute top-1/2 -translate-y-1/2 transition-all duration-200" style={{ left: `calc(${difficultyPercent}% - 12px)` }}>
                     <div className="w-6 h-6 rounded-full bg-white border-2 border-sky-400 shadow-lg shadow-sky-100" />
                   </div>
-                  <input
-                    type="range"
-                    min="0"
-                    max={difficultyOptions.length - 1}
-                    step="1"
-                    value={difficultyValue}
-                    onChange={(e) => chooseDifficulty(difficultyOptions[Number(e.target.value)].key)}
-                    className="absolute inset-0 w-full h-8 opacity-0 cursor-pointer"
-                  />
+                  <input type="range" min="0" max={difficultyOptions.length - 1} step="1" value={difficultyValue} onChange={(e) => selectDifficulty(difficultyOptions[Number(e.target.value)].key)} className="absolute inset-0 w-full h-8 opacity-0 cursor-pointer" />
                 </div>
                 <div className="mt-3 grid grid-cols-3 text-[11px] font-semibold text-slate-600">
                   {difficultyOptions.map((level) => (
-                    <div
-                      key={level.key}
-                      className={`flex flex-col items-center gap-0.5 ${selectedJob.difficulty === level.key ? 'text-sky-700' : ''}`}
-                    >
+                    <div key={level.key} className={`flex flex-col items-center gap-0.5 ${iForm.difficulty === level.key ? 'text-sky-700' : ''}`}>
                       <span>{level.label}</span>
                       <span className="text-[10px] font-medium text-slate-500">{level.desc}</span>
                     </div>
@@ -159,7 +140,7 @@ const Job = () => {
             </div>
           )}
 
-          {selectedJob.question_type && (
+          {iForm.question_type && (
             <div>
               <div className="flex items-center gap-2 mb-3">
                 <span className="w-8 h-8 rounded-full bg-blue-600 text-white text-xs font-bold inline-flex items-center justify-center shadow-sm shadow-blue-200">
@@ -172,8 +153,8 @@ const Job = () => {
                   <button
                     key={group}
                     type="button"
-                    onClick={() => chooseGroup(group)}
-                    className={`${baseBtn} ${selectedJob.job_group === group ? selectedBtn : ''}`}
+                    onClick={() => selectJobGroup(group)}
+                    className={`${baseBtn} ${iForm.job_group === group ? selectedBtn : ''}`}
                   >
                     {group}
                   </button>
@@ -182,7 +163,7 @@ const Job = () => {
             </div>
           )}
 
-          {selectedJob.question_type && !isCommonOnly && selectedJob.job_group && (
+          {iForm.question_type && !isCommonOnly && iForm.job_group && (
             <div>
               <div className="flex items-center gap-2 mb-3">
                 <span className="w-8 h-8 rounded-full bg-blue-600 text-white text-xs font-bold inline-flex items-center justify-center shadow-sm shadow-blue-200">{stepJobRole}</span>
@@ -193,8 +174,8 @@ const Job = () => {
                   <button
                     key={role}
                     type="button"
-                    onClick={() => chooseRole(role)}
-                    className={`${baseBtn} ${selectedJob.job_role === role ? selectedBtn : ''}`}
+                    onClick={() => selectJobRole(role)}
+                    className={`${baseBtn} ${iForm.job_role === role ? selectedBtn : ''}`}
                   >
                     {role}
                   </button>
@@ -203,11 +184,11 @@ const Job = () => {
             </div>
           )}
 
-          {selectedJob.question_type && (
+          {iForm.question_type && (
             <div className="pt-2">
               <button
                 type="button"
-                onClick={beginInterview}
+                onClick={i_start}
                 disabled={!canStart || loading}
                 className={`w-full px-4 py-4 rounded-2xl bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-500 text-white font-bold text-base shadow-lg shadow-blue-200 hover:shadow-blue-300 hover:-translate-y-[1px] focus:outline-none focus:ring-2 focus:ring-blue-200 active:translate-y-0 transition duration-150 ${
                   canStart && !loading ? '' : 'opacity-60 cursor-not-allowed hover:translate-y-0 hover:shadow-none'
@@ -217,19 +198,9 @@ const Job = () => {
               </button>
             </div>
           )}
+          
+          {errorMsg && <p className="text-sm text-red-500">{errorMsg}</p>}
 
-          {error && <p className="text-sm text-red-500">{error}</p>}
-
-          {questions.length > 0 && (
-            <div className="space-y-3">
-              {questions.map((q) => (
-                <div key={q.q_id} className="p-4 rounded-2xl border border-slate-200 bg-slate-50/80 shadow-sm">
-                  <div className="text-xs font-semibold text-blue-600 mb-1">Q{q.q_order}</div>
-                  <div className="text-sm text-slate-800">{q.question_text}</div>
-                </div>
-              ))}
-            </div>
-          )}
         </div>
       </div>
     </div>
