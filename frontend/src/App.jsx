@@ -4,22 +4,27 @@ import MainPage from './component/Pages/MainPage.jsx';
 import KakaoCallback from './component/Pages/KakaoCallback.jsx';
 import Information from './component/Interview/Information';
 import MainLayout from './component/Layout/MainLayout.jsx';
-import Test from './component/communication/test.jsx';
+import Job from './component/Interview/Job.jsx';
+import Interview from './component/Interview/Interview.jsx';
+
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
         {/* 메인페이지 */}
-        <Route path="/" element={<MainLayout><MainPage /></MainLayout>} />
+        <Route path="/" element={<MainLayout><MainPage /></MainLayout>}></Route>
 
         {/* 로그인 페이지(임시) */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/user/kakao" element={<KakaoCallback />} />
+        <Route path="/interview/info" element={<Information />}></Route>
 
-        <Route path="/interview/info" element={<MainLayout><Information /></MainLayout>}></Route>
+        {/* 인터뷰 */}
+        <Route path="/interview/info" element={<Information />}></Route>
+        <Route path="interview/job" element={<Job/>} />
+        <Route path="/interview" element={<Interview />} />
 
-        <Route path="/test" element={<MainLayout><Test /></MainLayout>}></Route>
       </Routes>
     </BrowserRouter>
   );
