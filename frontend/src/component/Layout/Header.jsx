@@ -106,7 +106,7 @@ export default function Header() {
                   to="/my-surveys" 
                   className="hover:text-blue-600 font-medium px-3 py-2 text-sm transition-colors"
                 >
-                  나의 설문
+                  마이페이지
                 </Link>
                 <button 
                   onClick={handleLogout} 

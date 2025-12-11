@@ -43,15 +43,13 @@ const KakaoCallback = () => {
           
           try {
             errorData = await response.json();
-            console.log('에러 응답:', errorData); // 디버깅용
+            console.log('에러 응답:', errorData);
             
-            // 구조화된 에러 응답 파싱
             if (errorData?.detail) {
-              // detail이 객체인 경우 (백엔드 수정 후)
               if (typeof errorData.detail === 'object') {
                 errorMessage = errorData.detail.message || errorData.detail.error || errorMessage;
                 
-                // 이메일 동의 에러 특별 처리
+                // 이메일 비동의 시 에러 발생
                 if (errorData.detail.error === 'EMAIL_REQUIRED') {
                   setStatus('이메일 제공 동의가 필요합니다');
                   setIsError(true);
@@ -60,7 +58,6 @@ const KakaoCallback = () => {
                   return;
                 }
               } 
-              // detail이 문자열인 경우 (기존 방식)
               else if (typeof errorData.detail === 'string') {
                 errorMessage = errorData.detail;
               }
@@ -74,11 +71,9 @@ const KakaoCallback = () => {
 
         const data = await response.json();
         
-        // 토큰은 자동으로 쿠키에 저장됨
-        
         setStatus(data.is_new_user 
-          ? '카카오 회원가입 완료! 메인 페이지로 이동합니다...' 
-          : '로그인 성공! 메인 페이지로 이동합니다...'
+          ? '카카오 회원가입이 완료되었습니다. 메인 페이지로 이동합니다...' 
+          : '로그인 성공 메인 페이지로 이동합니다...'
         );
         
         setTimeout(() => navigate('/'), 1000);
@@ -88,7 +83,6 @@ const KakaoCallback = () => {
         setStatus(`로그인 중 오류가 발생했습니다`);
         setIsError(true);
         
-        // 에러 메시지 표시
         const errorMsg = error.message || '알 수 없는 오류가 발생했습니다.';
         alert(errorMsg);
         
