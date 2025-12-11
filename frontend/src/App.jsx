@@ -6,6 +6,8 @@ import Information from './component/Interview/Information';
 import MainLayout from './component/Layout/MainLayout.jsx';
 import Job from './component/Interview/Job.jsx';
 import Interview from './component/Interview/Interview.jsx';
+import CommunicationStart from './component/communication/CommunicationStart.jsx';
+import Communication from './component/communication/Communication.jsx';
 
 
 export default function App() {
@@ -24,6 +26,10 @@ export default function App() {
         <Route path="/interview/info" element={<Information />}></Route>
         <Route path="interview/job" element={<Job/>} />
         <Route path="/interview" element={<Interview />} />
+
+        {/* 커뮤니케이션 */}
+        <Route path="/communication/start" element={<CommunicationStart />} />
+        <Route path="/communication" element={<Communication />} />
 
       </Routes>
     </BrowserRouter>
