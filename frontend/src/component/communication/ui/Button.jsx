@@ -16,7 +16,6 @@ export default function Button({
   const variants = {
     primary: 'bg-gradient-primary text-white hover:shadow-md',           // 초록 그라디언트
     ghost: 'bg-white text-text border border-primary-dark/20 hover:bg-primary-light/10', // 흰 배경 + 테두리
-    inverse: 'bg-gradient-primary text-white shadow-button hover:shadow-lg', // 초록 그라디언트 + 강한 그림자
     danger: 'bg-gradient-danger text-white hover:shadow-md',             // 빨간 그라디언트
   }
 

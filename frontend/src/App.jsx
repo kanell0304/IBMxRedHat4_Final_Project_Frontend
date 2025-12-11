@@ -4,6 +4,7 @@ import MainPage from './component/Pages/MainPage.jsx';
 import KakaoCallback from './component/Pages/KakaoCallback.jsx';
 import Information from './component/Interview/Information';
 import MainLayout from './component/Layout/MainLayout.jsx';
+import Test from './component/communication/test.jsx';
 
 export default function App() {
   return (
@@ -17,6 +18,8 @@ export default function App() {
         <Route path="/user/kakao" element={<KakaoCallback />} />
 
         <Route path="/interview/info" element={<MainLayout><Information /></MainLayout>}></Route>
+
+        <Route path="/test" element={<MainLayout><Test /></MainLayout>}></Route>
       </Routes>
     </BrowserRouter>
   );
