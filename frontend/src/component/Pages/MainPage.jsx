@@ -64,11 +64,6 @@ const MainPage = () => {
   return (
     <div>
       <div className="min-h-screen w-full max-w-3xl mx-auto bg-gray-100 px-4 md:px-6 py-8 space-y-6 border border-gray-200">
-        <div className="flex items-center justify-between">
-          <div className="text-lg font-semibold text-gray-900">오늘 바로 시작하기</div>
-          <button onClick={login} className="rounded-full bg-gray-900 text-white px-4 py-2 text-sm font-semibold shadow-sm">로그인</button>
-        </div>
-
         <div className="rounded-3xl bg-white shadow-sm p-6 flex gap-4 items-start">
           <div className="flex-1 space-y-3">
             <h1 className="text-2xl font-extrabold text-gray-900 leading-snug">

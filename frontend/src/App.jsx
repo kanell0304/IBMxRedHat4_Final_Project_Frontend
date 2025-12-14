@@ -9,6 +9,7 @@ import Job from './component/Interview/Job.jsx';
 import JobEng from './component/Interview/JobEng.jsx';
 import Interview from './component/Interview/Interview.jsx';
 import History from './component/Pages/History.jsx';
+import Profile from './component/Pages/Profile.jsx';
 
 // 발표 분석 관련 컴포넌트
 import PresentationCreate from './component/Presentation/PresentationCreate.jsx';
@@ -23,6 +24,7 @@ export default function App() {
         {/* 메인페이지 */}
         <Route path="/" element={<MainLayout><MainPage /></MainLayout>} />
         <Route path="/mypage" element={<MainLayout><Mypage /></MainLayout>} />
+        <Route path="/profile" element={<MainLayout><Profile /></MainLayout>} />
         <Route path="/history" element={<MainLayout><History /></MainLayout>} />
 
         {/* 로그인 페이지*/}

@@ -16,7 +16,7 @@ export default function MainLayout({ children }) {
         {/*
           모든 페이지 콘텐츠가 일관된 너비와 여백을 갖도록 컨테이너를 설정합니다.
         */}
-        <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+        <div className="w-full max-w-7xl mx-auto py-0 px-4 sm:px-6 lg:px-8">
           {children}
         </div>
       </main>

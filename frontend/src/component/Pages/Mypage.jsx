@@ -8,29 +8,29 @@ const Mypage = () => {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isGuest, setIsGuest] = useState(false);
-  const [profileImage, setProfileImage] = useState(defaultProfile);
+  const [image, setImage] = useState(defaultProfile);
 
   useEffect(() => {
-    const fetchUser = async () => {
+    const loadUser = async () => {
       try {
         const res = await axios.get('http://localhost:8081/users/me', {
           withCredentials: true,
         });
         setUser(res.data);
         if (res.data?.profile_image_url) {
-          setProfileImage(`http://localhost:8081${res.data.profile_image_url}`);
+          setImage(`http://localhost:8081${res.data.profile_image_url}`);
         } else {
-          setProfileImage(defaultProfile);
+          setImage(defaultProfile);
         }
       } catch (err) {
         setIsGuest(true);
-        setProfileImage(defaultProfile);
+        setImage(defaultProfile);
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchUser();
+    loadUser();
   }, []);
 
 
@@ -47,20 +47,20 @@ const Mypage = () => {
           <div className="space-y-1">
             <p className="text-sm text-gray-500">내 계정</p>
             <h1 className="text-2xl font-bold text-gray-900">
-              {isLoading ? '불러오는 중...' : user?.username ? `${user.username} 님` : ''}
+              {isLoading ? '불러오는 중...' : user?.nickname ? `${user.nickname} 님` : ''}
             </h1>
             {user?.email && <p className="text-sm text-gray-600">{user.email}</p>}
           </div>
-          {user && (
-            <img
-              src={profileImage}
-              alt="프로필"
-              className="h-14 w-14 rounded-full border object-cover"
-              onError={(e) => {
-                e.target.src = defaultProfile;
-              }}
-            />
-          )}
+          <div className="flex items-center gap-3">
+            {user && (
+              <img src={image} alt="프로필" className="h-14 w-14 rounded-full border object-cover" onError={(e) => {
+                  e.target.src = defaultProfile;
+                }} />
+            )}
+            <button onClick={() => navigate('/profile')} className="rounded-full border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition">
+              개인정보 수정
+            </button>
+          </div>
         </div>
 
         {isGuest && (
