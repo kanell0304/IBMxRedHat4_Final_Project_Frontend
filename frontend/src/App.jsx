@@ -1,5 +1,8 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import LoginPage from './component/Auth/LoginPage.jsx';
+import SignupPage from './component/Auth/SignupPage.jsx';
+import FindPasswordRequestPage from './component/Auth/FindPasswordRequestPage.jsx';
+import FindPasswordResetPage from './component/Auth/FindPasswordResetPage.jsx';
 import MainPage from './component/Pages/MainPage.jsx';
 import Mypage from './component/Pages/Mypage.jsx';
 import KakaoCallback from './component/Pages/KakaoCallback.jsx';
@@ -10,8 +13,6 @@ import JobEng from './component/Interview/JobEng.jsx';
 import Interview from './component/Interview/Interview.jsx';
 import History from './component/Pages/History.jsx';
 import Profile from './component/Pages/Profile.jsx';
-
-// 발표 분석 관련 컴포넌트
 import PresentationCreate from './component/Presentation/PresentationCreate.jsx';
 import PresentationUpload from './component/Presentation/PresentationUpload.jsx';
 import PresentationResult from './component/Presentation/PresentationResult.jsx';
@@ -30,6 +31,9 @@ export default function App() {
         {/* 로그인 페이지*/}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/user/kakao" element={<KakaoCallback />} />
+        <Route path="/signup" element={<SignupPage />} />
+        <Route path="/find-password" element={<FindPasswordRequestPage />} />
+        <Route path="/reset-password" element={<FindPasswordResetPage />} />
 
         {/* 인터뷰 */}
         <Route path="/interview/info" element={<Information />} />

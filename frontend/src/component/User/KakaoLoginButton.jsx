@@ -1,5 +1,3 @@
-import React from 'react';
-
 const KakaoLoginButton = () => {
   const handleKakaoLogin = () => {
     const KAKAO_CLIENT_ID = import.meta.env.VITE_KAKAO_CLIENT_ID;
@@ -7,35 +5,13 @@ const KakaoLoginButton = () => {
     
     const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${KAKAO_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code`;
     
-    // 카카오 로그인 페이지로 이동
     window.location.href = kakaoAuthUrl;
   };
 
   return (
     <button 
       onClick={handleKakaoLogin}
-      style={{
-        backgroundColor: '#FEE500',
-        color: '#000000',
-        border: 'none',
-        borderRadius: '12px',
-        padding: '12px 24px',
-        fontSize: '16px',
-        fontWeight: '600',
-        cursor: 'pointer',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '8px',
-        minWidth: '200px',
-        justifyContent: 'center',
-        transition: 'all 0.2s ease'
-      }}
-      onMouseOver={(e) => {
-        e.currentTarget.style.backgroundColor = '#FDD835';
-      }}
-      onMouseOut={(e) => {
-        e.currentTarget.style.backgroundColor = '#FEE500';
-      }}
+      className="w-full px-4 py-2 font-semibold text-black bg-[#FEE500] rounded-md hover:bg-[#FDD835] focus:outline-none flex items-center justify-center gap-2"
     >
       <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
         <path 

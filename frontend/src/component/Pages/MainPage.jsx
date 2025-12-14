@@ -38,7 +38,7 @@ const MainPage = () => {
     },
     {
       title: "발표 분석",
-      subtitle: "영상 업로드 · 감정 분석",
+      subtitle: "음성 업로드 · 감정 분석",
       icon: "📊",
       iconBg: "bg-amber-50",
       iconText: "text-amber-600",
