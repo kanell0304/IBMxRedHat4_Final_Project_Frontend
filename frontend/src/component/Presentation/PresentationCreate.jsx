@@ -29,9 +29,9 @@ export default function PresentationCreate() {
 
     setLoading(true);
     try {
-      // FormData로 변경
+      // FormData 형태로 변경
       const formDataToSend = new FormData();
-      formDataToSend.append('user_id', '1'); // TODO: 실제 로그인한 사용자 ID로 변경
+      formDataToSend.append('user_id', '1'); // 현재 로그인한 사용자의 user_id로 변경이 필요 향후 작업 예정
       formDataToSend.append('title', formData.title);
       
       if (formData.description) {
