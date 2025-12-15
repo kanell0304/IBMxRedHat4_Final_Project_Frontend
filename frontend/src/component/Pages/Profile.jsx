@@ -101,6 +101,7 @@ export default function Profile() {
       setSelectedFile(null);
       setForm((prev) => ({ ...prev, password: '' }));
       alert('프로필이 저장되었습니다.');
+      window.dispatchEvent(new Event('profile-updated'));
       navigate(-1);
     } catch (err) {
       const msg = err?.response?.data?.detail || err?.message || '프로필 저장에 실패했습니다.';

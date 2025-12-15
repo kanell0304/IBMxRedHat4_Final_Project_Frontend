@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import defaultProfile from '../../assets/defaultProfile.png';
@@ -11,31 +11,35 @@ export default function Header() {
   const [loading, setLoading] = useState(true);
   const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8081';
 
-  useEffect(() => {
-    const checkLoginStatus = async () => {
-      try {
-        const res = await axios.get(`${API_BASE}/users/me`, {
-          withCredentials: true
-        });
-        setIsLoggedIn(true);
-        setNickname(res.data.nickname || res.data.username || '');
-        if (res.data.profile_image_url) {
-          const url = `${API_BASE}${res.data.profile_image_url}`;
-          setImage(url);
-        } else {
-          setImage(defaultProfile);
-        }
-      } catch (err) {
-        setIsLoggedIn(false);
-        setNickname("");
+  const loadUser = useCallback(async () => {
+    try {
+      const res = await axios.get(`${API_BASE}/users/me`, {
+        withCredentials: true
+      });
+      setIsLoggedIn(true);
+      setNickname(res.data.nickname || res.data.username || '');
+      if (res.data.profile_image_url) {
+        const url = `${API_BASE}${res.data.profile_image_url}`;
+        setImage(url);
+      } else {
         setImage(defaultProfile);
-      } finally {
-        setLoading(false);
       }
-    };
-
-    checkLoginStatus();
+    } catch (err) {
+      setIsLoggedIn(false);
+      setNickname("");
+      setImage(defaultProfile);
+    } finally {
+      setLoading(false);
+    }
   }, [API_BASE]);
+
+  useEffect(() => {
+    loadUser();
+    window.addEventListener('profile-updated', loadUser);
+    return () => {
+      window.removeEventListener('profile-updated', loadUser);
+    };
+  }, [loadUser]);
 
   const handleLogout = async () => {
     try {
