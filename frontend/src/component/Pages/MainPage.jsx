@@ -74,12 +74,6 @@ const MainPage = () => {
               STEACH, <br/> 말투 분석은 스티치!
             </h1>
             <p className="text-sm text-gray-600">하루 10분도 좋아요. AI가 바로 점검해 성장 기록을 남깁니다.</p>
-            <button
-              // onClick={}
-              className="w-full rounded-2xl bg-blue-600 text-white py-3 font-semibold shadow-sm transition hover:bg-blue-700"
-            >
-              바로 연습 시작
-            </button>
           </div>
           <div className="text-4xl" aria-hidden>
             🎁

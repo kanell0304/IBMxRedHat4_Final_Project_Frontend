@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import defaultProfile from '../../assets/defaultProfile.png';
+import { get_I, get_P, get_C } from '../History/HistoryAPI';
 
 const Mypage = () => {
   const navigate = useNavigate();
@@ -9,6 +10,8 @@ const Mypage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isGuest, setIsGuest] = useState(false);
   const [image, setImage] = useState(defaultProfile);
+  const [recent, setRecent] = useState([]);
+  const [recentLoading, setRecentLoading] = useState(false);
 
   useEffect(() => {
     const loadUser = async () => {
@@ -32,6 +35,65 @@ const Mypage = () => {
 
     loadUser();
   }, []);
+
+  useEffect(() => {
+    const loadRecent = async () => {
+      if (!user?.user_id) return;
+      setRecentLoading(true);
+      try {
+        const [iRes, pRes, cRes] = await Promise.allSettled([
+          get_I(user.user_id),
+          get_P(user.user_id),
+          get_C(user.user_id),
+        ]);
+
+        const list = [];
+
+        if (iRes.status === 'fulfilled') {
+          const items = (iRes.value?.data || []).slice(0, 3).map((item) => ({
+            id: item.i_id,
+            type: '모의면접',
+            title: `질문 ${item.total_questions}개 · ${item.interview_type === 'job' ? '직무' : item.interview_type === 'common' ? '공통' : '종합'}`,
+            date: item.created_at,
+          }));
+          list.push(...items);
+        }
+
+        if (pRes.status === 'fulfilled') {
+          const pData = pRes.value?.data?.data || [];
+          const items = pData.slice(0, 3).map((item) => ({
+            id: item.pr_id,
+            type: '발표 분석',
+            title: item.title || '제목 없음',
+            date: item.created_at,
+          }));
+          list.push(...items);
+        }
+
+        if (cRes.status === 'fulfilled') {
+          const cData = cRes.value?.data || [];
+          const items = cData.slice(0, 3).map((item) => ({
+            id: item.c_id,
+            type: '대화 분석',
+            title: '대화 분석 기록',
+            date: item.created_at,
+          }));
+          list.push(...items);
+        }
+
+        const sorted = list
+          .sort((a, b) => new Date(b.date) - new Date(a.date))
+          .slice(0, 5);
+        setRecent(sorted);
+      } catch (err) {
+        // 최근 기록 불러오기 실패 시 조용히 무시
+      } finally {
+        setRecentLoading(false);
+      }
+    };
+
+    loadRecent();
+  }, [user]);
 
 
   const supportLinks = [
@@ -68,8 +130,27 @@ const Mypage = () => {
         )}
         <div className="space-y-3">
           <h2 className="text-lg font-bold text-gray-900">최근 활동</h2>
-          <div className="rounded-2xl border border-gray-200 p-4 text-sm text-gray-600 bg-gray-50">
-            {user ? '최근 기록이 곧 여기에 표시됩니다.' : '로그인 후 이용 기록을 확인할 수 있습니다.'}
+          <div className="rounded-2xl border border-gray-200 p-4 text-sm text-gray-600 bg-gray-50 space-y-2">
+            {!user && '로그인 후 이용 기록을 확인할 수 있습니다.'}
+            {user && recentLoading && '최근 기록을 불러오는 중입니다.'}
+            {user && !recentLoading && recent.length === 0 && '최근 기록이 없습니다.'}
+            {recent.map((item) => (
+              <div key={`${item.type}-${item.id}`} className="flex items-center justify-between">
+                <div>
+                  <p className="text-gray-900 font-semibold">{item.type}</p>
+                </div>
+                <span className="text-xs text-gray-400">{new Date(item.date).toLocaleDateString()}</span>
+              </div>
+            ))}
+            {recent.length > 0 && (
+              <button
+                type="button"
+                onClick={() => navigate('/history')}
+                className="text-sm text-blue-600 font-semibold"
+              >
+                기록 모두 보기 →
+              </button>
+            )}
           </div>
         </div>
 
