@@ -17,6 +17,10 @@ import PresentationCreate from './component/Presentation/PresentationCreate.jsx'
 import PresentationUpload from './component/Presentation/PresentationUpload.jsx';
 import PresentationResult from './component/Presentation/PresentationResult.jsx';
 import PresentationDetail from './component/Presentation/PresentationDetail.jsx';
+import CommunityList from './component/Community/CommunityList.jsx';
+import CommunityWrite from './component/Community/CommunityWrite.jsx';
+import CommunityDetail from './component/Community/CommunityDetail.jsx';
+import CommunityEdit from './component/Community/CommunityEdit.jsx';
 
 export default function App() {
   return (
@@ -46,6 +50,12 @@ export default function App() {
         <Route path="/presentation/upload/:prId" element={<PresentationUpload />} />
         <Route path="/presentation/result/:prId" element={<PresentationResult />} />
         <Route path="/presentation/detail/:prId" element={<PresentationDetail />} />
+
+        {/* 커뮤니티 */}
+        <Route path="/community" element={<MainLayout><CommunityList /></MainLayout>} />
+        <Route path="/community/write" element={<MainLayout><CommunityWrite /></MainLayout>} />
+        <Route path="/community/:postId" element={<MainLayout><CommunityDetail /></MainLayout>} />
+        <Route path="/community/edit/:postId" element={<MainLayout><CommunityEdit /></MainLayout>} />
       </Routes>
     </BrowserRouter>
   );

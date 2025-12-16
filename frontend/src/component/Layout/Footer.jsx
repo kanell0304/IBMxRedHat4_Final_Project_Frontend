@@ -7,7 +7,7 @@ export default function Footer() {
     { key: "home", label: "홈", icon: "🏠", action: () => navigate("/") },
     { key: "feedback", label: "기록", icon: "💬", action: () => navigate("/history") },
     { key: "center", label: "미정", icon: "＋", action: () => navigate("/") },
-    { key: "community", label: "커뮤니티", icon: "👥", action: () => navigate("/") },
+    { key: "community", label: "커뮤니티", icon: "👥", action: () => navigate("/community") },
     { key: "more", label: "더보기", icon: "⋯", action: () => navigate("/mypage") },
   ];
 
