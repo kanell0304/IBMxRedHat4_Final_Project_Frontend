@@ -6,7 +6,7 @@ import { useAuth } from '../../hooks/useAuth';
 export default function CommunityDetail() {
   const { postId } = useParams();
   const navigate = useNavigate();
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, loading: authLoading } = useAuth();
   const [post, setPost] = useState(null);
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -14,68 +14,48 @@ export default function CommunityDetail() {
   const [commentContent, setCommentContent] = useState('');
   const [replyTo, setReplyTo] = useState(null); // 대댓글 작성 중인 댓글 id
   const [replyContent, setReplyContent] = useState('');
-  const [editingComment, setEditingComment] = useState(null); // 수정 중인 댓글 id
+  const [editingComment, setEditingComment] = useState(null);
   const [editContent, setEditContent] = useState('');
-  const hasFetchedRef = useRef(false); // 조회 여부 추적
-  const currentPostIdRef = useRef(null); // 현재 postId 추적
-
-  useEffect(() => {
-    const keysToRemove = [];
-    for (let i = 0; i < sessionStorage.length; i++) {
-      const key = sessionStorage.key(i);
-      if (key && (key.startsWith('post_view_') || key.startsWith('post_viewed_v2_'))) {
-        keysToRemove.push(key);
-      }
-    }
-    keysToRemove.forEach(key => sessionStorage.removeItem(key));
-  }, []);
+  const hasFetchedRef = useRef(false);
 
   // 게시글 및 댓글 조회
   useEffect(() => {
-    // postId가 변경되었을 때만 ref 초기화 - 이미 조회한 게시글은 조회수 증가x
-    if (currentPostIdRef.current !== postId) {
-      currentPostIdRef.current = postId;
-      hasFetchedRef.current = false;
-      
-      sessionStorage.removeItem(`post_view_${postId}`);
-      sessionStorage.removeItem(`post_viewed_v2_${postId}`);
-    }
-    
-    if (hasFetchedRef.current) {
+    // 인증 로딩 중이면 대기
+    if (authLoading) {
       return;
     }
     
+    // 이미 호출했으면 리턴
+    if (hasFetchedRef.current) {
+      return;
+    }
     hasFetchedRef.current = true;
     
     const loadPost = async () => {
       setLoading(true);
       try {
-        const viewKey = `post_v3_${postId}`;
-        const hasViewed = sessionStorage.getItem(viewKey);
-        
-        const response = await getPostDetail(postId, user?.user_id, !hasViewed);
-        
+        // user가 있을 때만 user_id 전달
+        const response = await getPostDetail(postId, user?.user_id);
         setPost(response.data.data.post);
         setComments(response.data.data.comments);
-        
-        // 조회수 증가를 기록
-        if (!hasViewed) {
-          sessionStorage.setItem(viewKey, 'true');
-        }
         setError(null);
       } catch (err) {
         setError('게시글을 불러오는데 실패했습니다.');
         console.error('게시글 조회 실패:', err);
-        hasFetchedRef.current = false;
       } finally {
         setLoading(false);
       }
     };
     
     loadPost();
-  }, [postId, user?.user_id]);
-// 댓글만 새로고침 (조회수 증가 방지)
-const refreshComments = async () => {
+    
+    return () => {
+      hasFetchedRef.current = false;
+    };
+  }, [postId, user?.user_id, authLoading]);
+
+  // 댓글만 새로고침 (조회수 증가 방지)
+  const refreshComments = async () => {
     try {
       const response = await getComments(postId);
       setComments(response.data);
@@ -113,6 +93,7 @@ const refreshComments = async () => {
 
     try {
       const response = await toggleLike(postId, user.user_id);
+      // setIsLiked(!isLiked);
       setPost((prev) => ({
         ...prev,
         like_count: response.data.like_count,
