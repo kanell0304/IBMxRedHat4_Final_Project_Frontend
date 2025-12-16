@@ -15,6 +15,10 @@ const MainPage = () => {
     navigate("/interview/info");
   };
 
+  const communication = () => {
+    navigate("/communication/info");
+  };
+
   const featureCards = [
     {
       title: "모의 면접",
@@ -34,7 +38,7 @@ const MainPage = () => {
       iconText: "text-amber-600",
       badge: "Hot",
       badgeColor: "bg-orange-100 text-orange-600",
-      // action: () => navigate(""),
+      action: communication,
     },
     {
       title: "발표 분석",
