@@ -1,24 +1,20 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE || 'http://localhost:8000',
+  baseURL: import.meta.env.VITE_API_BASE || 'http://localhost:8081',
   withCredentials: true,
 });
 
-const getCurrentUserId = async () => {
+const getUserId = async () => {
   const { data } = await api.get('/users/me');
   const userId = data?.user_id ?? data?.id;
-
-  if (!userId) {
-    throw new Error('로그인이 필요합니다.');
-  }
-
+  if (!userId) throw new Error('로그인이 필요합니다.');
   return userId;
 };
 
-export const startInterview = async ({ question_type, job_group, job_role, difficulty }) => {
+export const createInterview = async ({question_type, job_group, job_role, difficulty}) => {
   const isCommonOnly = question_type === '공통질문만';
-  const userId = await getCurrentUserId();
+  const userId = await getUserId();
   const payload = {
     user_id: userId,
     question_type,
@@ -28,35 +24,25 @@ export const startInterview = async ({ question_type, job_group, job_role, diffi
     total_questions: 5,
   };
 
-  try {
-    const { data } = await api.post('/interview/start', payload);
-    return data;
-  } catch (err) {
-    // axios 에러를 그대로 던지되, 메시지를 보강
-    const status = err?.response?.status;
-    const detail = err?.response?.data?.detail;
-    const message = detail || err?.message || '인터뷰 생성에 실패했습니다.';
-    const error = new Error(status ? `[${status}] ${message}` : message);
-    error.response = err?.response;
-    throw error;
-  }
+  const { data } = await api.post('/interview/start', payload);
+  return data;
 };
 
-export const submitInterviewAnswer = async ({ interviewId, questionId, audioFile }) => {
-  if (!interviewId || !questionId) {
-    throw new Error('면접 정보가 없습니다.');
-  }
-  if (!audioFile) {
-    throw new Error('녹음 파일을 선택해주세요.');
-  }
+export const getIDetail = async (interviewId) => {
+  if (!interviewId) throw new Error('면접 정보가 없습니다.');
+  const { data } = await api.get(`/interview/${interviewId}`);
+  return data;
+};
+
+export const uploadAnswer = async ({ answerId, audioFile }) => {
+  if (!answerId) throw new Error('답변 ID가 없습니다.');
+  if (!audioFile) throw new Error('녹음 파일을 선택해주세요.');
 
   const formData = new FormData();
-  formData.append('interview_id', interviewId);
-  formData.append('question_id', questionId);
-  formData.append('audio_file', audioFile);
+  formData.append('file', audioFile);
 
   try {
-    const { data } = await api.post('/interview/i_answer', formData, {
+    const { data } = await api.post(`/interview/answers/${answerId}/upload`, formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
     return data;
