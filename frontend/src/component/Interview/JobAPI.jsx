@@ -42,9 +42,7 @@ export const uploadAnswer = async ({ answerId, audioFile }) => {
   formData.append('file', audioFile);
 
   try {
-    const { data } = await api.post(`/interview/answers/${answerId}/upload`, formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
+    const { data } = await api.post(`/interview/answers/${answerId}/upload`, formData);
     return data;
   } catch (err) {
     const status = err?.response?.status;

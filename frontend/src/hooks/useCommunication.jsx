@@ -15,15 +15,11 @@ export const useCommunication = () => {
     try {
       const formData = new FormData();
       formData.append('file', audioFile);
-      formData.append('user_id', userId);
 
       const response = await api.post('/communication/upload', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
         params: {
-          user_id: userId,
-        },
+          user_id: userId
+        }
       });
 
       setCommunicationData(response.data);
@@ -122,6 +118,39 @@ export const useCommunication = () => {
     }
   };
 
+  const getCommunication = async (communicationId) => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await api.get(`/communication/${communicationId}`);
+      setCommunicationData(response.data);
+      return { success: true, data: response.data };
+    } catch (err) {
+      const errorMessage = err.response?.data?.detail || '데이터 조회 실패';
+      setError(errorMessage);
+      return { success: false, error: errorMessage };
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getUserCommunications = async (userId) => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await api.get(`/communication/users/${userId}/communications`);
+      return { success: true, data: response.data };
+    } catch (err) {
+      const errorMessage = err.response?.data?.detail || '목록 조회 실패';
+      setError(errorMessage);
+      return { success: false, error: errorMessage };
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const healthCheck = async () => {
     try {
       const response = await api.get('/communication/health');
@@ -150,6 +179,8 @@ export const useCommunication = () => {
     processSTT,
     analyzeCommunication,
     processFullAnalysis,
+    getCommunication,
+    getUserCommunications,
     healthCheck,
     reset,
   };

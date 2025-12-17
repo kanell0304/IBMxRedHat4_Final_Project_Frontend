@@ -90,8 +90,7 @@ export default function Profile() {
         const formData = new FormData();
         formData.append('file', selectedFile);
         const res = await axios.post(`${API_BASE}/users/me/profile-image`, formData, {
-          withCredentials: true,
-          headers: { 'Content-Type': 'multipart/form-data' },
+          withCredentials: true
         });
         const url = res.data?.profile_image_url ? `${API_BASE}${res.data.profile_image_url}` : defaultProfile;
         setImage(url);

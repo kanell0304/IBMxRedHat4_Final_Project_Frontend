@@ -1,71 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-
-// 목업 데이터 사용 여부 (개발 중에는 true로 설정)
-const USE_MOCK_DATA = true;
-
-// 목업 데이터
-const MOCK_COMMUNICATIONS = [
-  {
-    c_id: 1,
-    user_id: 1,
-    status: 'completed',
-    created_at: '2025-12-15T10:30:00'
-  },
-  {
-    c_id: 2,
-    user_id: 1,
-    status: 'completed',
-    created_at: '2025-12-14T15:20:00'
-  },
-  {
-    c_id: 3,
-    user_id: 1,
-    status: 'in_progress',
-    created_at: '2025-12-13T09:10:00'
-  },
-  {
-    c_id: 4,
-    user_id: 1,
-    status: 'failed',
-    created_at: '2025-12-12T14:00:00'
-  }
-];
+import { useCommunication } from '../../hooks/useCommunication';
 
 export default function CommunicationList() {
   const navigate = useNavigate();
+  const { getUserCommunications, loading } = useCommunication();
   const [communications, setCommunications] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetchCommunications();
-  }, []);
 
   const fetchCommunications = async () => {
-    if (USE_MOCK_DATA) {
-      // 목업 데이터 사용
-      setTimeout(() => {
-        setCommunications(MOCK_COMMUNICATIONS);
-        setLoading(false);
-      }, 500); // 로딩 시뮬레이션
-      return;
-    }
+    const userId = '1';
+    const result = await getUserCommunications(userId);
 
-    // 실제 API 호출
-    try {
-      const userId = '1'; // 추후 로그인한 사용자 ID로 변경 필요
-      const response = await axios.get(
-        `http://localhost:8081/communication/users/${userId}/communications`,
-        { withCredentials: true }
-      );
-
-      setCommunications(response.data);
-    } catch (error) {
-      console.error('목록 조회 실패:', error);
-      alert('목록을 불러오는 중 오류가 발생했습니다.');
-    } finally {
-      setLoading(false);
+    if (result.success) {
+      setCommunications(result.data);
+    } else {
+      console.error('목록 조회 실패:', result.error);
+      alert(result.error || '목록을 불러오는 중 오류가 발생했습니다.');
     }
   };
 

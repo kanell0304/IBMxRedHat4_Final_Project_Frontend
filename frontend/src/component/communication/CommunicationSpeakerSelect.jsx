@@ -1,32 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import axios from 'axios';
-
-// 목업 데이터 사용 여부
-const USE_MOCK_DATA = true;
-
-// 목업 화자 데이터
-const MOCK_SPEAKERS = [
-  {
-    speaker: '1',
-    firstUtterance: '안녕하세요 오늘 회의 시작하겠습니다',
-    wordCount: 245
-  },
-  {
-    speaker: '2',
-    firstUtterance: '네 감사합니다 준비한 자료 공유드리겠습니다',
-    wordCount: 189
-  },
-  {
-    speaker: '3',
-    firstUtterance: '질문이 있는데요',
-    wordCount: 87
-  }
-];
+import { useCommunication } from '../../hooks/useCommunication';
+import api from '../../services/api';
 
 export default function CommunicationSpeakerSelect() {
   const navigate = useNavigate();
   const { c_id } = useParams();
+  const { processSTT, analyzeCommunication } = useCommunication();
   const [loading, setLoading] = useState(true);
   const [analyzing, setAnalyzing] = useState(false);
   const [speakers, setSpeakers] = useState([]);
@@ -38,25 +18,9 @@ export default function CommunicationSpeakerSelect() {
   }, [c_id]);
 
   const processStt = async () => {
-    if (USE_MOCK_DATA) {
-      // 목업 데이터 사용
-      setSttProcessing(true);
-      setTimeout(() => {
-        setSpeakers(MOCK_SPEAKERS);
-        setSttProcessing(false);
-        setLoading(false);
-      }, 1500); // STT 처리 시뮬레이션
-      return;
-    }
-
-    // 실제 API 호출
     try {
       setSttProcessing(true);
-      const response = await axios.post(
-        `http://localhost:8081/communication/${c_id}/stt`,
-        {},
-        { withCredentials: true }
-      );
+      const response = await api.post(`/communication/${c_id}/stt`, {});
 
       if (response.data.c_sr_id) {
         await extractSpeakers(c_id);
@@ -73,10 +37,7 @@ export default function CommunicationSpeakerSelect() {
 
   const extractSpeakers = async (c_id) => {
     try {
-      const response = await axios.get(
-        `http://localhost:8081/communication/${c_id}`,
-        { withCredentials: true }
-      );
+      const response = await api.get(`/communication/${c_id}`);
 
       const sttResult = response.data?.stt_results?.[0];
       if (!sttResult || !sttResult.json_data) {
@@ -84,10 +45,10 @@ export default function CommunicationSpeakerSelect() {
       }
 
       const speakerMap = {};
-      const words = sttResult.json_data?.results?.words || [];
+      const words = sttResult.json_data?.results?.[0]?.alternatives?.[0]?.words || [];
 
       words.forEach((word) => {
-        const speakerTag = word.speaker_label || word.speakerTag || '1';
+        const speakerTag = word.speakerLabel || word.speakerTag || '1';
         if (!speakerMap[speakerTag]) {
           speakerMap[speakerTag] = {
             speaker: speakerTag,
@@ -122,22 +83,11 @@ export default function CommunicationSpeakerSelect() {
 
     setAnalyzing(true);
 
-    if (USE_MOCK_DATA) {
-      // 목업 모드: 분석 시뮬레이션 후 결과 페이지로 이동
-      setTimeout(() => {
-        setAnalyzing(false);
-        navigate(`/communication/result/${c_id}`);
-      }, 2000);
-      return;
-    }
-
-    // 실제 API 호출
     try {
-      const response = await axios.post(
-        `http://localhost:8081/communication/${c_id}/analyze`,
+      const response = await api.post(
+        `/communication/${c_id}/analyze`,
         null,
         {
-          withCredentials: true,
           params: {
             target_speaker: selectedSpeaker
           }

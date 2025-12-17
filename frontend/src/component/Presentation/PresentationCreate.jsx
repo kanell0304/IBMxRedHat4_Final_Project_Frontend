@@ -46,11 +46,8 @@ export default function PresentationCreate() {
       const response = await axios.post(
         'http://localhost:8081/presentations/create',
         formDataToSend,
-        { 
-          withCredentials: true,
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
+        {
+          withCredentials: true
         }
       );
 

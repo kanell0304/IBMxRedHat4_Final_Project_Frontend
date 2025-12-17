@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-
-// 목업 데이터 사용 여부
-const USE_MOCK_DATA = true;
+import { useCommunication } from '../../hooks/useCommunication';
+import api from '../../services/api';
 
 export default function CommunicationUpload() {
   const navigate = useNavigate();
+  const { uploadAudio } = useCommunication();
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -29,45 +28,19 @@ export default function CommunicationUpload() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!file) {
-      alert('음성 파일을 선택해주세요.');
-      return;
-    }
-
     setLoading(true);
     setUploadProgress(0);
 
-    if (USE_MOCK_DATA) {
-      // 목업 모드: 업로드 시뮬레이션
-      const interval = setInterval(() => {
-        setUploadProgress(prev => {
-          if (prev >= 100) {
-            clearInterval(interval);
-            setTimeout(() => {
-              setLoading(false);
-              navigate('/communication/speaker/1'); // 목업 c_id = 1
-            }, 300);
-            return 100;
-          }
-          return prev + 20;
-        });
-      }, 200);
-      return;
-    }
-
-    // 실제 API 호출
     try {
       const formData = new FormData();
-      formData.append('user_id', '1'); // 추후 로그인한 사용자 ID로 변경 필요
       formData.append('file', file);
 
-      const response = await axios.post(
-        'http://localhost:8081/communication/upload',
+      const response = await api.post(
+        '/communication/upload',
         formData,
         {
-          withCredentials: true,
-          headers: {
-            'Content-Type': 'multipart/form-data'
+          params: {
+            user_id: 1
           },
           onUploadProgress: (progressEvent) => {
             const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
@@ -81,6 +54,7 @@ export default function CommunicationUpload() {
       }
     } catch (error) {
       console.error('업로드 실패:', error);
+      console.error('응답 데이터:', error.response?.data);
       const errorMessage = error.response?.data?.detail || '업로드 중 오류가 발생했습니다.';
       alert(errorMessage);
     } finally {

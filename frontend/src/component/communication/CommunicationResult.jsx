@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import axios from 'axios';
+import { useCommunication } from '../../hooks/useCommunication';
 import {
   RadarChart,
   PolarGrid,
@@ -17,127 +17,6 @@ import {
   ResponsiveContainer
 } from 'recharts';
 
-// 목업 데이터 사용 여부
-const USE_MOCK_DATA = true;
-
-// 목업 데이터
-const MOCK_DATA = {
-  c_id: 1,
-  user_id: 1,
-  status: 'completed',
-  created_at: '2025-12-15T10:30:00',
-  result: {
-    c_result_id: 1,
-    c_id: 1,
-    c_br_id: 1,
-    speed: 7.5,
-    speech_rate: 8.2,
-    silence: 6.8,
-    clarity: 8.5,
-    meaning_clarity: 7.9,
-    cut: 3,
-    speed_json: {
-      detected_examples: ['너무 빠르게 말하는 부분이 있습니다', '중요한 내용을 천천히 설명해주세요'],
-      reason: '전달력을 높이기 위해 적절한 속도 조절이 필요합니다',
-      improvement: '중요한 포인트에서는 속도를 늦추고, 강조하는 연습을 해보세요',
-      revised_examples: ['(천천히) 이 부분이 중요한데요', '잠깐만요, 다시 설명드리겠습니다']
-    },
-    clarity_json: {
-      detected_examples: ['발음이 불명확한 단어들이 있습니다'],
-      reason: '청중이 내용을 정확히 이해하지 못할 수 있습니다',
-      improvement: '입을 크게 벌리고 또박또박 발음하는 연습이 필요합니다',
-      revised_examples: []
-    },
-    summary: '전반적으로 좋은 대화 스킬을 보여주셨습니다.\n속도와 명료도 면에서 우수하며, 의미 전달이 명확했습니다.\n다만 간혹 불필요한 침묵이나 필러가 있었으니 이 부분을 개선하면 더욱 좋을 것 같습니다.',
-    advice: '대화 시작 부분의 속도를 조금 늦추시고,\n중요한 포인트에서는 적절한 pause를 활용하세요.\n필러 단어 사용을 줄이기 위해 의식적으로 연습해보시면 좋겠습니다.',
-    created_at: '2025-12-15T10:35:00'
-  },
-  bert_result: {
-    c_br_id: 1,
-    c_id: 1,
-    c_sr_id: 1,
-    target_speaker: '1',
-    curse_count: 0,
-    filler_count: 12,
-    standard_score: 8.3,
-    analyzed_segments: {
-      slang: 0.2,
-      biased: 0.1,
-      curse: 0.0
-    },
-    created_at: '2025-12-15T10:34:00'
-  },
-  script_sentences: [
-    {
-      c_ss_id: 1,
-      c_id: 1,
-      c_sr_id: 1,
-      sentence_index: 0,
-      speaker_label: '1',
-      text: '안녕하세요 오늘 회의 시작하겠습니다',
-      start_time: '00:00:00',
-      end_time: '00:00:03',
-      created_at: '2025-12-15T10:33:00'
-    },
-    {
-      c_ss_id: 2,
-      c_id: 1,
-      c_sr_id: 1,
-      sentence_index: 1,
-      speaker_label: '2',
-      text: '네 감사합니다',
-      start_time: '00:00:03',
-      end_time: '00:00:05',
-      created_at: '2025-12-15T10:33:01'
-    },
-    {
-      c_ss_id: 3,
-      c_id: 1,
-      c_sr_id: 1,
-      sentence_index: 2,
-      speaker_label: '1',
-      text: '먼저 지난주 안건부터 검토하도록 하겠습니다',
-      start_time: '00:00:05',
-      end_time: '00:00:08',
-      created_at: '2025-12-15T10:33:02'
-    },
-    {
-      c_ss_id: 4,
-      c_id: 1,
-      c_sr_id: 1,
-      sentence_index: 3,
-      speaker_label: '1',
-      text: '그러니까 말이죠 이 부분이 중요한데요',
-      start_time: '00:00:08',
-      end_time: '00:00:11',
-      created_at: '2025-12-15T10:33:03'
-    },
-    {
-      c_ss_id: 5,
-      c_id: 1,
-      c_sr_id: 1,
-      sentence_index: 4,
-      speaker_label: '3',
-      text: '질문이 있는데요 그 부분은 어떻게 처리하면 될까요',
-      start_time: '00:00:11',
-      end_time: '00:00:15',
-      created_at: '2025-12-15T10:33:04'
-    },
-    {
-      c_ss_id: 6,
-      c_id: 1,
-      c_sr_id: 1,
-      sentence_index: 5,
-      speaker_label: '1',
-      text: '좋은 질문이십니다 제가 설명드리겠습니다',
-      start_time: '00:00:15',
-      end_time: '00:00:18',
-      created_at: '2025-12-15T10:33:05'
-    }
-  ]
-};
-
-// DetailSection 컴포넌트 - React Hooks 규칙을 위해 외부에 정의
 const DetailSection = ({ title, jsonData }) => {
   if (!jsonData || !jsonData.detected_examples || jsonData.detected_examples.length === 0) {
     return null;
@@ -169,11 +48,20 @@ const DetailSection = ({ title, jsonData }) => {
       {jsonData.revised_examples && jsonData.revised_examples.length > 0 && (
         <div>
           <p className="text-sm text-gray-600 mb-1">수정 예시:</p>
-          <ul className="list-disc list-inside text-gray-800 ml-2 space-y-1">
+          <div className="ml-2 space-y-2">
             {jsonData.revised_examples.map((example, idx) => (
-              <li key={idx} className="text-sm">{example}</li>
+              <div key={idx} className="text-sm">
+                {typeof example === 'object' ? (
+                  <>
+                    <div className="text-gray-500">원본: {example.original}</div>
+                    <div className="text-blue-700 font-medium">수정: {example.revised}</div>
+                  </>
+                ) : (
+                  <div>{example}</div>
+                )}
+              </div>
             ))}
-          </ul>
+          </div>
         </div>
       )}
     </div>
@@ -183,37 +71,21 @@ const DetailSection = ({ title, jsonData }) => {
 export default function CommunicationResult() {
   const navigate = useNavigate();
   const { c_id } = useParams();
-  const [loading, setLoading] = useState(true);
+  const { getCommunication, loading } = useCommunication();
   const [data, setData] = useState(null);
-  const [activeTab, setActiveTab] = useState('scores'); // scores, feedback, script
+  const [activeTab, setActiveTab] = useState('scores');
 
   useEffect(() => {
     fetchData();
   }, [c_id]);
 
   const fetchData = async () => {
-    if (USE_MOCK_DATA) {
-      // 목업 데이터 사용
-      setTimeout(() => {
-        setData(MOCK_DATA);
-        setLoading(false);
-      }, 500);
-      return;
-    }
-
-    // 실제 API 호출
-    try {
-      const response = await axios.get(
-        `http://localhost:8081/communication/${c_id}`,
-        { withCredentials: true }
-      );
-      setData(response.data);
-    } catch (error) {
-      console.error('데이터 조회 실패:', error);
-      alert('결과를 불러오는 중 오류가 발생했습니다.');
+    const result = await getCommunication(c_id);
+    if (result.success) {
+      setData(result.data);
+    } else {
+      alert(result.error || '결과를 불러오는 중 오류가 발생했습니다.');
       navigate('/communication');
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -252,7 +124,6 @@ export default function CommunicationResult() {
   const bertResult = data.bert_result;
   const scriptSentences = data.script_sentences || [];
 
-  // Radar Chart 데이터
   const radarData = [
     { subject: '속도', score: result.speed * 10, fullMark: 100 },
     { subject: '발화속도', score: result.speech_rate * 10, fullMark: 100 },
@@ -261,7 +132,6 @@ export default function CommunicationResult() {
     { subject: '의미명료도', score: result.meaning_clarity * 10, fullMark: 100 },
   ];
 
-  // Bar Chart 데이터
   const barData = [
     { name: '욕설', count: bertResult?.curse_count || 0 },
     { name: '필러', count: bertResult?.filler_count || 0 },
@@ -286,7 +156,6 @@ export default function CommunicationResult() {
           </div>
         </header>
 
-        {/* 탭 메뉴 */}
         <div className="flex gap-2">
           <button
             onClick={() => setActiveTab('scores')}
@@ -320,10 +189,8 @@ export default function CommunicationResult() {
           </button>
         </div>
 
-        {/* 탭 컨텐츠 */}
         {activeTab === 'scores' && (
           <div className="space-y-4">
-            {/* 요약 및 조언 */}
             <div className="rounded-3xl bg-white shadow-sm p-5 space-y-3">
               <h3 className="text-base font-bold text-gray-900">📝 전체 요약</h3>
               <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-line">
@@ -338,7 +205,6 @@ export default function CommunicationResult() {
               </p>
             </div>
 
-            {/* Radar Chart */}
             <div className="rounded-3xl bg-white shadow-sm p-5">
               <h3 className="text-base font-bold text-gray-900 mb-4">📈 종합 점수</h3>
               <ResponsiveContainer width="100%" height={300}>
@@ -359,7 +225,6 @@ export default function CommunicationResult() {
               </ResponsiveContainer>
             </div>
 
-            {/* Bar Chart */}
             <div className="rounded-3xl bg-white shadow-sm p-5">
               <h3 className="text-base font-bold text-gray-900 mb-4">📊 감지 횟수</h3>
               <ResponsiveContainer width="100%" height={200}>
@@ -373,7 +238,6 @@ export default function CommunicationResult() {
               </ResponsiveContainer>
             </div>
 
-            {/* 수치 */}
             <div className="grid grid-cols-3 gap-3">
               <div className="rounded-2xl bg-blue-50 p-4">
                 <div className="text-xs text-blue-700 mb-1">표준어 점수</div>
@@ -459,7 +323,6 @@ export default function CommunicationResult() {
           </div>
         )}
 
-        {/* 하단 버튼 */}
         <div className="flex gap-3">
           <button
             onClick={() => navigate('/communication')}
