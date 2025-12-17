@@ -4,7 +4,7 @@
 
 /* 전체 배율 60% 축소 */
 html {
-  font-size: 60%;
+  font-size: 90%;
 }
 
 /* Override device frame notch to mimic dynamic island (hide notch cutout) */

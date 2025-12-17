@@ -100,10 +100,10 @@ const Job = () => {
                   onClick={() => selectQuestionType(type.key)}
                   className={`${baseBtn} ${iForm.question_type === type.key ? selectedBtn : ''}`}
                 >
-                  <div className="text-sm font-bold">
+                  <div className="text-[15px] font-extrabold text-slate-900 whitespace-nowrap leading-tight">
                     {type.label}
                   </div>
-                  <div className="text-[11px] text-slate-500 font-medium mt-0.5">
+                  <div className="text-[11px] text-slate-600 font-medium leading-tight">
                     {type.desc}
                   </div>
                 </button>
@@ -163,14 +163,14 @@ const Job = () => {
           )}
 
           {iForm.question_type && (
-            <div>
-              <div className="flex items-center gap-2 mb-3">
-                <span className="w-8 h-8 rounded-full bg-blue-600 text-white text-xs font-bold inline-flex items-center justify-center">
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <span className="w-7 h-7 rounded-full bg-blue-600 text-white text-[11px] font-bold inline-flex items-center justify-center">
                   {stepJobGroup}
                 </span>
-                <span className="text-[13px] font-semibold text-gray-800">메인 직무군</span>
+                <span className="text-sm font-semibold text-gray-800">메인 직무군</span>
               </div>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-2.5">
                 {groupKeys.map((group) => (
                   <button
                     key={group}
@@ -186,14 +186,14 @@ const Job = () => {
           )}
 
           {iForm.question_type && !isCommonOnly && iForm.job_group && (
-            <div>
-              <div className="flex items-center gap-2 mb-3">
-                <span className="w-8 h-8 rounded-full bg-blue-600 text-white text-xs font-bold inline-flex items-center justify-center">
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <span className="w-7 h-7 rounded-full bg-blue-600 text-white text-[11px] font-bold inline-flex items-center justify-center">
                   {stepJobRole}
                 </span>
-                <span className="text-[13px] font-semibold text-gray-800">세부 직무</span>
+                <span className="text-sm font-semibold text-gray-800">세부 직무</span>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-2.5">
                 {roleOptions.map((role) => (
                   <button
                     key={role}

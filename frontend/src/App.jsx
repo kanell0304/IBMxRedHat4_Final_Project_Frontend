@@ -26,13 +26,28 @@ import CommunityList from './component/Community/CommunityList.jsx';
 import CommunityWrite from './component/Community/CommunityWrite.jsx';
 import CommunityDetail from './component/Community/CommunityDetail.jsx';
 import CommunityEdit from './component/Community/CommunityEdit.jsx';
+import PhoneFrame from './component/Layout/PhoneFrame.jsx';
+import Header from './component/Layout/Header.jsx';
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
         {/* 메인페이지 */}
-        <Route path="/" element={<MainLayout><MainPage /></MainLayout>} />
+        <Route
+          path="/"
+          element={
+            <PhoneFrame
+              showTitleRow={false}
+              contentClass="px-0 pt-[2px] pb-0"
+              headerContent={<Header fullWidth dense />}
+            >
+              <MainLayout fullWidth showHeader={false}>
+                <MainPage />
+              </MainLayout>
+            </PhoneFrame>
+          }
+        />
         <Route path="/mypage" element={<MainLayout><Mypage /></MainLayout>} />
         <Route path="/profile" element={<MainLayout><Profile /></MainLayout>} />
         <Route path="/history" element={<MainLayout><History /></MainLayout>} />
@@ -68,6 +83,7 @@ export default function App() {
         <Route path="/community/write" element={<MainLayout><CommunityWrite /></MainLayout>} />
         <Route path="/community/:postId" element={<MainLayout><CommunityDetail /></MainLayout>} />
         <Route path="/community/edit/:postId" element={<MainLayout><CommunityEdit /></MainLayout>} />
+
       </Routes>
     </BrowserRouter>
   );
