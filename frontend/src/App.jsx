@@ -57,11 +57,11 @@ export default function App() {
         <Route path="/presentation/detail/:prId" element={<PresentationDetail />} />
 
         {/* 대화 분석 */}
-        <Route path="/communication/info" element={<MainLayout><CommunicationInformation /></MainLayout>} />
-        <Route path="/communication" element={<MainLayout><CommunicationList /></MainLayout>} />
-        <Route path="/communication/upload" element={<MainLayout><CommunicationUpload /></MainLayout>} />
-        <Route path="/communication/speaker/:c_id" element={<MainLayout><CommunicationSpeakerSelect /></MainLayout>} />
-        <Route path="/communication/result/:c_id" element={<MainLayout><CommunicationResult /></MainLayout>} />
+        <Route path="/communication/info" element={<CommunicationInformation />} />
+        <Route path="/communication" element={<CommunicationList />} />
+        <Route path="/communication/upload" element={<CommunicationUpload />} />
+        <Route path="/communication/speaker/:c_id" element={<CommunicationSpeakerSelect />} />
+        <Route path="/communication/result/:c_id" element={<CommunicationResult />} />
 
         {/* 커뮤니티 */}
         <Route path="/community" element={<MainLayout><CommunityList /></MainLayout>} />

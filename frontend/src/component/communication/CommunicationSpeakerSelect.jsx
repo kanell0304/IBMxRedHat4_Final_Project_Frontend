@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useCommunication } from '../../hooks/useCommunication';
 import api from '../../services/api';
+import PhoneFrame from '../Layout/PhoneFrame';
 
 export default function CommunicationSpeakerSelect() {
   const navigate = useNavigate();
@@ -108,42 +109,33 @@ export default function CommunicationSpeakerSelect() {
 
   if (loading || sttProcessing) {
     return (
-      <div className="min-h-screen bg-white">
-        <div className="min-h-screen w-full max-w-3xl mx-auto bg-gray-100 flex items-center justify-center">
+      <PhoneFrame title="대화 분석">
+        <div className="flex items-center justify-center min-h-[400px]">
           <div className="text-center">
             <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mx-auto mb-4"></div>
-            <p className="text-base font-semibold text-gray-900">음성 인식 처리 중...</p>
-            <p className="text-sm text-gray-500 mt-2">1-2분 정도 소요될 수 있습니다</p>
+            <p className="text-sm font-semibold text-gray-900">음성 인식 처리 중...</p>
+            <p className="text-[13px] text-gray-600 mt-2">1-2분 정도 소요될 수 있습니다</p>
           </div>
         </div>
-      </div>
+      </PhoneFrame>
     );
   }
 
   return (
-    <div className="min-h-screen bg-white">
-      <div className="min-h-screen w-full max-w-3xl mx-auto bg-gray-100 px-4 md:px-6 py-8 space-y-6">
-        <header className="flex items-center gap-3">
-          <button
-            type="button"
-            onClick={() => navigate(-1)}
-            className="h-10 w-10 rounded-full bg-white border border-gray-200 shadow-sm flex items-center justify-center text-lg"
-          >
-            ←
-          </button>
-          <div>
-            <p className="text-xs font-semibold text-gray-500">대화 분석</p>
-            <h1 className="text-xl font-bold text-gray-900">화자 선택</h1>
-            <p className="text-sm text-gray-500 mt-1">분석할 화자를 선택하세요</p>
-          </div>
-        </header>
+    <PhoneFrame title="대화 분석">
+      <div className="space-y-5">
+        <div className="space-y-1">
+          <p className="text-xs font-semibold text-gray-500">대화 분석</p>
+          <h1 className="text-2xl font-extrabold text-gray-900">화자 선택</h1>
+          <p className="text-sm text-gray-600">분석할 화자를 선택하세요</p>
+        </div>
 
-        <div className="rounded-3xl bg-white shadow-sm p-6 space-y-4">
+        <div className="rounded-3xl bg-white shadow-sm p-6 space-y-4 border border-slate-100">
           <h2 className="text-lg font-semibold text-gray-900">👥 감지된 화자 목록</h2>
 
           {speakers.length === 0 ? (
             <div className="text-center py-8">
-              <p className="text-gray-600">화자를 감지하지 못했습니다.</p>
+              <p className="text-sm text-gray-600">화자를 감지하지 못했습니다.</p>
             </div>
           ) : (
             <div className="space-y-3">
@@ -167,21 +159,21 @@ export default function CommunicationSpeakerSelect() {
                     </div>
                     <div className="flex-1 text-left">
                       <div className="flex items-center gap-2 mb-1">
-                        <h3 className="text-base font-bold text-gray-900">
+                        <h3 className="text-sm font-bold text-gray-900">
                           화자 {speaker.speaker}
                         </h3>
                         {selectedSpeaker === speaker.speaker && (
-                          <span className="text-xs bg-blue-600 text-white px-2 py-1 rounded-full">
+                          <span className="text-[10px] bg-blue-600 text-white px-2 py-0.5 rounded-full">
                             선택됨
                           </span>
                         )}
                       </div>
-                      <p className="text-sm text-gray-500 mb-2">
+                      <p className="text-[13px] text-gray-600 mb-2">
                         발화 단어 수: {speaker.wordCount}개
                       </p>
                       <div className="bg-white rounded-lg p-2 border border-gray-200">
-                        <p className="text-xs text-gray-600">첫 번째 발언</p>
-                        <p className="text-sm text-gray-900">
+                        <p className="text-[11px] text-gray-600">첫 번째 발언</p>
+                        <p className="text-[13px] text-gray-900">
                           "{speaker.firstUtterance}..."
                         </p>
                       </div>
@@ -206,11 +198,11 @@ export default function CommunicationSpeakerSelect() {
             <span className="text-lg">⏳</span>
             <div className="text-sm">
               <p className="font-semibold">분석 중입니다...</p>
-              <p className="text-blue-700">대화 내용을 분석하고 있습니다. 잠시만 기다려주세요.</p>
+              <p className="text-[13px] text-blue-700">대화 내용을 분석하고 있습니다. 잠시만 기다려주세요.</p>
             </div>
           </div>
         )}
       </div>
-    </div>
+    </PhoneFrame>
   );
 }

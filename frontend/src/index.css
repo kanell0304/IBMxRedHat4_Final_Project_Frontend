@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+/* 전체 배율 60% 축소 */
+html {
+  font-size: 60%;
+}
+
 /* Override device frame notch to mimic dynamic island (hide notch cutout) */
 .marvel-device.iphone-x .notch,
 .marvel-device.iphone-x .top-bar {

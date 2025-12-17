@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCommunication } from '../../hooks/useCommunication';
 import api from '../../services/api';
+import PhoneFrame from '../Layout/PhoneFrame';
 
 export default function CommunicationUpload() {
   const navigate = useNavigate();
@@ -63,24 +64,15 @@ export default function CommunicationUpload() {
   };
 
   return (
-    <div className="min-h-screen bg-white">
-      <div className="min-h-screen w-full max-w-3xl mx-auto bg-gray-100 px-4 md:px-6 py-8 space-y-6">
-        <header className="flex items-center gap-3">
-          <button
-            type="button"
-            onClick={() => navigate(-1)}
-            className="h-10 w-10 rounded-full bg-white border border-gray-200 shadow-sm flex items-center justify-center text-lg"
-          >
-            ←
-          </button>
-          <div>
-            <p className="text-xs font-semibold text-gray-500">대화 분석</p>
-            <h1 className="text-xl font-bold text-gray-900">파일 업로드</h1>
-            <p className="text-sm text-gray-500 mt-1">분석할 대화 파일을 업로드하세요</p>
-          </div>
-        </header>
+    <PhoneFrame title="대화 분석">
+      <div className="space-y-5">
+        <div className="space-y-1">
+          <p className="text-xs font-semibold text-gray-500">대화 분석</p>
+          <h1 className="text-2xl font-extrabold text-gray-900">파일 업로드</h1>
+          <p className="text-sm text-gray-600">분석할 대화 파일을 업로드하세요</p>
+        </div>
 
-        <div className="rounded-3xl bg-white shadow-sm p-6 space-y-6">
+        <div className="rounded-3xl bg-white shadow-sm p-6 space-y-6 border border-slate-100">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label className="block text-sm font-semibold text-gray-900 mb-3">
@@ -98,8 +90,8 @@ export default function CommunicationUpload() {
                   {file ? (
                     <div>
                       <div className="text-4xl mb-2">✅</div>
-                      <p className="text-base font-semibold text-gray-900">{file.name}</p>
-                      <p className="text-sm text-gray-500 mt-1">
+                      <p className="text-sm font-semibold text-gray-900">{file.name}</p>
+                      <p className="text-[13px] text-gray-600 mt-1">
                         {(file.size / 1024 / 1024).toFixed(2)} MB
                       </p>
                       <button
@@ -116,10 +108,10 @@ export default function CommunicationUpload() {
                   ) : (
                     <div>
                       <div className="text-4xl mb-2">📁</div>
-                      <p className="text-base font-semibold text-gray-900">
+                      <p className="text-sm font-semibold text-gray-900">
                         파일을 선택하세요
                       </p>
-                      <p className="text-sm text-gray-500 mt-2">
+                      <p className="text-[13px] text-gray-600 mt-2">
                         WAV, MP3, M4A, OGG, FLAC
                       </p>
                     </div>
@@ -157,10 +149,10 @@ export default function CommunicationUpload() {
           <span className="text-lg">ℹ️</span>
           <div className="text-sm">
             <p className="font-semibold">음질이 좋을수록 정확한 분석이 가능해요</p>
-            <p className="text-blue-700">배경 소음이 적은 녹음 파일을 권장합니다</p>
+            <p className="text-[13px] text-blue-700">배경 소음이 적은 녹음 파일을 권장합니다</p>
           </div>
         </div>
       </div>
-    </div>
+    </PhoneFrame>
   );
 }

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useCommunication } from '../../hooks/useCommunication';
+import PhoneFrame from '../Layout/PhoneFrame';
 import {
   RadarChart,
   PolarGrid,
@@ -91,23 +92,23 @@ export default function CommunicationResult() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-white">
-        <div className="min-h-screen w-full max-w-3xl mx-auto bg-gray-100 flex items-center justify-center">
+      <PhoneFrame title="대화 분석">
+        <div className="flex items-center justify-center min-h-[400px]">
           <div className="text-center">
             <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mx-auto mb-4"></div>
-            <p className="text-gray-600">결과를 불러오는 중...</p>
+            <p className="text-sm text-gray-600">결과를 불러오는 중...</p>
           </div>
         </div>
-      </div>
+      </PhoneFrame>
     );
   }
 
   if (!data || !data.result) {
     return (
-      <div className="min-h-screen bg-white">
-        <div className="min-h-screen w-full max-w-3xl mx-auto bg-gray-100 flex items-center justify-center">
+      <PhoneFrame title="대화 분석">
+        <div className="flex items-center justify-center min-h-[400px]">
           <div className="text-center space-y-4">
-            <p className="text-gray-600">분석 결과를 찾을 수 없습니다.</p>
+            <p className="text-sm text-gray-600">분석 결과를 찾을 수 없습니다.</p>
             <button
               onClick={() => navigate('/communication')}
               className="rounded-2xl bg-blue-600 text-white px-6 py-2.5 font-semibold shadow-sm transition hover:bg-blue-700"
@@ -116,7 +117,7 @@ export default function CommunicationResult() {
             </button>
           </div>
         </div>
-      </div>
+      </PhoneFrame>
     );
   }
 
@@ -139,22 +140,13 @@ export default function CommunicationResult() {
   ];
 
   return (
-    <div className="min-h-screen bg-white">
-      <div className="min-h-screen w-full max-w-3xl mx-auto bg-gray-100 px-4 md:px-6 py-8 space-y-6">
-        <header className="flex items-center gap-3">
-          <button
-            type="button"
-            onClick={() => navigate('/communication')}
-            className="h-10 w-10 rounded-full bg-white border border-gray-200 shadow-sm flex items-center justify-center text-lg"
-          >
-            ←
-          </button>
-          <div>
-            <p className="text-xs font-semibold text-gray-500">대화 분석</p>
-            <h1 className="text-xl font-bold text-gray-900">분석 결과</h1>
-            <p className="text-sm text-gray-500 mt-1">대화 #{c_id}</p>
-          </div>
-        </header>
+    <PhoneFrame title="대화 분석">
+      <div className="space-y-5">
+        <div className="space-y-1">
+          <p className="text-xs font-semibold text-gray-500">대화 분석</p>
+          <h1 className="text-2xl font-extrabold text-gray-900">분석 결과</h1>
+          <p className="text-sm text-gray-600">대화 #{c_id}</p>
+        </div>
 
         <div className="flex gap-2">
           <button
@@ -338,6 +330,6 @@ export default function CommunicationResult() {
           </button>
         </div>
       </div>
-    </div>
+    </PhoneFrame>
   );
 }

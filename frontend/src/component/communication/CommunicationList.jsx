@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCommunication } from '../../hooks/useCommunication';
+import PhoneFrame from '../Layout/PhoneFrame';
 
 export default function CommunicationList() {
   const navigate = useNavigate();
@@ -48,34 +49,25 @@ export default function CommunicationList() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-white">
-        <div className="min-h-screen w-full max-w-3xl mx-auto bg-gray-100 flex items-center justify-center">
+      <PhoneFrame title="대화 분석">
+        <div className="flex items-center justify-center min-h-[400px]">
           <div className="text-center">
             <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mx-auto mb-4"></div>
-            <p className="text-gray-600">목록을 불러오는 중...</p>
+            <p className="text-sm text-gray-600">목록을 불러오는 중...</p>
           </div>
         </div>
-      </div>
+      </PhoneFrame>
     );
   }
 
   return (
-    <div className="min-h-screen bg-white">
-      <div className="min-h-screen w-full max-w-3xl mx-auto bg-gray-100 px-4 md:px-6 py-8 space-y-6">
-        <header className="flex items-center gap-3">
-          <button
-            type="button"
-            onClick={() => navigate('/')}
-            className="h-10 w-10 rounded-full bg-white border border-gray-200 shadow-sm flex items-center justify-center text-lg"
-          >
-            ←
-          </button>
-          <div>
-            <p className="text-xs font-semibold text-gray-500">대화 분석</p>
-            <h1 className="text-xl font-bold text-gray-900">내 분석 목록</h1>
-            <p className="text-sm text-gray-500 mt-1">지금까지 분석한 대화 기록이에요</p>
-          </div>
-        </header>
+    <PhoneFrame title="대화 분석">
+      <div className="space-y-5">
+        <div className="space-y-1">
+          <p className="text-xs font-semibold text-gray-500">대화 분석</p>
+          <h1 className="text-2xl font-extrabold text-gray-900">내 분석 목록</h1>
+          <p className="text-sm text-gray-600">지금까지 분석한 대화 기록이에요</p>
+        </div>
 
         <button
           onClick={() => navigate('/communication/info')}
@@ -85,7 +77,7 @@ export default function CommunicationList() {
         </button>
 
         {communications.length === 0 ? (
-          <div className="rounded-3xl bg-white shadow-sm p-12 text-center space-y-4">
+          <div className="rounded-3xl bg-white shadow-sm p-12 text-center space-y-4 border border-slate-100">
             <div className="text-6xl">💬</div>
             <h2 className="text-lg font-bold text-gray-900">
               아직 분석한 대화가 없어요
@@ -119,10 +111,10 @@ export default function CommunicationList() {
                 </div>
                 <div className="flex-1 text-left space-y-1">
                   <div className="flex items-center gap-2">
-                    <span className="text-base font-bold text-gray-900">대화 #{comm.c_id}</span>
+                    <span className="text-sm font-bold text-gray-900">대화 #{comm.c_id}</span>
                     {getStatusBadge(comm.status)}
                   </div>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-[13px] text-gray-600">
                     {formatDate(comm.created_at)}
                   </p>
                 </div>
@@ -132,6 +124,6 @@ export default function CommunicationList() {
           </div>
         )}
       </div>
-    </div>
+    </PhoneFrame>
   );
 }

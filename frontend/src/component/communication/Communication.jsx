@@ -135,19 +135,12 @@ const Communication = () => {
     return 'text-red-600';
   };
 
-  const getScoreBgColor = (score) => {
-    if (score >= 8) return 'bg-green-100';
-    if (score >= 6) return 'bg-yellow-100';
-    return 'bg-red-100';
-  };
-
   const targetScriptSentences = scriptSentences.filter(
     (s) => s.speaker_label === targetSpeaker
   );
 
   return (
-    <div className="min-h-screen bg-slate-50 px-4 py-10">
-      <div className="w-full max-w-5xl mx-auto">
+      <div className="w-full max-w-5xl">
         {/* Header */}
         <div className="bg-white rounded-3xl shadow-xl border border-slate-200 p-6 sm:p-8 mb-6">
           <div className="flex items-center justify-between mb-4">
@@ -420,7 +413,6 @@ const Communication = () => {
           </div>
         )}
       </div>
-    </div>
   );
 };
 
