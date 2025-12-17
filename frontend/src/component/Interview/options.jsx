@@ -22,7 +22,7 @@ export const difficultyOptions = [
 ];
 
 export const baseBtn =
-  'w-full h-20 px-4 rounded-xl border border-slate-200/80 bg-white text-base font-semibold text-slate-900 shadow-sm shadow-slate-200/60 hover:-translate-y-[1px] hover:shadow-md hover:border-sky-200 focus:outline-none focus:ring-2 focus:ring-sky-100 active:translate-y-0 transition duration-150 inline-flex flex-col items-center justify-center gap-1 text-center leading-snug';
+  'w-full min-h-[96px] px-3 py-3 rounded-2xl border border-slate-200/80 bg-white text-sm font-semibold text-slate-900 shadow-sm shadow-slate-200/60 hover:-translate-y-[1px] hover:shadow-md hover:border-sky-200 focus:outline-none focus:ring-2 focus:ring-sky-100 active:translate-y-0 transition duration-150 inline-flex flex-col items-center justify-center gap-1.5 text-center leading-tight';
 
 export const selectedBtn =
   'bg-white text-sky-900 border-2 border-sky-300 shadow-md shadow-sky-100 ring-2 ring-offset-1 ring-offset-white ring-sky-100';
