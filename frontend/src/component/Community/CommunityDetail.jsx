@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getPostDetail, deletePost, createComment, updateComment, deleteComment, toggleLike, getComments } from '../../api/communityApi';
 import { useAuth } from '../../hooks/useAuth';
+import PhoneFrame from '../Layout/PhoneFrame';
+import MainLayout from '../Layout/MainLayout';
 
 export default function CommunityDetail() {
   const { postId } = useParams();
@@ -117,9 +119,12 @@ export default function CommunityDetail() {
     }
 
     try {
+      const categoryIdForRedirect = post?.category_id;
       await deletePost(postId, user.user_id);
       alert('게시글이 삭제되었습니다.');
-      navigate('/community');
+      navigate('/community', {
+        state: categoryIdForRedirect ? { selectedCategoryId: categoryIdForRedirect } : undefined,
+      });
     } catch (err) {
       console.error('게시글 삭제 실패:', err);
       alert('게시글 삭제에 실패했습니다.');
@@ -227,6 +232,14 @@ export default function CommunityDetail() {
     } catch (err) {
       console.error('댓글 삭제 실패:', err);
       alert('댓글 삭제에 실패했습니다.');
+    }
+  };
+
+  const handleBackToList = () => {
+    if (post?.category_id) {
+      navigate('/community', { state: { selectedCategoryId: post.category_id } });
+    } else {
+      navigate(-1);
     }
   };
 
@@ -345,171 +358,170 @@ export default function CommunityDetail() {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="text-xl text-gray-600">로딩 중...</div>
-      </div>
+      <PhoneFrame showTitleRow title="게시글 상세" contentClass="px-0 pt-[2px] pb-4" onBack={handleBackToList}>
+        <MainLayout fullWidth showHeader={false} showFooter={false}>
+          <div className="flex justify-center items-center min-h-[60vh]">
+            <div className="text-xl text-gray-600">로딩 중...</div>
+          </div>
+        </MainLayout>
+      </PhoneFrame>
     );
   }
 
   if (error || !post) {
     return (
-      <div className="flex flex-col justify-center items-center min-h-screen">
-        <div className="text-xl text-red-600 mb-4">{error || '게시글을 찾을 수 없습니다.'}</div>
-        <button
-          onClick={() => navigate('/community')}
-          className="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-        >
-          목록으로
-        </button>
-      </div>
+      <PhoneFrame showTitleRow title="게시글 상세" contentClass="px-0 pt-[2px] pb-4" onBack={handleBackToList}>
+        <MainLayout fullWidth showHeader={false} showFooter={false}>
+          <div className="flex flex-col justify-center items-center min-h-[60vh]">
+            <div className="text-xl text-red-600 mb-4">{error || '게시글을 찾을 수 없습니다.'}</div>
+            <button
+              onClick={() => navigate('/community')}
+              className="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+            >
+              목록으로
+            </button>
+          </div>
+        </MainLayout>
+      </PhoneFrame>
     );
   }
 
   const isAuthor = user && user.user_id === post.user_id;
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* 목록으로 버튼 */}
-        <button
-          onClick={() => navigate('/community')}
-          className="mb-6 flex items-center text-gray-600 hover:text-gray-900"
-        >
-          <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
-          목록으로
-        </button>
-
-        {/* 게시글 상세 */}
-        <div className="bg-white rounded-lg shadow overflow-hidden">
-          {/* 헤더 */}
-          <div className="p-6 border-b border-gray-200">
-            <div className="flex items-center gap-2 mb-3">
-              <span className="px-3 py-1 text-sm font-medium text-blue-600 bg-blue-50 rounded">
-                {post.category_name}
-              </span>
-            </div>
-            <h1 className="text-2xl font-bold text-gray-900 mb-4">{post.title}</h1>
-            <div className="flex items-center justify-between text-sm text-gray-500">
-              <div className="flex items-center gap-4">
-                <span className="font-medium text-gray-900">{post.author_nickname}</span>
-                <span>{formatDate(post.created_at)}</span>
-                {post.updated_at !== post.created_at && (
-                  <span className="text-xs">(수정됨)</span>
-                )}
+    <PhoneFrame
+      showTitleRow
+      title="게시글 상세"
+      contentClass="px-0 pt-[2px] pb-4"
+      onBack={handleBackToList}
+    >
+      <MainLayout fullWidth showHeader={false} showFooter={false}>
+        <div className="w-full max-w-xl mx-auto px-4 py-4 space-y-6">
+          {/* 게시글 카드 */}
+          <div className="bg-white rounded-2xl shadow-[0_12px_30px_rgba(15,23,42,0.12)] border border-slate-100 overflow-hidden">
+            <div className="p-5 border-b border-slate-100">
+              <div className="flex items-center gap-2 mb-3">
+                <span className="px-3 py-1 text-xs font-semibold text-blue-600 bg-blue-50 rounded-full">
+                  {post.category_name}
+                </span>
               </div>
-              <div className="flex items-center gap-4">
-                <span>조회 {post.view_count}</span>
-                <span>좋아요 {post.like_count}</span>
-                <span>댓글 {post.comment_count}</span>
+              <h1 className="text-xl font-bold text-slate-900 leading-snug mb-3">{post.title}</h1>
+              <div className="flex items-center justify-between text-sm text-slate-500 flex-wrap gap-2">
+                <div className="flex items-center gap-3">
+                  <span className="font-semibold text-slate-800">{post.author_nickname}</span>
+                  <span className="text-slate-300">•</span>
+                  <span>{formatDate(post.created_at)}</span>
+                  {post.updated_at !== post.created_at && (
+                    <span className="text-xs text-slate-400">(수정됨)</span>
+                  )}
+                </div>
+                <div className="flex items-center gap-3 text-xs">
+                  <span>조회 {post.view_count}</span>
+                  <span>좋아요 {post.like_count}</span>
+                  <span>댓글 {post.comment_count}</span>
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* 내용 */}
-          <div className="p-6 min-h-[300px]">
-            <div className="prose max-w-none">
-              <p className="text-gray-700 whitespace-pre-wrap leading-relaxed">{post.content}</p>
+            <div className="p-5">
+              <p className="text-slate-700 whitespace-pre-wrap leading-relaxed">{post.content}</p>
             </div>
-          </div>
 
-          {/* 좋아요 버튼 */}
-          <div className="p-6 border-t border-gray-200 flex justify-center">
-            <button
-              onClick={handleLike}
-              className={`flex items-center gap-2 px-6 py-3 rounded-lg transition-colors ${
-                post.is_liked
-                  ? 'bg-red-50 text-red-600 hover:bg-red-100'
-                  : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
-              }`}
-            >
-              <svg
-                className={`w-6 h-6 ${post.is_liked ? 'fill-current' : ''}`}
-                fill={post.is_liked ? 'currentColor' : 'none'}
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                />
-              </svg>
-              <span className="font-medium">{post.like_count}</span>
-            </button>
-          </div>
-
-          {/* 작성자 액션 버튼 */}
-          {isAuthor && (
-            <div className="p-6 border-t border-gray-200 flex justify-end gap-3">
+            <div className="p-5 border-t border-slate-100 flex justify-between items-center">
               <button
-                onClick={handleEdit}
-                className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                onClick={handleLike}
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-colors ${
+                  post.is_liked
+                    ? 'bg-red-50 text-red-600 hover:bg-red-100'
+                    : 'bg-slate-50 text-slate-700 hover:bg-slate-100'
+                }`}
               >
-                수정
-              </button>
-              <button
-                onClick={handleDelete}
-                className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
-              >
-                삭제
-              </button>
-            </div>
-          )}
-        </div>
-
-        {/* 댓글 섹션 */}
-        <div className="mt-8 bg-white rounded-lg shadow p-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-6">
-            댓글 <span className="text-blue-600">{post.comment_count}</span>
-          </h2>
-
-          {/* 댓글 작성 폼 */}
-          {user ? (
-            <form onSubmit={handleCommentSubmit} className="mb-6">
-              <textarea
-                value={commentContent}
-                onChange={(e) => setCommentContent(e.target.value)}
-                placeholder="댓글을 입력해주세요"
-                className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
-                rows={4}
-              />
-              <div className="mt-3 flex justify-end">
-                <button
-                  type="submit"
-                  className="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                <svg
+                  className={`w-5 h-5 ${post.is_liked ? 'fill-current' : ''}`}
+                  fill={post.is_liked ? 'currentColor' : 'none'}
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
                 >
-                  댓글 작성
-                </button>
-              </div>
-            </form>
-          ) : (
-            <div className="mb-6 p-4 bg-gray-50 rounded-md text-center">
-              <p className="text-gray-600">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                  />
+                </svg>
+                <span className="font-semibold">{post.like_count}</span>
+              </button>
+
+              {isAuthor && (
+                <div className="flex gap-2">
+                  <button
+                    onClick={handleEdit}
+                    className="px-4 py-2 bg-slate-100 text-slate-700 rounded-md hover:bg-slate-200"
+                  >
+                    수정
+                  </button>
+                  <button
+                    onClick={handleDelete}
+                    className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+                  >
+                    삭제
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* 댓글 섹션 */}
+          <div className="bg-white rounded-2xl shadow-[0_10px_26px_rgba(15,23,42,0.1)] border border-slate-100 p-5">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-bold text-slate-900">
+                댓글 <span className="text-blue-600">{post.comment_count}</span>
+              </h2>
+            </div>
+
+            {/* 댓글 작성 폼 */}
+            {user ? (
+              <form onSubmit={handleCommentSubmit} className="mb-5 space-y-3">
+                <textarea
+                  value={commentContent}
+                  onChange={(e) => setCommentContent(e.target.value)}
+                  placeholder="댓글을 입력해주세요"
+                  className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                  rows={3}
+                />
+                <div className="flex justify-end">
+                  <button
+                    type="submit"
+                    className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                  >
+                    댓글 작성
+                  </button>
+                </div>
+              </form>
+            ) : (
+              <div className="mb-6 p-4 bg-slate-50 rounded-xl text-center text-sm text-slate-600">
                 댓글을 작성하려면{' '}
                 <button
                   onClick={() => navigate('/login')}
-                  className="text-blue-600 hover:text-blue-800 font-medium"
+                  className="text-blue-600 hover:text-blue-800 font-semibold"
                 >
                   로그인
                 </button>
                 이 필요합니다.
-              </p>
-            </div>
-          )}
+              </div>
+            )}
 
-          {/* 댓글 목록 */}
-          {comments.length === 0 ? (
-            <div className="py-12 text-center text-gray-500">첫 댓글을 작성해보세요!</div>
-          ) : (
-            <div className="space-y-1">
-              {comments.map((comment) => renderComment(comment))}
-            </div>
-          )}
+            {/* 댓글 목록 */}
+            {comments.length === 0 ? (
+              <div className="py-10 text-center text-slate-500 text-sm">첫 댓글을 작성해보세요!</div>
+            ) : (
+              <div className="space-y-2">
+                {comments.map((comment) => renderComment(comment))}
+              </div>
+            )}
+          </div>
         </div>
-      </div>
-    </div>
+      </MainLayout>
+    </PhoneFrame>
   );
 }

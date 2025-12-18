@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getCategories, createPost } from '../../api/communityApi';
 import { useAuth } from '../../hooks/useAuth';
+import PhoneFrame from '../Layout/PhoneFrame';
+import MainLayout from '../Layout/MainLayout';
 
 export default function CommunityWrite() {
   const navigate = useNavigate();
@@ -100,10 +102,10 @@ export default function CommunityWrite() {
       };
 
       const response = await createPost(postData);
-      
+
       if (response.data.post_id) {
-        // 작성된 게시글 상세 페이지로 이동
-        navigate(`/community/${response.data.post_id}`);
+        // 작성된 카테고리 리스트 화면으로 이동 (선택 상태 유지)
+        navigate('/community', { state: { selectedCategoryId: postData.category_id } });
       } else {
         setError('게시글 작성에 실패했습니다.');
       }
@@ -130,135 +132,137 @@ export default function CommunityWrite() {
     return null;
   }
 
-  return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* 헤더 */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">게시글 작성</h1>
-          <p className="text-gray-600">여러분의 경험과 후기를 공유해주세요</p>
+  const content = (
+    <div className="w-full max-w-md mx-auto px-4 py-5 space-y-4">
+      {/* 헤더 */}
+      <div className="space-y-1">
+        <h1 className="text-xl font-extrabold text-slate-900">게시글 작성</h1>
+        <p className="text-sm text-slate-600">여러분의 경험과 후기를 공유해주세요</p>
+      </div>
+
+      {/* 에러 메시지 */}
+      {error && (
+        <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-600">
+          {error}
+        </div>
+      )}
+
+      {/* 작성 폼 */}
+      <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-[0_12px_32px_rgba(15,23,42,0.1)] border border-slate-100 p-4 space-y-5">
+        {/* 카테고리 선택 */}
+        <div className="space-y-2">
+          <label htmlFor="category_id" className="block text-sm font-semibold text-slate-800">
+            카테고리 <span className="text-red-500">*</span>
+          </label>
+          <select
+            id="category_id"
+            name="category_id"
+            value={formData.category_id}
+            onChange={handleChange}
+            className={`w-full px-3 py-2 rounded-xl bg-slate-50 border focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+              validationErrors.category_id ? 'border-red-400' : 'border-slate-200'
+            }`}
+          >
+            <option value="">카테고리를 선택해주세요</option>
+            {categories.map((category) => (
+              <option key={category.category_id} value={category.category_id}>
+                {category.category_name}
+              </option>
+            ))}
+          </select>
+          {validationErrors.category_id && (
+            <p className="text-xs text-red-500">{validationErrors.category_id}</p>
+          )}
         </div>
 
-        {/* 에러 메시지 */}
-        {error && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-md">
-            <p className="text-red-600">{error}</p>
-          </div>
-        )}
-
-        {/* 작성 폼 */}
-        <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow p-6">
-          {/* 카테고리 선택 */}
-          <div className="mb-6">
-            <label htmlFor="category_id" className="block text-sm font-medium text-gray-700 mb-2">
-              카테고리 <span className="text-red-500">*</span>
-            </label>
-            <select
-              id="category_id"
-              name="category_id"
-              value={formData.category_id}
-              onChange={handleChange}
-              className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                validationErrors.category_id ? 'border-red-500' : 'border-gray-300'
-              }`}
-            >
-              <option value="">카테고리를 선택해주세요</option>
-              {categories.map((category) => (
-                <option key={category.category_id} value={category.category_id}>
-                  {category.category_name}
-                </option>
-              ))}
-            </select>
-            {validationErrors.category_id && (
-              <p className="mt-1 text-sm text-red-500">{validationErrors.category_id}</p>
-            )}
-          </div>
-
-          {/* 제목 입력 */}
-          <div className="mb-6">
-            <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
+        {/* 제목 입력 */}
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <label htmlFor="title" className="text-sm font-semibold text-slate-800">
               제목 <span className="text-red-500">*</span>
             </label>
-            <input
-              type="text"
-              id="title"
-              name="title"
-              value={formData.title}
-              onChange={handleChange}
-              maxLength={200}
-              placeholder="제목을 입력해주세요 (최대 200자)"
-              className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                validationErrors.title ? 'border-red-500' : 'border-gray-300'
-              }`}
-            />
-            <div className="mt-1 flex justify-between items-center">
-              {validationErrors.title ? (
-                <p className="text-sm text-red-500">{validationErrors.title}</p>
-              ) : (
-                <p className="text-sm text-gray-500">제목을 입력해주세요</p>
-              )}
-              <p className="text-sm text-gray-500">{formData.title.length}/200</p>
-            </div>
+            <span className="text-xs text-slate-400">{formData.title.length}/200</span>
           </div>
-
-          {/* 내용 입력 */}
-          <div className="mb-6">
-            <label htmlFor="content" className="block text-sm font-medium text-gray-700 mb-2">
-              내용 <span className="text-red-500">*</span>
-            </label>
-            <textarea
-              id="content"
-              name="content"
-              value={formData.content}
-              onChange={handleChange}
-              rows={15}
-              placeholder="내용을 입력해주세요"
-              className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none ${
-                validationErrors.content ? 'border-red-500' : 'border-gray-300'
-              }`}
-            />
-            {validationErrors.content && (
-              <p className="mt-1 text-sm text-red-500">{validationErrors.content}</p>
-            )}
-          </div>
-
-          {/* 작성자 정보 */}
-          <div className="mb-6 p-4 bg-gray-50 rounded-md">
-            <p className="text-sm text-gray-600">
-              작성자: <span className="font-medium text-gray-900">{user.nickname}</span>
-            </p>
-          </div>
-
-          {/* 버튼 */}
-          <div className="flex gap-3">
-            <button
-              type="button"
-              onClick={handleCancel}
-              className="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors font-medium"
-              disabled={loading}
-            >
-              취소
-            </button>
-            <button
-              type="submit"
-              className="flex-1 px-6 py-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors font-medium disabled:bg-gray-400 disabled:cursor-not-allowed"
-              disabled={loading}
-            >
-              {loading ? '작성 중...' : '작성 완료'}
-            </button>
-          </div>
-        </form>
-
-        {/* 안내 메시지 */}
-        <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-md">
-          <h3 className="font-medium text-blue-900 mb-2">게시글 작성 안내</h3>
-          <ul className="text-sm text-blue-800 space-y-1">
-            <li>• 다른 사람에게 도움이 되는 내용을 작성해주세요.</li>
-            <li>• 욕설, 비방, 광고성 게시글은 삭제될 수 있습니다.</li>
-            <li>• 저작권을 침해하는 내용은 게시하지 말아주세요.</li>
-          </ul>
+          <input
+            type="text"
+            id="title"
+            name="title"
+            value={formData.title}
+            onChange={handleChange}
+            maxLength={200}
+            placeholder="제목을 입력해주세요"
+            className={`w-full px-3 py-2 rounded-xl bg-slate-50 border focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+              validationErrors.title ? 'border-red-400' : 'border-slate-200'
+            }`}
+          />
+          {validationErrors.title && (
+            <p className="text-xs text-red-500">{validationErrors.title}</p>
+          )}
         </div>
+
+        {/* 내용 입력 */}
+        <div className="space-y-2">
+          <label htmlFor="content" className="text-sm font-semibold text-slate-800">
+            내용 <span className="text-red-500">*</span>
+          </label>
+          <textarea
+            id="content"
+            name="content"
+            value={formData.content}
+            onChange={handleChange}
+            rows={10}
+            placeholder="내용을 입력해주세요"
+            className={`w-full px-3 py-3 rounded-xl bg-slate-50 border focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none ${
+              validationErrors.content ? 'border-red-400' : 'border-slate-200'
+            }`}
+          />
+          {validationErrors.content && (
+            <p className="text-xs text-red-500">{validationErrors.content}</p>
+          )}
+        </div>
+
+        {/* 작성자 정보 */}
+        <div className="p-3 bg-slate-50 rounded-xl text-sm text-slate-600 border border-slate-100">
+          작성자: <span className="font-semibold text-slate-900">{user.nickname}</span>
+        </div>
+
+        {/* 버튼 */}
+        <div className="flex gap-2">
+          <button
+            type="button"
+            onClick={handleCancel}
+            className="flex-1 px-4 py-3 border border-slate-200 text-slate-700 rounded-xl hover:bg-slate-50 transition-colors font-semibold"
+            disabled={loading}
+          >
+            취소
+          </button>
+          <button
+            type="submit"
+            className="flex-1 px-4 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors font-semibold disabled:bg-gray-400 disabled:cursor-not-allowed"
+            disabled={loading}
+          >
+            {loading ? '작성 중...' : '작성 완료'}
+          </button>
+        </div>
+      </form>
+
+      {/* 안내 메시지 */}
+      <div className="p-4 bg-blue-50 border border-blue-200 rounded-xl text-sm text-blue-800">
+        <h3 className="font-semibold text-blue-900 mb-1">게시글 작성 안내</h3>
+        <ul className="space-y-1">
+          <li>• 다른 사람에게 도움이 되는 내용을 작성해주세요.</li>
+          <li>• 욕설, 비방, 광고성 게시글은 삭제될 수 있습니다.</li>
+          <li>• 저작권을 침해하는 내용은 게시하지 말아주세요.</li>
+        </ul>
       </div>
     </div>
+  );
+
+  return (
+    <PhoneFrame showTitleRow title="게시글 작성" contentClass="px-0 pt-[2px] pb-4">
+      <MainLayout fullWidth showHeader={false} showFooter={false}>
+        {content}
+      </MainLayout>
+    </PhoneFrame>
   );
 }

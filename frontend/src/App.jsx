@@ -23,7 +23,7 @@ import CommunicationList from './component/Communication/CommunicationList.jsx';
 import CommunicationUpload from './component/Communication/CommunicationUpload.jsx';
 import CommunicationSpeakerSelect from './component/Communication/CommunicationSpeakerSelect.jsx';
 import CommunicationResult from './component/Communication/CommunicationResult.jsx';
-import CommunityList from './component/Community/CommunityList.jsx';
+import Community from './component/Community/Community.jsx';
 import CommunityWrite from './component/Community/CommunityWrite.jsx';
 import CommunityDetail from './component/Community/CommunityDetail.jsx';
 import CommunityEdit from './component/Community/CommunityEdit.jsx';
@@ -66,10 +66,10 @@ export default function App() {
         <Route path="/communication/result/:c_id" element={<CommunicationResult />} />
 
         {/* 커뮤니티 */}
-        <Route path="/community" element={<CommunityList />} />
-        <Route path="/community/write" element={<MainLayout><CommunityWrite /></MainLayout>} />
-        <Route path="/community/:postId" element={<MainLayout><CommunityDetail /></MainLayout>} />
-        <Route path="/community/edit/:postId" element={<MainLayout><CommunityEdit /></MainLayout>} />
+        <Route path="/community" element={<Community />} />
+        <Route path="/community/write" element={<CommunityWrite />} />
+        <Route path="/community/:postId" element={<CommunityDetail />} />
+        <Route path="/community/edit/:postId" element={<CommunityEdit />} />
 
       </Routes>
     </BrowserRouter>

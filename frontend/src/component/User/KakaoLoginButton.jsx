@@ -19,7 +19,7 @@ const KakaoLoginButton = () => {
           fill="#000000"
         />
       </svg>
-      카카오 로그인
+      카카오 계정으로 로그인
     </button>
   );
 };

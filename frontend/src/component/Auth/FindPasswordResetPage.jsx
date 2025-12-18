@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { resetPassword } from '../../api/authApi.js';
+import PhoneFrame from '../Layout/PhoneFrame.jsx';
 
 export default function FindPasswordResetPage() {
   const navigate = useNavigate();
@@ -12,11 +13,12 @@ export default function FindPasswordResetPage() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  if (!email) {
-    alert("잘못된 접근입니다. 이메일 인증부터 다시 시도해 주세요.");
-    navigate('/find-password');
-    return null; 
-  }
+  useEffect(() => {
+    if (!email) {
+      alert('잘못된 접근입니다. 이메일 인증부터 다시 시도해 주세요.');
+      navigate('/find-password');
+    }
+  }, [email, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -67,31 +69,61 @@ export default function FindPasswordResetPage() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-neutral-50">
-      <div className="w-full max-w-md p-8 space-y-6 bg-white border rounded-lg shadow-md">
-        <h2 className="text-2xl font-bold text-center">비밀번호 변경</h2>
-        <p className="text-center text-gray-600">{email}로 전송된 코드를 입력하세요.</p>
-        
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <input type="text" placeholder="인증코드 (reset_code)" value={resetCode} onChange={(e) => setResetCode(e.target.value)} required className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+    <PhoneFrame
+      title="비밀번호 변경"
+      contentClass="p-5 pb-7 bg-gradient-to-b from-slate-50 via-white to-blue-50/40"
+    >
+      <div className="flex flex-col gap-5">
+        <div className="rounded-3xl bg-white shadow-sm p-5 border border-slate-100 space-y-4">
+          <div className="space-y-1">
+            <p className="text-xs font-semibold text-blue-600">STEP 2</p>
+            <h2 className="text-xl font-bold text-gray-900">새 비밀번호 설정</h2>
+            <p className="text-sm text-gray-600 leading-relaxed">
+              {email ? `${email} 로 전송된 인증코드를 입력하고 새 비밀번호를 설정하세요.` : '인증 메일 정보를 확인 중입니다.'}
+            </p>
           </div>
-          <div>
-            <input type="password" placeholder="새 비밀번호 (new_password)" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} required className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
-          </div>
-          <div>
-            <input type="password" placeholder="새 비밀번호 확인" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
-          </div>
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full px-4 py-2 font-semibold text-white bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none disabled:bg-gray-400"
-          >
-            {isLoading ? '변경 중...' : '비밀번호 변경'}
-          </button>
-        </form>
+
+          <form onSubmit={handleSubmit} className="space-y-3">
+            <input
+              type="text"
+              placeholder="인증코드 (reset_code)"
+              value={resetCode}
+              onChange={(e) => setResetCode(e.target.value)}
+              required
+              className="w-full px-4 py-3 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 bg-slate-50/80 text-gray-900 placeholder:text-gray-400"
+            />
+            <input
+              type="password"
+              placeholder="새 비밀번호 (new_password)"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              required
+              className="w-full px-4 py-3 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 bg-slate-50/80 text-gray-900 placeholder:text-gray-400"
+            />
+            <input
+              type="password"
+              placeholder="새 비밀번호 확인"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+              className="w-full px-4 py-3 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 bg-slate-50/80 text-gray-900 placeholder:text-gray-400"
+            />
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full px-4 py-3 font-semibold text-white rounded-2xl bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 shadow-[0_10px_24px_rgba(37,99,235,0.25)] transition hover:-translate-y-0.5 hover:shadow-[0_12px_28px_rgba(37,99,235,0.3)] disabled:bg-gray-400 disabled:shadow-none"
+            >
+              {isLoading ? '변경 중...' : '비밀번호 변경'}
+            </button>
+          </form>
+        </div>
+
+        <div className="rounded-3xl bg-white shadow-sm p-4 border border-slate-100">
+          <p className="text-sm text-gray-600 leading-relaxed">
+            변경 완료 후 로그인 화면으로 이동해 새 비밀번호로 로그인할 수 있어요.
+          </p>
+        </div>
       </div>
-    </div>
+    </PhoneFrame>
   );
 }
-
