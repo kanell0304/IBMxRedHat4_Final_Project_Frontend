@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useCommunication } from '../../hooks/useCommunication';
 import PhoneFrame from '../Layout/PhoneFrame';
@@ -46,25 +46,6 @@ const DetailSection = ({ title, jsonData }) => {
           <p className="text-gray-800 text-sm">{jsonData.improvement}</p>
         </div>
       )}
-      {jsonData.revised_examples && jsonData.revised_examples.length > 0 && (
-        <div>
-          <p className="text-sm text-gray-600 mb-1">수정 예시:</p>
-          <div className="ml-2 space-y-2">
-            {jsonData.revised_examples.map((example, idx) => (
-              <div key={idx} className="text-sm">
-                {typeof example === 'object' ? (
-                  <>
-                    <div className="text-gray-500">원본: {example.original}</div>
-                    <div className="text-blue-700 font-medium">수정: {example.revised}</div>
-                  </>
-                ) : (
-                  <div>{example}</div>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
     </div>
   );
 };
@@ -75,6 +56,13 @@ export default function CommunicationResult() {
   const { getCommunication, loading } = useCommunication();
   const [data, setData] = useState(null);
   const [activeTab, setActiveTab] = useState('scores');
+  const [expandedSentenceId, setExpandedSentenceId] = useState(null);
+
+  // 오디오 재생 관련 상태
+  const audioRef = useRef(null);
+  const [playingSentenceId, setPlayingSentenceId] = useState(null);
+  const [openFeedbackId, setOpenFeedbackId] = useState(null);
+  const feedbackBubbleRef = useRef(null);
 
   useEffect(() => {
     fetchData();
@@ -87,6 +75,84 @@ export default function CommunicationResult() {
     } else {
       alert(result.error || '결과를 불러오는 중 오류가 발생했습니다.');
       navigate('/communication');
+    }
+  };
+
+  // 오디오 파일 로드
+  useEffect(() => {
+    if (c_id && activeTab === 'script') {
+      const audio = new Audio(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8081'}/communication/${c_id}/audio`);
+      audio.preload = 'auto';
+      audioRef.current = audio;
+
+      return () => {
+        if (audioRef.current) {
+          audioRef.current.pause();
+          audioRef.current = null;
+        }
+      };
+    }
+  }, [c_id, activeTab]);
+
+  // 외부 클릭 감지 (피드백 버블 닫기)
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (feedbackBubbleRef.current && !feedbackBubbleRef.current.contains(event.target)) {
+        const clickedOnBubbleTrigger = event.target.closest('.bubble-trigger');
+        if (!clickedOnBubbleTrigger) {
+          setOpenFeedbackId(null);
+        }
+      }
+    };
+
+    if (openFeedbackId !== null) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [openFeedbackId]);
+
+  // 시간 포맷 변환 (1.440s → 1.44)
+  const parseTime = (timeStr) => {
+    if (!timeStr) return 0;
+    return parseFloat(timeStr.replace('s', ''));
+  };
+
+  // 오디오 구간 재생 제어
+  const handlePlaySegment = (sentence) => {
+    if (!audioRef.current) return;
+
+    const startTime = parseTime(sentence.start_time);
+    const endTime = parseTime(sentence.end_time);
+
+    if (playingSentenceId === sentence.c_ss_id) {
+      // 재생 중이면 정지
+      audioRef.current.pause();
+      setPlayingSentenceId(null);
+    } else {
+      // 재생 시작
+      audioRef.current.currentTime = startTime;
+      audioRef.current.play();
+      setPlayingSentenceId(sentence.c_ss_id);
+
+      // timeupdate 이벤트로 구간 종료 감지
+      const handleTimeUpdate = () => {
+        if (audioRef.current.currentTime >= endTime) {
+          audioRef.current.pause();
+          setPlayingSentenceId(null);
+          audioRef.current.removeEventListener('timeupdate', handleTimeUpdate);
+        }
+      };
+
+      audioRef.current.addEventListener('timeupdate', handleTimeUpdate);
+    }
+  };
+
+  // 피드백 버블 토글
+  const handleFeedbackClick = (sentenceId) => {
+    if (openFeedbackId === sentenceId) {
+      setOpenFeedbackId(null);
+    } else {
+      setOpenFeedbackId(sentenceId);
     }
   };
 
@@ -126,17 +192,16 @@ export default function CommunicationResult() {
   const scriptSentences = data.script_sentences || [];
 
   const radarData = [
-    { subject: '속도', score: result.speed * 10, fullMark: 100 },
-    { subject: '발화속도', score: result.speech_rate * 10, fullMark: 100 },
+    { subject: '발화속도', score: result.speaking_speed * 10, fullMark: 100 },
     { subject: '침묵', score: result.silence * 10, fullMark: 100 },
-    { subject: '명료도', score: result.clarity * 10, fullMark: 100 },
-    { subject: '의미명료도', score: result.meaning_clarity * 10, fullMark: 100 },
+    { subject: '발음', score: (100 - result.clarity), fullMark: 100 },
+    { subject: '의미명료도', score: (100 - result.meaning_clarity), fullMark: 100 },
   ];
 
   const barData = [
     { name: '욕설', count: bertResult?.curse_count || 0 },
     { name: '필러', count: bertResult?.filler_count || 0 },
-    { name: 'Cut', count: result.cut || 0 },
+    { name: '말 끊기', count: result.cut || 0 },
   ];
 
   return (
@@ -255,14 +320,13 @@ export default function CommunicationResult() {
 
         {activeTab === 'feedback' && (
           <div className="space-y-3">
-            <DetailSection title="⚡ 속도" jsonData={result.speed_json} />
-            <DetailSection title="🗣️ 발화 속도" jsonData={result.speech_rate_json} />
+            <DetailSection title="🗣️ 발화 속도" jsonData={result.speaking_speed_json} />
             <DetailSection title="🤫 침묵" jsonData={result.silence_json} />
-            <DetailSection title="🔊 명료도" jsonData={result.clarity_json} />
+            <DetailSection title="🔊 발음" jsonData={result.clarity_json} />
             <DetailSection title="💭 의미 명료도" jsonData={result.meaning_clarity_json} />
-            <DetailSection title="✂️ Cut" jsonData={result.cut_json} />
+            <DetailSection title="✂️ 말 끊기" jsonData={result.cut_json} />
 
-            {(!result.speed_json && !result.speech_rate_json && !result.silence_json &&
+            {(!result.speaking_speed_json && !result.silence_json &&
               !result.clarity_json && !result.meaning_clarity_json && !result.cut_json) && (
               <div className="rounded-3xl bg-white shadow-sm p-12 text-center">
                 <p className="text-gray-600">상세 피드백이 없습니다</p>
@@ -272,44 +336,118 @@ export default function CommunicationResult() {
         )}
 
         {activeTab === 'script' && (
-          <div className="space-y-3">
+          <div className="space-y-3 pb-4">
             {scriptSentences.length === 0 ? (
               <div className="rounded-3xl bg-white shadow-sm p-12 text-center">
                 <p className="text-gray-600">스크립트가 없습니다</p>
               </div>
             ) : (
-              <div className="space-y-3">
+              <div className="space-y-2">
                 {scriptSentences
                   .sort((a, b) => a.sentence_index - b.sentence_index)
-                  .map((sentence) => (
-                    <div
-                      key={sentence.c_ss_id}
-                      className={`rounded-2xl p-4 ${
-                        sentence.speaker_label === bertResult?.target_speaker
-                          ? 'bg-blue-50 border-l-4 border-blue-600'
-                          : 'bg-white shadow-sm border-l-4 border-gray-300'
-                      }`}
-                    >
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center gap-2">
-                          <span className="font-bold text-gray-900 text-sm">
-                            화자 {sentence.speaker_label}
-                          </span>
-                          {sentence.speaker_label === bertResult?.target_speaker && (
-                            <span className="text-[10px] bg-blue-600 text-white px-2 py-0.5 rounded-full">
-                              분석 대상
+                  .map((sentence) => {
+                    const hasFeedback = sentence.feedback && sentence.feedback.length > 0;
+                    const isTargetSpeaker = sentence.speaker_label === bertResult?.target_speaker;
+                    const isPlaying = playingSentenceId === sentence.c_ss_id;
+                    const isFeedbackOpen = openFeedbackId === sentence.c_ss_id;
+
+                    // 아이콘 매핑
+                    const iconMap = {
+                      'speaking_speed': '🗣️',
+                      'silence': '🤫',
+                      'clarity': '🔊',
+                      'meaning_clarity': '💭',
+                      'cut': '✂️',
+                      'curse': '🤬',
+                      'filler': '🙄'
+                    };
+
+                    return (
+                      <div
+                        key={sentence.c_ss_id}
+                        className={`flex ${isTargetSpeaker ? 'justify-end' : 'justify-start'} gap-2 relative`}
+                      >
+                        {/* 재생 버튼 (분석 대상만, 좌측) */}
+                        {isTargetSpeaker && (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handlePlaySegment(sentence);
+                            }}
+                            className="flex-shrink-0 w-10 h-full bg-blue-500 hover:bg-blue-600 text-white rounded-lg flex items-center justify-center transition self-stretch"
+                            title={isPlaying ? '재생 중' : '재생'}
+                          >
+                            <span className="text-lg">{isPlaying ? '⏸' : '▶️'}</span>
+                          </button>
+                        )}
+
+                        {/* 말풍선 컨테이너 */}
+                        <div className={`max-w-[75%] ${isTargetSpeaker ? 'items-end' : 'items-start'} flex flex-col gap-1 relative`}>
+                          {/* 피드백 아이콘 (말풍선 상단) */}
+                          {hasFeedback && isTargetSpeaker && (
+                            <div className="flex gap-1 justify-end">
+                              {sentence.feedback.map((fb, idx) => {
+                                const icon = iconMap[fb.category] || '⚠️';
+                                return (
+                                  <span
+                                    key={idx}
+                                    className="text-xs bg-red-100 px-1.5 py-0.5 rounded"
+                                    title={fb.category}
+                                  >
+                                    {icon}
+                                  </span>
+                                );
+                              })}
+                            </div>
+                          )}
+
+                          {/* 말풍선 */}
+                          <div
+                            onClick={() => {
+                              if (hasFeedback && isTargetSpeaker) {
+                                handleFeedbackClick(sentence.c_ss_id);
+                              }
+                            }}
+                            className={`bubble-trigger rounded-2xl px-4 py-2.5 shadow-sm transition ${
+                              isTargetSpeaker
+                                ? 'bg-blue-500 text-white'
+                                : 'bg-white text-gray-800'
+                            } ${hasFeedback && isTargetSpeaker ? 'cursor-pointer active:opacity-80' : ''}`}
+                          >
+                            <p className="text-sm leading-relaxed break-words">{sentence.text}</p>
+                          </div>
+
+                          {/* 발화 시간 */}
+                          {sentence.start_time && (
+                            <span className={`text-[10px] text-gray-500 ${isTargetSpeaker ? 'text-right' : 'text-left'}`}>
+                              {sentence.start_time} ~ {sentence.end_time}
                             </span>
                           )}
+
+                          {/* Floating Bubble (피드백) */}
+                          {isFeedbackOpen && hasFeedback && (
+                            <div
+                              ref={feedbackBubbleRef}
+                              className="absolute top-0 right-0 mt-12 mr-0 bg-white border border-red-300 rounded-xl shadow-lg p-3 w-64 z-50"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              <p className="text-xs font-semibold text-red-700 mb-2">감지된 문제</p>
+                              <ul className="space-y-1.5">
+                                {sentence.feedback.map((fb, idx) => (
+                                  <li key={idx} className="text-xs text-gray-700 flex items-start gap-1">
+                                    <span className="font-medium text-red-600 flex-shrink-0">
+                                      {iconMap[fb.category]}
+                                    </span>
+                                    <span>{fb.message}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
                         </div>
-                        {sentence.start_time && (
-                          <span className="text-xs text-gray-500">
-                            {sentence.start_time} - {sentence.end_time}
-                          </span>
-                        )}
                       </div>
-                      <p className="text-sm text-gray-800">{sentence.text}</p>
-                    </div>
-                  ))}
+                    );
+                  })}
               </div>
             )}
           </div>
