@@ -1,11 +1,10 @@
 import { useNavigate } from "react-router-dom";
+import PhoneFrame from "../Layout/PhoneFrame";
+import MainLayout from "../Layout/MainLayout";
+import Header from "../Layout/Header";
 
-const MainPage = () => {
+const MainPageContent = () => {
   const navigate = useNavigate();
-
-  const login = () => {
-    navigate("/login");
-  };
 
   const presentation = () => {
     navigate("/presentation/create");
@@ -133,6 +132,20 @@ const MainPage = () => {
 
       </div>
     </div>
+  );
+};
+
+const MainPage = () => {
+  return (
+    <PhoneFrame
+      showTitleRow={false}
+      contentClass="px-0 pt-[2px] pb-0"
+      headerContent={<Header fullWidth dense />}
+    >
+      <MainLayout fullWidth showHeader={false}>
+        <MainPageContent />
+      </MainLayout>
+    </PhoneFrame>
   );
 };
 

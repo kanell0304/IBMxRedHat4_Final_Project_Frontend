@@ -3,8 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import defaultProfile from '../../assets/defaultProfile.png';
 import { get_I, get_P, get_C } from '../History/HistoryAPI';
+import PhoneFrame from '../Layout/PhoneFrame';
+import MainLayout from '../Layout/MainLayout';
+import Header from '../Layout/Header';
 
-const Mypage = () => {
+const MypageContent = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -108,7 +111,7 @@ const Mypage = () => {
         <div className="flex items-center justify-between">
           <div className="space-y-1">
             <p className="text-sm text-gray-500">내 계정</p>
-            <h1 className="text-2xl font-bold text-gray-900">
+            <h1 className="text-[21px] font-bold text-gray-900">
               {isLoading ? '불러오는 중...' : user?.nickname ? `${user.nickname} 님` : ''}
             </h1>
             {user?.email && <p className="text-sm text-gray-600">{user.email}</p>}
@@ -172,5 +175,17 @@ const Mypage = () => {
     </div>
   );
 };
+
+const Mypage = () => (
+  <PhoneFrame
+    showTitleRow={false}
+    contentClass="px-0 pt-[2px] pb-0"
+    headerContent={<Header fullWidth dense />}
+  >
+    <MainLayout fullWidth showHeader={false}>
+      <MypageContent />
+    </MainLayout>
+  </PhoneFrame>
+);
 
 export default Mypage;

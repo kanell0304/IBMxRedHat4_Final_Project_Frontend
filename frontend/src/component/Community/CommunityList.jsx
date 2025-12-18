@@ -2,8 +2,11 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getPosts, getCategories } from '../../api/communityApi';
 import { useAuth } from '../../hooks/useAuth';
+import PhoneFrame from '../Layout/PhoneFrame';
+import MainLayout from '../Layout/MainLayout';
+import Header from '../Layout/Header';
 
-export default function CommunityList() {
+const CommunityList = () => {
   const navigate = useNavigate();
   const { user, isAuthenticated } = useAuth();
   const [posts, setPosts] = useState([]);
@@ -168,25 +171,17 @@ export default function CommunityList() {
     return pages;
   };
 
-  if (loading && posts.length === 0) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="text-xl text-gray-600">로딩 중...</div>
-      </div>
-    );
-  }
-
   return (
-    <div className="w-full max-w-3xl mx-auto min-h-screen bg-gray-50 py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="w-full max-w-full mx-auto bg-white px-0 pt-4 pb-2">
+      <div className="px-4">
         {/* 헤더 */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">커뮤니티</h1>
-          <p className="text-gray-600">경험과 후기를 공유해보세요</p>
+        <div className="mb-4">
+          <h1 className="text-xl font-bold text-gray-900 mb-1">커뮤니티</h1>
+          <p className="text-sm text-gray-600">경험과 후기를 공유해보세요</p>
         </div>
 
         {/* 카테고리 필터 */}
-        <div className="mb-6 flex flex-wrap gap-2">
+        <div className="mb-4 flex flex-wrap gap-2">
           <button
             onClick={() => handleCategoryChange(null)}
             className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
@@ -213,7 +208,7 @@ export default function CommunityList() {
         </div>
 
         {/* 정렬 및 작성 버튼 */}
-        <div className="mb-6 flex justify-between items-center">
+        <div className="mb-4 flex justify-between items-center">
           <div className="flex gap-2">
             <button
               onClick={() => handleSortChange('latest')}
@@ -262,7 +257,7 @@ export default function CommunityList() {
         )}
 
         {/* 게시글 목록 */}
-        <div className="bg-white rounded-lg shadow overflow-hidden">
+        <div className="bg-[#FFF8F8] rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
           {posts.length === 0 ? (
             <div className="p-12 text-center">
               <p className="text-gray-500 text-lg">게시글이 없습니다.</p>
@@ -331,5 +326,19 @@ export default function CommunityList() {
         </div>
       </div>
     </div>
+  );
+};
+
+export default function CommunityListFrame() {
+  return (
+    <PhoneFrame
+      showTitleRow={false}
+      contentClass="px-0 pt-[2px] pb-0"
+      headerContent={<Header fullWidth dense />}
+    >
+      <MainLayout fullWidth showHeader={false}>
+        <CommunityList />
+      </MainLayout>
+    </PhoneFrame>
   );
 }

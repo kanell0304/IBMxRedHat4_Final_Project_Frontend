@@ -26,31 +26,16 @@ import CommunityList from './component/Community/CommunityList.jsx';
 import CommunityWrite from './component/Community/CommunityWrite.jsx';
 import CommunityDetail from './component/Community/CommunityDetail.jsx';
 import CommunityEdit from './component/Community/CommunityEdit.jsx';
-import PhoneFrame from './component/Layout/PhoneFrame.jsx';
-import Header from './component/Layout/Header.jsx';
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
         {/* 메인페이지 */}
-        <Route
-          path="/"
-          element={
-            <PhoneFrame
-              showTitleRow={false}
-              contentClass="px-0 pt-[2px] pb-0"
-              headerContent={<Header fullWidth dense />}
-            >
-              <MainLayout fullWidth showHeader={false}>
-                <MainPage />
-              </MainLayout>
-            </PhoneFrame>
-          }
-        />
-        <Route path="/mypage" element={<MainLayout><Mypage /></MainLayout>} />
-        <Route path="/profile" element={<MainLayout><Profile /></MainLayout>} />
-        <Route path="/history" element={<MainLayout><History /></MainLayout>} />
+        <Route path="/" element={<MainPage />} />
+        <Route path="/mypage" element={<Mypage />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/history" element={<History />} />
 
         {/* 로그인 페이지*/}
         <Route path="/login" element={<LoginPage />} />
@@ -61,7 +46,7 @@ export default function App() {
 
         {/* 인터뷰 */}
         <Route path="/interview/info" element={<Information />} />
-        <Route path="/interview/job" element={<Job/>} />
+        <Route path="/interview/job" element={<Job />} />
         <Route path="/interview/job-en" element={<JobEng />} />
         <Route path="/interview" element={<Interview />} />
 
@@ -79,7 +64,7 @@ export default function App() {
         <Route path="/communication/result/:c_id" element={<CommunicationResult />} />
 
         {/* 커뮤니티 */}
-        <Route path="/community" element={<MainLayout><CommunityList /></MainLayout>} />
+        <Route path="/community" element={<CommunityList />} />
         <Route path="/community/write" element={<MainLayout><CommunityWrite /></MainLayout>} />
         <Route path="/community/:postId" element={<MainLayout><CommunityDetail /></MainLayout>} />
         <Route path="/community/edit/:postId" element={<MainLayout><CommunityEdit /></MainLayout>} />

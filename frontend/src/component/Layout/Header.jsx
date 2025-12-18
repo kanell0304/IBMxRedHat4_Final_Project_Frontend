@@ -84,7 +84,7 @@ export default function Header({ fullWidth = false, dense = false }) {
                 e.target.src = defaultProfile;
               }}
             />
-            <span className="font-bold text-sm">{nickname}님</span>
+            <span className="font-bold text-[13px]">{nickname}님</span>
             <button onClick={handleLogout} className="px-3 py-2 text-sm font-medium hover:text-blue-600 cursor-pointer transition-colors">
               로그아웃
             </button>

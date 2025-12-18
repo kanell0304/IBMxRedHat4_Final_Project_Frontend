@@ -4,6 +4,9 @@ import { getMe, get_I, delete_I, get_P, delete_P, get_C, delete_C } from '../His
 import IList from '../History/IList';
 import PList from '../History/PList';
 import CList from '../History/CList';
+import PhoneFrame from '../Layout/PhoneFrame';
+import MainLayout from '../Layout/MainLayout';
+import Header from '../Layout/Header';
 
 const tabs = [
   { key: 'interview', label: '모의면접' },
@@ -23,7 +26,7 @@ const formatDate = (value) => {
   return `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, '0')}.${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
 };
 
-export default function History() {
+const HistoryContent = () => {
   const [tab, setTab] = useState('interview');
   const [uid, setUid] = useState(null);
   const [items, setItems] = useState([]);
@@ -106,64 +109,80 @@ export default function History() {
   };
 
   return (
-    <div className="w-full max-w-3xl mx-auto py-6">
-      <h1 className="text-2xl font-bold text-gray-900 mb-4">기록</h1>
+    <div className="w-full max-w-full mx-auto bg-white px-0 pt-4 pb-2">
+      <div className="px-4 space-y-4">
+        <h1 className="text-xl font-bold text-gray-900">기록</h1>
 
-      <div className="grid grid-cols-3 gap-2 mb-6">
-        {tabs.map((item) => (
-          <button
-            key={item.key}
-            onClick={() => setTab(item.key)}
-            className={`rounded-xl border px-3 py-3 text-sm font-semibold transition ${
-              tab === item.key
-                ? 'bg-blue-600 text-white border-blue-600'
-                : 'bg-white text-gray-700 border-gray-200 hover:border-blue-200'
-            }`}
-          >
-            {item.label}
-          </button>
-        ))}
-      </div>
+        <div className="grid grid-cols-3 gap-2">
+          {tabs.map((item) => (
+            <button
+              key={item.key}
+              onClick={() => setTab(item.key)}
+              className={`rounded-full border px-3 py-3 text-sm font-semibold transition ${
+                tab === item.key
+                  ? 'bg-blue-600 text-white border-blue-600'
+                  : 'bg-white text-gray-700 border-gray-200 hover:border-blue-200'
+              }`}
+            >
+              {item.label}
+            </button>
+          ))}
+        </div>
 
-      <div className="bg-gray-50 rounded-2xl p-4 border border-gray-200">
-        {loading ? (
-          <div className="text-center text-sm text-gray-500 py-10">불러오는 중...</div>
-        ) : (
-          <>
-            {tab === 'interview' && (
-              <IList
-                items={items}
-                loading={loading}
-                error={error}
-                onDelete={deleteItem}
-                typeLabel={typeLabel}
-                formatDate={formatDate}
-                onSelect={openItem}
-              />
-            )}
-            {tab === 'presentation' && (
-              <PList
-                items={items}
-                loading={loading}
-                error={error}
-                onDelete={deleteItem}
-                formatDate={formatDate}
-                onSelect={openItem}
-              />
-            )}
-            {tab === 'communication' && (
-              <CList
-                items={items}
-                loading={loading}
-                error={error}
-                onDelete={deleteItem}
-                formatDate={formatDate}
-                onSelect={openItem}
-              />
-            )}
-          </>
-        )}
+        <div className="bg-[#FFF8F8] rounded-2xl p-4 border border-gray-100">
+          {loading ? (
+            <div className="text-center text-sm text-gray-500 py-10">불러오는 중...</div>
+          ) : (
+            <>
+              {tab === 'interview' && (
+                <IList
+                  items={items}
+                  loading={loading}
+                  error={error}
+                  onDelete={deleteItem}
+                  typeLabel={typeLabel}
+                  formatDate={formatDate}
+                  onSelect={openItem}
+                />
+              )}
+              {tab === 'presentation' && (
+                <PList
+                  items={items}
+                  loading={loading}
+                  error={error}
+                  onDelete={deleteItem}
+                  formatDate={formatDate}
+                  onSelect={openItem}
+                />
+              )}
+              {tab === 'communication' && (
+                <CList
+                  items={items}
+                  loading={loading}
+                  error={error}
+                  onDelete={deleteItem}
+                  formatDate={formatDate}
+                  onSelect={openItem}
+                />
+              )}
+            </>
+          )}
+        </div>
       </div>
     </div>
+  );
+};
+
+export default function History() {
+  return (
+    <PhoneFrame
+      showTitleRow={false}
+      contentClass="px-0 pt-[2px] pb-0"
+      headerContent={<Header fullWidth dense />}
+    >
+      <MainLayout fullWidth showHeader={false}>
+        <HistoryContent />
+      </MainLayout>
+    </PhoneFrame>
   );
 }
