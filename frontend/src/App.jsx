@@ -12,7 +12,7 @@ import Job from './component/Interview/Job.jsx';
 import JobEng from './component/Interview/JobEng.jsx';
 import Interview from './component/Interview/Interview.jsx';
 import InterviewResult from './component/Interview/InterviewResult.jsx';
-import History from './component/Pages/History.jsx';
+import History from './component/history/History.jsx';
 import Profile from './component/Pages/Profile.jsx';
 import PresentationCreate from './component/Presentation/PresentationCreate.jsx';
 import PresentationUpload from './component/Presentation/PresentationUpload.jsx';
