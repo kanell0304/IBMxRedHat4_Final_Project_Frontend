@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createInterview } from './JobAPI';
 import { baseBtn, difficultyOptions, jobOptions, questionTypes, selectedBtn } from './options';
+import PhoneFrame from '../Layout/PhoneFrame';
 
 const Job = () => {
   const navigate = useNavigate();
@@ -71,35 +72,25 @@ const Job = () => {
   const stepJobRole = isCommonOnly ? 3 : 4;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-indigo-50 px-4 py-8">
-      <div className="w-full max-w-3xl mx-auto space-y-6">
-        <div className="flex items-center gap-3">
-          <button
-            type="button"
-            onClick={() => navigate(-1)}
-            className="w-10 h-10 rounded-full bg-white border border-gray-200 text-gray-700 flex items-center justify-center shadow-sm hover:bg-gray-50 transition"
-            aria-label="뒤로가기"
-          >
-            ←
-          </button>
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-600/80">
-              Mock Interview
-            </p>
-            <h1 className="text-2xl font-black tracking-tight text-gray-900">질문 유형 & 직무</h1>
-            <p className="text-xs text-gray-500 mt-1">
-              원하는 유형과 난이도를 고르고, 직무 기반 질문이 필요하면 직무를 선택하세요.
-            </p>
-          </div>
+    <PhoneFrame title="모의 면접">
+      <div className="space-y-5">
+        <div className="space-y-1">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-blue-600/80">
+            Question Type
+          </p>
+          <h1 className="text-xl font-black tracking-tight text-gray-900">질문 유형 & 직무</h1>
+          <p className="text-[12px] text-gray-500">
+            원하는 유형과 난이도를 고르고, 직무 기반 질문이 필요하면 직무를 선택하세요.
+          </p>
         </div>
 
-        <div className="bg-white rounded-3xl shadow-sm border border-gray-200 p-6 space-y-8">
+        <div className="bg-white rounded-3xl shadow-sm border border-gray-200 p-5 space-y-7">
           <div>
             <div className="flex items-center gap-2 mb-3">
               <span className="w-8 h-8 rounded-full bg-blue-600 text-white text-xs font-bold inline-flex items-center justify-center">
                 1
               </span>
-              <span className="text-sm font-semibold text-gray-800">질문 유형</span>
+              <span className="text-[13px] font-semibold text-gray-800">질문 유형</span>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               {questionTypes.map((type) => (
@@ -109,8 +100,12 @@ const Job = () => {
                   onClick={() => selectQuestionType(type.key)}
                   className={`${baseBtn} ${iForm.question_type === type.key ? selectedBtn : ''}`}
                 >
-                  <div className="text-sm font-bold">{type.label}</div>
-                  <div className="text-[11px] text-slate-500 font-medium mt-0.5">{type.desc}</div>
+                  <div className="text-[15px] font-extrabold text-slate-900 whitespace-nowrap leading-tight">
+                    {type.label}
+                  </div>
+                  <div className="text-[11px] text-slate-600 font-medium leading-tight">
+                    {type.desc}
+                  </div>
                 </button>
               ))}
             </div>
@@ -122,7 +117,7 @@ const Job = () => {
                 <span className="w-8 h-8 rounded-full bg-blue-600 text-white text-xs font-bold inline-flex items-center justify-center">
                   2
                 </span>
-                <span className="text-sm font-semibold text-gray-800">난이도</span>
+                <span className="text-[13px] font-semibold text-gray-800">난이도</span>
               </div>
               <div className="rounded-2xl border border-gray-200 bg-white px-4 py-4 shadow-[0_10px_30px_rgba(0,0,0,0.04)]">
                 <div className="relative pt-2 pb-1">
@@ -168,14 +163,14 @@ const Job = () => {
           )}
 
           {iForm.question_type && (
-            <div>
-              <div className="flex items-center gap-2 mb-3">
-                <span className="w-8 h-8 rounded-full bg-blue-600 text-white text-xs font-bold inline-flex items-center justify-center">
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <span className="w-7 h-7 rounded-full bg-blue-600 text-white text-[11px] font-bold inline-flex items-center justify-center">
                   {stepJobGroup}
                 </span>
                 <span className="text-sm font-semibold text-gray-800">메인 직무군</span>
               </div>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-2.5">
                 {groupKeys.map((group) => (
                   <button
                     key={group}
@@ -191,14 +186,14 @@ const Job = () => {
           )}
 
           {iForm.question_type && !isCommonOnly && iForm.job_group && (
-            <div>
-              <div className="flex items-center gap-2 mb-3">
-                <span className="w-8 h-8 rounded-full bg-blue-600 text-white text-xs font-bold inline-flex items-center justify-center">
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <span className="w-7 h-7 rounded-full bg-blue-600 text-white text-[11px] font-bold inline-flex items-center justify-center">
                   {stepJobRole}
                 </span>
                 <span className="text-sm font-semibold text-gray-800">세부 직무</span>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-2.5">
                 {roleOptions.map((role) => (
                   <button
                     key={role}
@@ -231,7 +226,7 @@ const Job = () => {
           {errorMsg && <p className="text-sm text-red-500">{errorMsg}</p>}
         </div>
       </div>
-    </div>
+    </PhoneFrame>
   );
 };
 

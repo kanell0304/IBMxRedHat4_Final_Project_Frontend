@@ -1,62 +1,68 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import PhoneFrame from '../Layout/PhoneFrame';
 
 const Information = () => {
   const navigate = useNavigate();
+  const infoItems = [
+    { icon: '📝', title: '가상 면접 환경', desc: '실제 면접 질문을 토대로 준비되어 있어요.' },
+    { icon: '🎤', title: '음성 기반 분석', desc: '톤·속도·표현·논리 흐름까지 바로 분석해요.' },
+    { icon: '📊', title: '즉시 리포트 제공', desc: '답변 직후 평가와 개선 포인트를 바로 보여드려요.' },
+    { icon: '📌', title: '시작 전 체크', desc: '정확한 분석을 위해 조용한 공간에서 진행해 주세요.' },
+  ];
 
   return (
-    <div className="min-h-screen bg-white">
-      <div className="min-h-screen w-full max-w-3xl mx-auto bg-gray-100 px-4 md:px-6 py-8 space-y-6">
-        <header className="flex items-center gap-3">
-          <button
-            type="button"
-            onClick={() => navigate(-1)}
-            className="h-10 w-10 rounded-full bg-white border border-gray-200 shadow-sm flex items-center justify-center text-lg"
-          >
-            ←
-          </button>
-          <div>
-            <p className="text-xs font-semibold text-gray-500">모의 면접</p>
-            <h1 className="text-xl font-bold text-gray-900">AI 서비스 개발자</h1>
-            <p className="text-sm text-gray-500 mt-1">시작 전에 안내를 확인하세요.</p>
-          </div>
-        </header>
-
-        <div className="rounded-3xl bg-white shadow-sm p-6 space-y-4">
-          <h2 className="text-lg font-semibold text-gray-900">진행 안내</h2>
-          <ul className="space-y-4 text-sm text-gray-600">
-            <li>
-              <div className="font-semibold text-gray-900">📝 가상 면접 환경</div>
-              <p className="mt-1">실제 면접 질문을 기반으로 자동 생성된 인터뷰입니다.</p>
-            </li>
-            <li>
-              <div className="font-semibold text-gray-900">🎤 음성 기반 분석</div>
-              <p className="mt-1">말투·속도·표현·비표준어·논리 흐름 등을 분석합니다.</p>
-            </li>
-            <li>
-              <div className="font-semibold text-gray-900">📊 즉시 리포트 제공</div>
-              <p className="mt-1">답변 후 평가와 개선점이 담긴 리포트를 제공합니다.</p>
-            </li>
-            <li>
-              <div className="font-semibold text-gray-900">📌 시작 전 체크</div>
-              <p className="mt-1">조용한 환경에서 마이크 연결을 확인해주세요.</p>
-            </li>
-          </ul>
+    <PhoneFrame title="모의 면접">
+      <div className="space-y-6">
+        <div className="rounded-3xl bg-gradient-to-br from-blue-50 via-white to-indigo-50 border border-slate-100 shadow-sm p-5 space-y-2">
+          <p className="text-[12px] font-semibold text-blue-600/80 uppercase tracking-[0.16em]">
+            Mock Interview
+          </p>
+          <p className="text-sm text-gray-600">
+            시작 전에 안내를 확인하세요.<br/>질문 유형과 직무만 선택하면 바로 시작할 수 있어요.
+          </p>
         </div>
 
-        <div className="rounded-3xl bg-white shadow-sm p-6 space-y-3">
-          <h3 className="text-base font-semibold text-gray-900">준비가 끝났나요?</h3>
-          <p className="text-sm text-gray-600">아래 버튼을 누르면 바로 질문 구성을 시작해요.</p>
+        <div className="rounded-3xl bg-white shadow-sm p-5 space-y-2 border border-slate-100">
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-semibold text-blue-600">Guide</span>
+            <h2 className="text-lg font-semibold text-gray-900">진행 안내</h2>
+          </div>
+          <div className="divide-y divide-slate-100">
+            {infoItems.map((item) => (
+              <div key={item.title} className="py-3.5 flex items-start gap-3">
+                <span className="text-lg leading-tight">{item.icon}</span>
+                <div className="space-y-1">
+                  <p className="text-sm font-semibold text-gray-900">{item.title}</p>
+                  <p className="text-[13px] leading-snug text-gray-600">{item.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="rounded-3xl bg-white shadow-sm p-6 space-y-3 border border-slate-100">
+          <h3 className="text-base font-semibold text-gray-900">이제 언어를 선택하고 시작하세요!</h3>
+          <p className="text-sm text-gray-600">
+            한국어/영어 중 원하는 언어를 선택해 시작하세요.<br/> 영어 면접은 공통 질문만 제공돼요.
+          </p>
           <button
             type="button"
             onClick={() => navigate('/interview/job')}
-            className="w-full rounded-2xl bg-blue-600 text-white py-3 font-semibold shadow-sm transition hover:-translate-y-0.5 hover:bg-blue-700"
+            className="w-full rounded-2xl bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 text-white py-3 font-semibold shadow-[0_8px_20px_rgba(37,99,235,0.25)] transition hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgba(37,99,235,0.3)]"
           >
-            모의면접 시작하기
+            한국어 면접 시작
+          </button>
+          <button
+            type="button"
+            onClick={() => navigate('/interview/job-en')}
+            className="w-full rounded-2xl bg-white text-blue-700 py-3 font-semibold shadow-[0_6px_16px_rgba(59,130,246,0.15)] border border-blue-100 transition hover:-translate-y-0.5 hover:shadow-[0_8px_18px_rgba(59,130,246,0.2)] hover:border-blue-200"
+          >
+            영어 면접 시작
           </button>
         </div>
       </div>
-    </div>
+    </PhoneFrame>
   );
 };
 

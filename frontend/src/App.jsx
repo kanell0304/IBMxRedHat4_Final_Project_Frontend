@@ -18,16 +18,25 @@ import PresentationCreate from './component/Presentation/PresentationCreate.jsx'
 import PresentationUpload from './component/Presentation/PresentationUpload.jsx';
 import PresentationResult from './component/Presentation/PresentationResult.jsx';
 import PresentationDetail from './component/Presentation/PresentationDetail.jsx';
+import CommunicationInformation from './component/Communication/CommunicationInformation.jsx';
+import CommunicationList from './component/Communication/CommunicationList.jsx';
+import CommunicationUpload from './component/Communication/CommunicationUpload.jsx';
+import CommunicationSpeakerSelect from './component/Communication/CommunicationSpeakerSelect.jsx';
+import CommunicationResult from './component/Communication/CommunicationResult.jsx';
+import CommunityList from './component/Community/CommunityList.jsx';
+import CommunityWrite from './component/Community/CommunityWrite.jsx';
+import CommunityDetail from './component/Community/CommunityDetail.jsx';
+import CommunityEdit from './component/Community/CommunityEdit.jsx';
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
         {/* 메인페이지 */}
-        <Route path="/" element={<MainLayout><MainPage /></MainLayout>} />
-        <Route path="/mypage" element={<MainLayout><Mypage /></MainLayout>} />
-        <Route path="/profile" element={<MainLayout><Profile /></MainLayout>} />
-        <Route path="/history" element={<MainLayout><History /></MainLayout>} />
+        <Route path="/" element={<MainPage />} />
+        <Route path="/mypage" element={<Mypage />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/history" element={<History />} />
 
         {/* 로그인 페이지*/}
         <Route path="/login" element={<LoginPage />} />
@@ -48,6 +57,20 @@ export default function App() {
         <Route path="/presentation/upload/:prId" element={<PresentationUpload />} />
         <Route path="/presentation/result/:prId" element={<PresentationResult />} />
         <Route path="/presentation/detail/:prId" element={<PresentationDetail />} />
+
+        {/* 대화 분석 */}
+        <Route path="/communication/info" element={<CommunicationInformation />} />
+        <Route path="/communication" element={<CommunicationList />} />
+        <Route path="/communication/upload" element={<CommunicationUpload />} />
+        <Route path="/communication/speaker/:c_id" element={<CommunicationSpeakerSelect />} />
+        <Route path="/communication/result/:c_id" element={<CommunicationResult />} />
+
+        {/* 커뮤니티 */}
+        <Route path="/community" element={<CommunityList />} />
+        <Route path="/community/write" element={<MainLayout><CommunityWrite /></MainLayout>} />
+        <Route path="/community/:postId" element={<MainLayout><CommunityDetail /></MainLayout>} />
+        <Route path="/community/edit/:postId" element={<MainLayout><CommunityEdit /></MainLayout>} />
+
       </Routes>
     </BrowserRouter>
   );

@@ -1,20 +1,20 @@
 import { useNavigate } from "react-router-dom";
 
-export default function Footer() {
+export default function Footer({ fullWidth = false }) {
   const navigate = useNavigate();
 
   const items = [
     { key: "home", label: "홈", icon: "🏠", action: () => navigate("/") },
     { key: "feedback", label: "기록", icon: "💬", action: () => navigate("/history") },
     { key: "center", label: "미정", icon: "＋", action: () => navigate("/") },
-    { key: "community", label: "커뮤니티", icon: "👥", action: () => navigate("/") },
+    { key: "community", label: "커뮤니티", icon: "👥", action: () => navigate("/community") },
     { key: "more", label: "더보기", icon: "⋯", action: () => navigate("/mypage") },
   ];
 
   return (
     <footer className="sticky bottom-0 left-0 right-0 bg-transparent pointer-events-none">
-      <div className="w-full max-w-3xl mx-auto">
-        <div className="pointer-events-auto bg-gray-100 border border-gray-200 grid grid-cols-5 items-center text-center h-18 min-h-[68px]">
+      <div className={fullWidth ? 'w-full mx-auto' : 'w-full max-w-3xl mx-auto'}>
+        <div className="pointer-events-auto bg-white border border-gray-100 grid grid-cols-5 items-center text-center h-18 min-h-[68px]">
           {items.map((item) => {
             if (item.key === "center") {
               return (

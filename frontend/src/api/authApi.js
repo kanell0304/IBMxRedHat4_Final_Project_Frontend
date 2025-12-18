@@ -32,4 +32,8 @@ export const resetPassword = (resetData) => {
   return apiClient.post('/users/reset-password', resetData);
 };
 
+export const getCurrentUser = () => {
+  return apiClient.get('/users/me');
+};
+
 export default apiClient;

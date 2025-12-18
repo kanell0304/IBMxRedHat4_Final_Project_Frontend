@@ -1,11 +1,10 @@
 import { useNavigate } from "react-router-dom";
+import PhoneFrame from "../Layout/PhoneFrame";
+import MainLayout from "../Layout/MainLayout";
+import Header from "../Layout/Header";
 
-const MainPage = () => {
+const MainPageContent = () => {
   const navigate = useNavigate();
-
-  const login = () => {
-    navigate("/login");
-  };
 
   const presentation = () => {
     navigate("/presentation/create");
@@ -13,6 +12,10 @@ const MainPage = () => {
 
   const interview = () => {
     navigate("/interview/info");
+  };
+
+  const communication = () => {
+    navigate("/communication/info");
   };
 
   const featureCards = [
@@ -34,7 +37,7 @@ const MainPage = () => {
       iconText: "text-amber-600",
       badge: "Hot",
       badgeColor: "bg-orange-100 text-orange-600",
-      // action: () => navigate(""),
+      action: communication,
     },
     {
       title: "발표 분석",
@@ -63,26 +66,20 @@ const MainPage = () => {
 
   return (
     <div>
-      <div className="min-h-screen w-full max-w-3xl mx-auto bg-gray-100 px-4 md:px-6 py-8 space-y-6 border border-gray-200">
-        <div className="rounded-3xl bg-white shadow-sm p-6 flex gap-4 items-start">
+      <div className="w-full max-w-full mx-auto bg-white px-0 pt-4 pb-2 space-y-5">
+        <div className="rounded-3xl bg-[#FFF8F8] shadow-sm p-6 flex gap-4 items-start">
           <div className="flex-1 space-y-3">
-            <h1 className="text-2xl font-extrabold text-gray-900 leading-snug">
+            <h1 className="text-[24px] font-extrabold text-gray-900 leading-snug">
               STEACH, <br/> 말투 분석은 스티치!
             </h1>
             <p className="text-sm text-gray-600">하루 10분도 좋아요. AI가 바로 점검해 성장 기록을 남깁니다.</p>
-            <button
-              // onClick={}
-              className="w-full rounded-2xl bg-blue-600 text-white py-3 font-semibold shadow-sm transition hover:bg-blue-700"
-            >
-              바로 연습 시작
-            </button>
           </div>
           <div className="text-4xl" aria-hidden>
             🎁
           </div>
         </div>
 
-        <div className="rounded-3xl bg-white shadow-sm p-5 space-y-4">
+        <div className="rounded-3xl bg-[#FFF8F8] shadow-sm p-5 space-y-4">
           {featureCards.map((item, idx) => (
             <button
               key={item.title}
@@ -115,7 +112,7 @@ const MainPage = () => {
           <span className="text-sm font-semibold">현재 준비중인 기능이에요</span>
         </div>
 
-        <div className="rounded-3xl bg-white shadow-sm p-5 space-y-4">
+        <div className="rounded-3xl bg-[#FFF8F8] shadow-sm p-5 space-y-4">
           {upcomingCards.map((item) => (
             <div
               key={item.title}
@@ -135,6 +132,20 @@ const MainPage = () => {
 
       </div>
     </div>
+  );
+};
+
+const MainPage = () => {
+  return (
+    <PhoneFrame
+      showTitleRow={false}
+      contentClass="px-0 pt-[2px] pb-0"
+      headerContent={<Header fullWidth dense />}
+    >
+      <MainLayout fullWidth showHeader={false}>
+        <MainPageContent />
+      </MainLayout>
+    </PhoneFrame>
   );
 };
 

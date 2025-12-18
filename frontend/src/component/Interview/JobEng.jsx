@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createInterview } from './JobAPI';
 import { baseBtn, selectedBtn } from './options';
+import PhoneFrame from '../Layout/PhoneFrame';
 
 const JobEng = () => {
   const navigate = useNavigate();
@@ -47,26 +48,16 @@ const JobEng = () => {
   const canStart = Boolean(iForm.question_type);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-indigo-50 px-4 py-8">
-      <div className="w-full max-w-3xl mx-auto space-y-6">
-        <div className="flex items-center gap-3">
-          <button
-            type="button"
-            onClick={() => navigate('/')}
-            className="w-10 h-10 rounded-full bg-white border border-gray-200 text-gray-700 flex items-center justify-center shadow-sm hover:bg-gray-50 transition"
-            aria-label="Go back"
-          >
-            ←
-          </button>
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-600/80">
-              Mock Interview
-            </p>
-            <h1 className="text-2xl font-black tracking-tight text-gray-900">Common Questions</h1>
-            <p className="text-xs text-gray-500 mt-1">
-              Practice general interview questions in English.
-            </p>
-          </div>
+    <PhoneFrame title="English Mock Interview">
+      <div className="space-y-5">
+        <div className="space-y-1">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-blue-600/80">
+            Questions Type
+          </p>
+          <h1 className="text-xl font-black tracking-tight text-gray-900">English Interview</h1>
+          <p className="text-[12px] text-gray-500">
+            영어 공통 질문 세트만 제공돼요. 바로 시작해보세요.
+          </p>
         </div>
 
         <div className="bg-white rounded-3xl shadow-sm border border-gray-200 p-6 space-y-6">
@@ -107,7 +98,7 @@ const JobEng = () => {
           {errorMsg && <p className="text-sm text-red-500">{errorMsg}</p>}
         </div>
       </div>
-    </div>
+    </PhoneFrame>
   );
 };
 

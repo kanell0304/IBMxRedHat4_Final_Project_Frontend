@@ -2,6 +2,9 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import defaultProfile from '../../assets/defaultProfile.png';
+import PhoneFrame from '../Layout/PhoneFrame';
+import MainLayout from '../Layout/MainLayout';
+import Header from '../Layout/Header';
 
 const sanitizePhone = (input) => (input || '').replace(/\D/g, '').slice(0, 11);
 const formatPhone = (digits) => {
@@ -11,7 +14,7 @@ const formatPhone = (digits) => {
   return `${digits.slice(0, 3)}-${digits.slice(3, 7)}-${digits.slice(7)}`;
 };
 
-export default function Profile() {
+const ProfileContent = () => {
   const navigate = useNavigate();
   const [form, setForm] = useState({nickname: '', email: '', phone: '', password: '', username: ''});
   const [image, setImage] = useState(defaultProfile);
@@ -90,8 +93,7 @@ export default function Profile() {
         const formData = new FormData();
         formData.append('file', selectedFile);
         const res = await axios.post(`${API_BASE}/users/me/profile-image`, formData, {
-          withCredentials: true,
-          headers: { 'Content-Type': 'multipart/form-data' },
+          withCredentials: true
         });
         const url = res.data?.profile_image_url ? `${API_BASE}${res.data.profile_image_url}` : defaultProfile;
         setImage(url);
@@ -114,10 +116,10 @@ export default function Profile() {
   const displayImage = preview || image || defaultProfile;
 
   return (
-    <div className="w-full max-w-3xl mx-auto space-y-5">
-      <div className="overflow-hidden border border-gray-200 bg-white rounded-3xl shadow-sm">
-        <div className="h-24 bg-gradient-to-r from-blue-600 via-indigo-500 to-pink-500" />
-        <div className="-mt-14 px-6 pb-8">
+    <div className="w-full max-w-full mx-auto space-y-5 px-0 md:px-1">
+      <div className="overflow-hidden border border-slate-100 bg-white rounded-[28px] shadow-[0_18px_60px_rgba(15,23,42,0.12)]">
+        <div className="h-24 bg-gradient-to-r from-indigo-500 via-blue-500 to-cyan-400" />
+        <div className="-mt-14 px-4 md:px-6 pb-8">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
             <div className="flex items-end gap-4">
               <label className="relative">
@@ -138,21 +140,10 @@ export default function Profile() {
                 <p className="text-sm text-gray-600">사진과 기본 정보를 업데이트하세요.</p>
               </div>
             </div>
-            <div className="flex gap-2">
-              <button type="button" onClick={() => window.history.back()} className="px-4 py-2 rounded-xl border border-gray-300 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition">취소</button>
-              <button
-                type="submit"
-                form="profile-form"
-                disabled={loading}
-                className="px-5 py-2 rounded-xl bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                저장하기
-              </button>
-            </div>
-          </div>
+        </div>
 
           <form id="profile-form" onSubmit={handleSubmit} className="mt-8 space-y-6">
-            <div className="p-5 rounded-2xl border border-gray-200 bg-gray-50/60">
+            <div className="p-5 rounded-2xl border border-slate-200 bg-gray-50/70 shadow-sm">
               <div className="flex items-center justify-between mb-3">
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-[0.16em] text-gray-500">
@@ -180,35 +171,7 @@ export default function Profile() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="p-5 rounded-2xl border border-gray-200 bg-white shadow-[0_6px_18px_rgba(0,0,0,0.04)] space-y-2">
-                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-gray-500">Legal name</p>
-                <label className="block text-sm font-bold text-gray-900">본명</label>
-                <input
-                  type="text"
-                  name="username"
-                  value={form.username}
-                  onChange={handleChange}
-                  placeholder="본명을 입력하세요"
-                  className="w-full rounded-xl border border-gray-300 px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                />
-                <p className="text-xs text-gray-500">개명할 경우 작성해주세요.</p>
-              </div>
-
-              <div className="p-5 rounded-2xl border border-gray-200 bg-white shadow-[0_6px_18px_rgba(0,0,0,0.04)] space-y-2">
-                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-gray-500">Email</p>
-                <label className="block text-sm font-bold text-gray-900">이메일</label>
-                <input
-                  type="email"
-                  name="email"
-                  value={form.email}
-                  onChange={handleChange}
-                  placeholder="email@example.com"
-                  className="w-full rounded-xl border border-gray-300 px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                />
-                <p className="text-xs text-gray-500">알림 및 복구용 이메일을 입력하세요.</p>
-              </div>
-
-              <div className="p-5 rounded-2xl border border-gray-200 bg-white shadow-[0_6px_18px_rgba(0,0,0,0.04)] space-y-2">
+              <div className="p-5 rounded-2xl border border-slate-200 bg-white shadow-[0_6px_18px_rgba(15,23,42,0.05)] space-y-2">
                 <p className="text-xs font-semibold uppercase tracking-[0.16em] text-gray-500">Phone</p>
                 <label className="block text-sm font-bold text-gray-900">휴대전화번호</label>
                 <input
@@ -217,12 +180,12 @@ export default function Profile() {
                   value={formatPhone(form.phone)}
                   onChange={handleChange}
                   placeholder="010-0000-0000"
-                  className="w-full rounded-xl border border-gray-300 px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                  className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm focus:ring-2 focus:ring-blue-400 focus:border-transparent transition bg-white"
                 />
                 <p className="text-xs text-gray-500">연락처가 변경되었다면 업데이트하세요.</p>
               </div>
 
-              <div className="p-5 rounded-2xl border border-gray-200 bg-white shadow-[0_6px_18px_rgba(0,0,0,0.04)] space-y-2">
+              <div className="p-5 rounded-2xl border border-slate-200 bg-white shadow-[0_6px_18px_rgba(15,23,42,0.05)] space-y-2">
                 <p className="text-xs font-semibold uppercase tracking-[0.16em] text-gray-500">Password</p>
                 <label className="block text-sm font-bold text-gray-900">비밀번호</label>
                 <input
@@ -231,14 +194,37 @@ export default function Profile() {
                   value={form.password}
                   onChange={handleChange}
                   placeholder="새 비밀번호 (미입력 시 변경 없음)"
-                  className="w-full rounded-xl border border-gray-300 px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                  className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm focus:ring-2 focus:ring-blue-400 focus:border-transparent transition bg-white"
                 />
                 <p className="text-xs text-gray-500">비워두면 비밀번호는 변경되지 않습니다.</p>
               </div>
             </div>
           </form>
+          <div className="flex justify-end gap-2 mt-6">
+            <button type="button" onClick={() => window.history.back()} className="px-4 py-2 rounded-xl border border-slate-300 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition shadow-sm">취소</button>
+            <button
+              type="submit"
+              form="profile-form"
+              disabled={loading}
+              className="px-5 py-2 rounded-xl bg-gradient-to-r from-indigo-500 via-blue-500 to-cyan-500 text-white text-sm font-semibold hover:shadow-[0_10px_30px_rgba(59,130,246,0.35)] transition disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              저장하기
+            </button>
+          </div>
         </div>
       </div>
     </div>
+  );
+};
+
+export default function Profile() {
+  return (
+    <PhoneFrame title="프로필 수정">
+      <MainLayout showHeader={false} showFooter={false} fullWidth>
+        <div className="px-0">
+          <ProfileContent />
+        </div>
+      </MainLayout>
+    </PhoneFrame>
   );
 }
