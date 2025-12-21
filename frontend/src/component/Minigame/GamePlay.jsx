@@ -12,6 +12,20 @@ const GamePlay = ({ config, onGameEnd, onExit }) => {
   const [gameStatus, setGameStatus] = useState(null);
   const [error, setError] = useState(null);
 
+  // 게임 종료 함수
+  const finishGame = useCallback(async () => {
+    if (!sessionId) return;
+
+    try {
+      const result = await minigameAPI.finishGame(sessionId);
+      onGameEnd(result);
+    } catch (error) {
+      console.error('게임 종료 실패:', error);
+      setError('게임을 종료할 수 없습니다.');
+    }
+  }, [sessionId, onGameEnd]);
+
+  // 게임 초기화
   useEffect(() => {
     const initGame = async () => {
       try {
@@ -31,6 +45,7 @@ const GamePlay = ({ config, onGameEnd, onExit }) => {
     initGame();
   }, [config]);
 
+  // 다음 문제 가져오기
   const loadNextSentence = useCallback(async () => {
     if (!sessionId) return;
 
@@ -47,15 +62,34 @@ const GamePlay = ({ config, onGameEnd, onExit }) => {
         setError('문제를 가져올 수 없습니다.');
       }
     }
-  }, [sessionId]);
+  }, [sessionId, finishGame]);
 
+  // 첫 문제 로드 - sessionId가 설정되면 한 번만 실행
   useEffect(() => {
     if (sessionId) {
-      loadNextSentence();
+      const loadFirst = async () => {
+        try {
+          setIsLoading(true);
+          const sentence = await minigameAPI.getNextSentence(sessionId);
+          setCurrentSentence(sentence);
+          setIsLoading(false);
+        } catch (error) {
+          if (error.message === 'NO_MORE_SENTENCES') {
+            finishGame();
+          } else {
+            console.error('문제 로드 실패:', error);
+            setError('문제를 가져올 수 없습니다.');
+          }
+        }
+      };
+      
+      loadFirst();
     }
-  }, [sessionId, loadNextSentence]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sessionId]); // sessionId가 변경될 때만 실행
 
-  const handleRecordingComplete = async (audioBlob) => {
+  // 녹음 완료 처리
+  const handleRecordingComplete = useCallback(async (audioBlob) => {
     if (!sessionId) return;
 
     try {
@@ -101,23 +135,12 @@ const GamePlay = ({ config, onGameEnd, onExit }) => {
       setIsProcessing(false);
       setIsPaused(false);
     }
-  };
+  }, [sessionId, config.mode, config.value, finishGame, loadNextSentence]);
 
-  const finishGame = async () => {
-    if (!sessionId) return;
-
-    try {
-      const result = await minigameAPI.finishGame(sessionId);
-      onGameEnd(result);
-    } catch (error) {
-      console.error('게임 종료 실패:', error);
-      setError('게임을 종료할 수 없습니다.');
-    }
-  };
-
-  const handleTimeUp = () => {
+  // 시간 종료
+  const handleTimeUp = useCallback(() => {
     finishGame();
-  };
+  }, [finishGame]);
 
   if (error) {
     return (
