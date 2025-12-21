@@ -18,6 +18,10 @@ const MainPageContent = () => {
     navigate("/communication/info");
   };
 
+  const minigame = () => {
+    navigate("/minigame");
+  };
+
   const featureCards = [
     {
       title: "모의 면접",
@@ -121,7 +125,7 @@ const MainPageContent = () => {
               <div className="h-12 w-12 rounded-2xl bg-gray-100 text-gray-400 flex items-center justify-center text-xl">⏳</div>
               <div className="flex-1 text-left space-y-0.5">
                 <div className="flex items-center gap-2">
-                  <span className="text-base font-bold text-gray-500">{item.title}</span>
+                  <span onClick={minigame} className="text-base font-bold text-gray-500">{item.title}</span>
                   <span className="text-[11px] font-semibold rounded-full px-2.5 py-1 bg-gray-200 text-gray-500">준비중</span>
                 </div>
                 <p className="text-sm text-gray-400">{item.subtitle}</p>

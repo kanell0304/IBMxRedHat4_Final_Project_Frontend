@@ -27,6 +27,7 @@ import Community from './component/Community/Community.jsx';
 import CommunityWrite from './component/Community/CommunityWrite.jsx';
 import CommunityDetail from './component/Community/CommunityDetail.jsx';
 import CommunityEdit from './component/Community/CommunityEdit.jsx';
+import MiniGameMain from './component/Minigame/MiniGameMain.jsx';
 
 export default function App() {
   return (
@@ -70,6 +71,9 @@ export default function App() {
         <Route path="/community/write" element={<CommunityWrite />} />
         <Route path="/community/:postId" element={<CommunityDetail />} />
         <Route path="/community/edit/:postId" element={<CommunityEdit />} />
+
+        {/* 미니게임 */}
+        <Route path="/minigame" element={<MiniGameMain />} />
 
       </Routes>
     </BrowserRouter>
