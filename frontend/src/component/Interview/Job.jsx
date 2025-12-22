@@ -162,7 +162,7 @@ const Job = () => {
             </div>
           )}
 
-          {iForm.question_type && (
+          {iForm.question_type && !isCommonOnly && (
             <div className="space-y-2">
               <div className="flex items-center gap-2">
                 <span className="w-7 h-7 rounded-full bg-blue-600 text-white text-[11px] font-bold inline-flex items-center justify-center">

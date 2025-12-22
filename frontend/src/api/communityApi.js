@@ -28,6 +28,20 @@ export const createCategory = (categoryName, description) => {
   });
 };
 
+// 카테고리 삭제 (관리자용)
+export const deleteCategory = (categoryId) => {
+  const formData = new URLSearchParams();
+  formData.append('category_id', categoryId);
+
+  return apiClient.delete(`/community/categories/${categoryId}`, {
+    params: { category_id: categoryId },
+    data: formData.toString(),
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+  });
+};
+
 // 게시글 목록 조회
 export const getPosts = (params = {}) => {
   return apiClient.get('/community/posts', { params });
