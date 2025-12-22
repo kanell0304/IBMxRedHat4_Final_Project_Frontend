@@ -4,184 +4,67 @@ import api from '../services/api';
 export const useCommunication = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [communicationData, setCommunicationData] = useState(null);
-  const [sttResult, setSttResult] = useState(null);
-  const [analysisResult, setAnalysisResult] = useState(null);
 
-  const uploadAudio = async (userId, audioFile) => {
+  const exec = async (fn) => {
     setLoading(true);
     setError(null);
-
     try {
-      const formData = new FormData();
-      formData.append('file', audioFile);
-
-      const response = await api.post('/communication/upload', formData, {
-        params: {
-          user_id: userId
-        }
-      });
-
-      setCommunicationData(response.data);
-      return { success: true, data: response.data };
+      const result = await fn();
+      return { success: true, data: result };
     } catch (err) {
-      const errorMessage = err.response?.data?.detail;
-      setError(errorMessage);
-      return { success: false, error: errorMessage };
+      const msg = err.response?.data?.detail || err.message || '오류 발생';
+      setError(msg);
+      return { success: false, error: msg };
     } finally {
       setLoading(false);
     }
   };
 
-  const processSTT = async (communicationId) => {
-    setLoading(true);
-    setError(null);
+  const uploadAudio = (userId, audioFile) => exec(async () => {
+    const formData = new FormData();
+    formData.append('file', audioFile);
+    const { data } = await api.post('/communication/upload', formData, { params: { user_id: userId } });
+    return data;
+  });
 
-    try {
-      const response = await api.post(`/communication/${communicationId}/stt`);
-      setSttResult(response.data);
-      return { success: true, data: response.data };
-    } catch (err) {
-      const errorMessage = err.response?.data?.detail;
-      setError(errorMessage);
-      return { success: false, error: errorMessage };
-    } finally {
-      setLoading(false);
-    }
-  };
+  const processSTT = (cId) => exec(async () => {
+    const { data } = await api.post(`/communication/${cId}/stt`);
+    return data;
+  });
 
-  const analyzeCommunication = async (communicationId, targetSpeaker = '1') => {
-    setLoading(true);
-    setError(null);
+  const analyzeCommunication = (cId, targetSpeaker = '1') => exec(async () => {
+    const { data } = await api.post(`/communication/${cId}/analyze`, null, { params: { target_speaker: targetSpeaker } });
+    return data;
+  });
 
-    try {
-      const response = await api.post(
-        `/communication/${communicationId}/analyze`,
-        null,
-        {
-          params: {
-            target_speaker: targetSpeaker,
-          },
-        }
-      );
+  const getCommunication = (cId) => exec(async () => {
+    const { data } = await api.get(`/communication/${cId}`);
+    return data;
+  });
 
-      setAnalysisResult(response.data);
-      return { success: true, data: response.data };
-    } catch (err) {
-      const errorMessage = err.response?.data?.detail;
-      setError(errorMessage);
-      return { success: false, error: errorMessage };
-    } finally {
-      setLoading(false);
-    }
-  };
+  const getUserCommunications = (userId) => exec(async () => {
+    const { data } = await api.get(`/communication/users/${userId}/communications`);
+    return data;
+  });
 
   const processFullAnalysis = async (userId, audioFile, targetSpeaker = '1') => {
-    setLoading(true);
-    setError(null);
-
-    try {
-      const uploadResult = await uploadAudio(userId, audioFile);
-      if (!uploadResult.success) {
-        throw new Error(uploadResult.error);
-      }
-
-      const communicationId = uploadResult.data.c_id;
-
-      const sttResult = await processSTT(communicationId);
-      if (!sttResult.success) {
-        throw new Error(sttResult.error);
-      }
-
-      const analysisResult = await analyzeCommunication(
-        communicationId,
-        targetSpeaker
-      );
-      if (!analysisResult.success) {
-        throw new Error(analysisResult.error);
-      }
-
-      return {
-        success: true,
-        data: {
-          communicationId,
-          sttResult: sttResult.data,
-          analysisResult: analysisResult.data,
-        },
-      };
-    } catch (err) {
-      const errorMessage = err.message;
-      setError(errorMessage);
-      return { success: false, error: errorMessage };
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const getCommunication = async (communicationId) => {
-    setLoading(true);
-    setError(null);
-
-    try {
-      const response = await api.get(`/communication/${communicationId}`);
-      setCommunicationData(response.data);
-      return { success: true, data: response.data };
-    } catch (err) {
-      const errorMessage = err.response?.data?.detail || '데이터 조회 실패';
-      setError(errorMessage);
-      return { success: false, error: errorMessage };
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const getUserCommunications = async (userId) => {
-    setLoading(true);
-    setError(null);
-
-    try {
-      const response = await api.get(`/communication/users/${userId}/communications`);
-      return { success: true, data: response.data };
-    } catch (err) {
-      const errorMessage = err.response?.data?.detail || '목록 조회 실패';
-      setError(errorMessage);
-      return { success: false, error: errorMessage };
-    } finally {
-      setLoading(false);
-    }
+    const upload = await uploadAudio(userId, audioFile);
+    if (!upload.success) return upload;
+    const stt = await processSTT(upload.data.c_id);
+    if (!stt.success) return stt;
+    const analysis = await analyzeCommunication(upload.data.c_id, targetSpeaker);
+    if (!analysis.success) return analysis;
+    return { success: true, data: { communicationId: upload.data.c_id, sttResult: stt.data, analysisResult: analysis.data } };
   };
 
   const healthCheck = async () => {
     try {
-      const response = await api.get('/communication/health');
-      return { success: true, data: response.data };
+      const { data } = await api.get('/communication/health');
+      return { success: true, data };
     } catch (err) {
-      const errorMessage = err.response?.data?.detail;
-      return { success: false, error: errorMessage };
+      return { success: false, error: err.response?.data?.detail };
     }
   };
 
-  const reset = () => {
-    setCommunicationData(null);
-    setSttResult(null);
-    setAnalysisResult(null);
-    setError(null);
-  };
-
-  return {
-    loading,
-    error,
-    communicationData,
-    sttResult,
-    analysisResult,
-
-    uploadAudio,
-    processSTT,
-    analyzeCommunication,
-    processFullAnalysis,
-    getCommunication,
-    getUserCommunications,
-    healthCheck,
-    reset,
-  };
+  return { loading, error, uploadAudio, processSTT, analyzeCommunication, getCommunication, getUserCommunications, processFullAnalysis, healthCheck };
 };

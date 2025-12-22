@@ -1,66 +1,39 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useCommunication } from '../../hooks/useCommunication';
 import api from '../../services/api';
 import PhoneFrame from '../Layout/PhoneFrame';
 
 export default function CommunicationUpload() {
-  const navigate = useNavigate();
-  const { uploadAudio } = useCommunication();
+  const nav = useNavigate();
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0);
+  const [progress, setProgress] = useState(0);
 
-  const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0];
-    if (selectedFile) {
-      const validFormats = ['.wav', '.mp3', '.m4a', '.ogg', '.flac'];
-      const fileExtension = selectedFile.name.substring(selectedFile.name.lastIndexOf('.')).toLowerCase();
+  const validFormats = ['.wav', '.mp3', '.m4a', '.ogg', '.flac'];
 
-      if (!validFormats.includes(fileExtension)) {
-        alert('지원하지 않는 파일 형식입니다.\n지원 형식: WAV, MP3, M4A, OGG, FLAC');
-        return;
-      }
-
-      setFile(selectedFile);
+  const handleFile = (e) => {
+    const f = e.target.files[0];
+    if (!f) return;
+    const ext = f.name.substring(f.name.lastIndexOf('.')).toLowerCase();
+    if (!validFormats.includes(ext)) {
+      alert('지원하지 않는 파일 형식입니다.\n지원 형식: WAV, MP3, M4A, OGG, FLAC');
+      return;
     }
+    setFile(f);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     setLoading(true);
-    setUploadProgress(0);
-
-    try {
-      const formData = new FormData();
-      formData.append('file', file);
-
-      const response = await api.post(
-        '/communication/upload',
-        formData,
-        {
-          params: {
-            user_id: 1
-          },
-          onUploadProgress: (progressEvent) => {
-            const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-            setUploadProgress(progress);
-          }
-        }
-      );
-
-      if (response.data.c_id) {
-        navigate(`/communication/speaker/${response.data.c_id}`);
-      }
-    } catch (error) {
-      console.error('업로드 실패:', error);
-      console.error('응답 데이터:', error.response?.data);
-      const errorMessage = error.response?.data?.detail || '업로드 중 오류가 발생했습니다.';
-      alert(errorMessage);
-    } finally {
-      setLoading(false);
-    }
+    setProgress(0);
+    const formData = new FormData();
+    formData.append('file', file);
+    const { data } = await api.post('/communication/upload', formData, {
+      params: { user_id: 1 },
+      onUploadProgress: (p) => setProgress(Math.round((p.loaded * 100) / p.total))
+    });
+    setLoading(false);
+    if (data.c_id) nav(`/communication/speaker/${data.c_id}`);
   };
 
   return (
@@ -71,80 +44,48 @@ export default function CommunicationUpload() {
           <h1 className="text-2xl font-extrabold text-gray-900">파일 업로드</h1>
           <p className="text-sm text-gray-600">분석할 대화 파일을 업로드하세요</p>
         </div>
-
         <div className="rounded-3xl bg-white shadow-sm p-6 space-y-6 border border-slate-100">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="block text-sm font-semibold text-gray-900 mb-3">
-                🎙️ 대화 녹음 파일
-              </label>
+              <label className="block text-sm font-semibold text-gray-900 mb-3">🎙️ 대화 녹음 파일</label>
               <div className="border-2 border-dashed border-gray-300 rounded-2xl p-8 text-center hover:border-blue-500 transition cursor-pointer">
-                <input
-                  type="file"
-                  accept=".wav,.mp3,.m4a,.ogg,.flac"
-                  onChange={handleFileChange}
-                  className="hidden"
-                  id="file-upload"
-                />
+                <input type="file" accept=".wav,.mp3,.m4a,.ogg,.flac" onChange={handleFile} className="hidden" id="file-upload" />
                 <label htmlFor="file-upload" className="cursor-pointer">
                   {file ? (
                     <div>
                       <div className="text-4xl mb-2">✅</div>
                       <p className="text-sm font-semibold text-gray-900">{file.name}</p>
-                      <p className="text-[13px] text-gray-600 mt-1">
-                        {(file.size / 1024 / 1024).toFixed(2)} MB
-                      </p>
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          setFile(null);
-                        }}
-                        className="mt-3 text-sm text-blue-600 hover:text-blue-700 font-semibold"
-                      >
-                        파일 변경
-                      </button>
+                      <p className="text-[13px] text-gray-600 mt-1">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
+                      <button type="button" onClick={(e) => { e.preventDefault(); setFile(null); }}
+                        className="mt-3 text-sm text-blue-600 hover:text-blue-700 font-semibold">파일 변경</button>
                     </div>
                   ) : (
                     <div>
                       <div className="text-4xl mb-2">📁</div>
-                      <p className="text-sm font-semibold text-gray-900">
-                        파일을 선택하세요
-                      </p>
-                      <p className="text-[13px] text-gray-600 mt-2">
-                        WAV, MP3, M4A, OGG, FLAC
-                      </p>
+                      <p className="text-sm font-semibold text-gray-900">파일을 선택하세요</p>
+                      <p className="text-[13px] text-gray-600 mt-2">WAV, MP3, M4A, OGG, FLAC</p>
                     </div>
                   )}
                 </label>
               </div>
             </div>
-
             {loading && (
               <div className="space-y-2">
                 <div className="flex justify-between text-sm text-gray-600">
                   <span className="font-semibold">업로드 중...</span>
-                  <span className="font-semibold">{uploadProgress}%</span>
+                  <span className="font-semibold">{progress}%</span>
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div
-                    className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-                    style={{ width: `${uploadProgress}%` }}
-                  ></div>
+                  <div className="bg-blue-600 h-2 rounded-full transition-all duration-300" style={{ width: `${progress}%` }} />
                 </div>
               </div>
             )}
-
-            <button
-              type="submit"
-              disabled={loading || !file}
-              className="w-full rounded-2xl bg-blue-600 text-white py-3 font-semibold shadow-sm transition hover:-translate-y-0.5 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed disabled:hover:translate-y-0"
-            >
+            <button type="submit" disabled={loading || !file}
+              className="w-full rounded-2xl bg-blue-600 text-white py-3 font-semibold shadow-sm transition hover:-translate-y-0.5 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed disabled:hover:translate-y-0">
               {loading ? '업로드 중...' : '다음 단계'}
             </button>
           </form>
         </div>
-
         <div className="rounded-2xl bg-blue-50 text-blue-800 px-4 py-3 flex items-center gap-2">
           <span className="text-lg">ℹ️</span>
           <div className="text-sm">
