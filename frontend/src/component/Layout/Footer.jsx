@@ -1,15 +1,28 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function Footer({ fullWidth = false }) {
   const navigate = useNavigate();
+  const [isRadialOpen, setIsRadialOpen] = useState(false);
 
   const items = [
     { key: "home", label: "홈", icon: "🏠", action: () => navigate("/") },
     { key: "feedback", label: "기록", icon: "💬", action: () => navigate("/history") },
-    { key: "center", label: "미정", icon: "＋", action: () => navigate("/") },
+    { key: "center", label: "+", icon: "＋", action: () => setIsRadialOpen(!isRadialOpen) },
     { key: "community", label: "커뮤니티", icon: "👥", action: () => navigate("/community") },
     { key: "more", label: "더보기", icon: "⋯", action: () => navigate("/mypage") },
   ];
+
+  const radialItems = [
+    { label: "대화분석", icon: "대화", color: "bg-blue-500", path: "/communication/info" },
+    { label: "면접", icon: "면접", color: "bg-purple-500", path: "/interview/info" },
+    { label: "발표분석", icon: "발표", color: "bg-green-500", path: "/presentation/info" },
+  ];
+
+  const handleRadialClick = (path) => {
+    setIsRadialOpen(false);
+    navigate(path);
+  };
 
   return (
     <footer className="sticky bottom-0 left-0 right-0 bg-transparent pointer-events-none">
@@ -19,11 +32,44 @@ export default function Footer({ fullWidth = false }) {
             if (item.key === "center") {
               return (
                 <div key={item.key} className="relative flex items-center justify-center">
+                  {/* Radial Menu Items */}
+                  {radialItems.map((radialItem, index) => {
+                    const angle = -90 + ((index - 1) * 40);
+                    const distance = 80;
+                    const x = Math.cos((angle * Math.PI) / 180) * distance;
+                    const y = Math.sin((angle * Math.PI) / 180) * distance;
+
+                    return (
+                      <button
+                        key={index}
+                        onClick={() => handleRadialClick(radialItem.path)}
+                        className={`absolute h-12 w-12 rounded-full ${radialItem.color} text-white shadow-lg border-2 border-white flex items-center justify-center text-lg transition-all duration-300 ${
+                          isRadialOpen
+                            ? 'opacity-100 pointer-events-auto scale-100'
+                            : 'opacity-0 pointer-events-none scale-50'
+                        }`}
+                        style={{
+                          transform: isRadialOpen
+                            ? `translate(${x}px, ${y}px)`
+                            : 'translate(0, 0)',
+                        }}
+                        title={radialItem.label}
+                      >
+                        {radialItem.icon}
+                      </button>
+                    );
+                  })}
+
+                  {/* Center Button */}
                   <button
                     onClick={item.action}
-                    className="h-14 w-14 -translate-y-2 rounded-full bg-gradient-to-b from-pink-500 to-orange-400 text-white text-sm font-bold shadow-md border-4 border-white flex items-center justify-center"
+                    className={`h-14 w-14 -translate-y-2 rounded-full text-white text-sm font-bold shadow-md border-4 border-white flex items-center justify-center transition-all duration-300 ${
+                      isRadialOpen
+                        ? 'bg-gray-600'
+                        : 'bg-gradient-to-b from-pink-500 to-orange-400'
+                    }`}
                   >
-                    {item.label}
+                    {isRadialOpen ? 'close' : item.label}
                   </button>
                 </div>
               );
