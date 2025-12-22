@@ -59,7 +59,7 @@ html {
   display: none !important;
 }
 
-/* hide scrollbars on custom phone frame */
+/* hide scrollbars on custom phone frame  */
 .scrollbar-hide {
   scrollbar-width: none;
   -ms-overflow-style: none;
