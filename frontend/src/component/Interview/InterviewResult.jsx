@@ -214,8 +214,13 @@ const OverallSummary = ({ report }) => {
       <div className="bg-white rounded-2xl shadow-md border border-gray-200 p-6">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-bold text-gray-900">내용 적절성</h3>
-          <div className="text-3xl font-bold text-blue-600">
-            {report.content_overall.score}점
+          <div className="flex items-center gap-3">
+            <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-bold">
+              {report.content_overall.grade}
+            </span>
+            <div className="text-3xl font-bold text-blue-600">
+              {report.content_overall.score}점
+            </div>
           </div>
         </div>
 
@@ -262,7 +267,12 @@ const OverallSummary = ({ report }) => {
             <div className="bg-white rounded-2xl shadow-md border border-gray-200 p-6">
                 <div className="flex items-center justify-between mb-4">
                     <h3 className="text-lg font-bold text-gray-900">{title}</h3>
-                    <div className="text-3xl font-bold text-blue-600">{data.score}점</div>
+                    <div className="flex items-center gap-3">
+                        <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-bold">
+                            {data.grade}
+                        </span>
+                        <div className="text-3xl font-bold text-blue-600">{data.score}점</div>
+                    </div>
                 </div>
 
                 {data.detected_examples.length > 0 && (
@@ -344,7 +354,10 @@ const PerQuestionCard = ({ data }) => {
             <h3 className="font-semibold text-gray-900">{data.q_text}</h3>
           </div>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
+          <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-bold">
+            {data.grade}
+          </span>
           <span className="text-2xl font-bold text-blue-600">{data.score}점</span>
           <svg
             className={`w-5 h-5 text-gray-400 transition-transform ${

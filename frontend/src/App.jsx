@@ -12,7 +12,8 @@ import Job from './component/Interview/Job.jsx';
 import JobEng from './component/Interview/JobEng.jsx';
 import Interview from './component/Interview/Interview.jsx';
 import InterviewResult from './component/Interview/InterviewResult.jsx';
-import History from './component/history/History.jsx';
+import ImmediateResult from './component/Interview/ImmediateResult.jsx';
+import History from './component/History/History.jsx';
 import Profile from './component/Pages/Profile.jsx';
 import PresentationCreate from './component/Presentation/PresentationCreate.jsx';
 import PresentationUpload from './component/Presentation/PresentationUpload.jsx';
@@ -50,6 +51,7 @@ export default function App() {
         {/* 인터뷰 */}
         <Route path="/interview/info" element={<Information />} />
         <Route path="/interview/job" element={<Job/>} />
+        <Route path="/interview/immediate/:interviewId" element={<ImmediateResult />} />
         <Route path="/interview/result/:interviewId" element={<InterviewResult />} />
         <Route path="/interview/job-en" element={<JobEng />} />
         <Route path="/interview" element={<Interview />} />

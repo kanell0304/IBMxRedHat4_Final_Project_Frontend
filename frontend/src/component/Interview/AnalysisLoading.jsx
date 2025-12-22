@@ -40,15 +40,15 @@ const AnalysisLoading = ({ interviewId }) => {
       try {
         await analyzeFullInterview(interviewId);
 
-        // 분석 완료 - 100% 표시 후 결과 페이지로 이동
+        // 분석 완료 - 100% 표시 후 즉시 결과 페이지로 이동
         setProgress(100);
         setTimeout(() => {
-          navigate(`/interview/result/${interviewId}`);
+          navigate(`/interview/immediate/${interviewId}`);
         }, 1000);
       } catch (err) {
-        // 실패 시에도 결과 페이지로 이동 (부분 결과라도 표시)
+        // 실패 시에도 즉시 결과 페이지로 이동 (부분 결과라도 표시)
         setTimeout(() => {
-          navigate(`/interview/result/${interviewId}`);
+          navigate(`/interview/immediate/${interviewId}`);
         }, 2000);
       }
     };
