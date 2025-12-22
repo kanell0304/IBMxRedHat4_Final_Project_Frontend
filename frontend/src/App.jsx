@@ -28,6 +28,7 @@ import CommunityWrite from './component/Community/CommunityWrite.jsx';
 import CommunityDetail from './component/Community/CommunityDetail.jsx';
 import CommunityEdit from './component/Community/CommunityEdit.jsx';
 import MiniGameMain from './component/Minigame/MiniGameMain.jsx';
+import AdminPage from './component/Pages/AdminPage.jsx';
 
 export default function App() {
   return (
@@ -74,6 +75,9 @@ export default function App() {
 
         {/* 미니게임 */}
         <Route path="/minigame" element={<MiniGameMain />} />
+
+        {/* 어드민 */}
+        <Route path="/admin" element={<AdminPage />} />
 
       </Routes>
     </BrowserRouter>

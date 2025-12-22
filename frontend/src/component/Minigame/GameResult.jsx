@@ -10,11 +10,11 @@ const GameResult = ({ result, onRestart }) => {
   const { grade, color, emoji } = getGrade(result.average_score);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-100 via-blue-100 to-pink-100 flex items-center justify-center p-4">
-      <div className="max-w-2xl w-full bg-white rounded-3xl shadow-2xl p-8">
+    <div className="min-h-full bg-gradient-to-br from-[#eef4ff] via-white to-[#e9f9ff] flex items-center justify-center p-4">
+      <div className="max-w-2xl w-full bg-white rounded-3xl shadow-xl ring-1 ring-white/70 p-8">
         <div className="text-center mb-8">
           <div className="text-8xl mb-4">{emoji}</div>
-          <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+          <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-sky-600 to-indigo-600 bg-clip-text text-transparent">
             게임 종료
           </h1>
           <p className="text-gray-600">수고하셨습니다</p>
@@ -26,15 +26,15 @@ const GameResult = ({ result, onRestart }) => {
           </div>
         </div>
         <div className="grid grid-cols-2 gap-4 mb-8">
-          <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-6 text-center">
+          <div className="bg-gradient-to-br from-sky-50 to-sky-100 rounded-2xl p-6 text-center">
             <p className="text-sm text-gray-600 mb-2">평균 점수</p>
-            <p className="text-3xl font-bold text-blue-600">
+            <p className="text-3xl font-bold text-sky-600">
               {result.average_score.toFixed(1)}점
             </p>
           </div>
-          <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl p-6 text-center">
+          <div className="bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-2xl p-6 text-center">
             <p className="text-sm text-gray-600 mb-2">완료한 문제</p>
-            <p className="text-3xl font-bold text-purple-600">
+            <p className="text-3xl font-bold text-indigo-600">
               {result.completed_count}개
             </p>
           </div>
@@ -80,7 +80,7 @@ const GameResult = ({ result, onRestart }) => {
         </div>
         <button
           onClick={onRestart}
-          className="w-full py-4 bg-gradient-to-r from-purple-500 to-blue-500 text-white font-bold text-xl rounded-xl hover:from-purple-600 hover:to-blue-600 transition-all shadow-lg hover:shadow-xl active:scale-95"
+          className="w-full py-4 bg-gradient-to-r from-sky-500 to-indigo-500 text-white font-bold text-xl rounded-xl hover:from-sky-600 hover:to-indigo-600 transition-all shadow-lg hover:shadow-xl active:scale-95"
         >
           다시 도전하기
         </button>

@@ -4,6 +4,7 @@ import useRecorder from './useRecorder.js';
 import { createAnswerRow, uploadAndAnalyze } from './../../api/interviewSessionApi';
 import Waveform from './Waveform.jsx';
 import AnalysisLoading from './AnalysisLoading.jsx';
+import PhoneFrame from '../Layout/PhoneFrame.jsx';
 
 const Interview = () => {
 
@@ -163,8 +164,8 @@ const Interview = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-indigo-50 px-4 py-8">
-      <div className="w-full max-w-3xl mx-auto space-y-6">
+    <PhoneFrame title="모의 면접" contentClass="p-4 pb-8 bg-gradient-to-b from-blue-50 via-white to-indigo-50/40">
+      <div className="space-y-6">
         {/* Header */}
         <div className="flex items-center gap-3">
           <button
@@ -258,8 +259,8 @@ const Interview = () => {
               </div>
 
               {/* 중앙 - 파형 (크게) */}
-              <div className="bg-gradient-to-br from-slate-50 via-gray-50 to-slate-100 rounded-2xl p-8 shadow-inner">
-                <Waveform audioData={audioData} width={600} height={150} />
+              <div className="bg-gradient-to-br from-slate-50 via-gray-50 to-slate-100 rounded-2xl p-6 shadow-inner">
+                <Waveform audioData={audioData} height={140} />
               </div>
 
               {/* 하단 - 정지 버튼 */}
@@ -319,7 +320,7 @@ const Interview = () => {
           </div>
         )}
       </div>
-    </div>
+    </PhoneFrame>
   );
 };
 

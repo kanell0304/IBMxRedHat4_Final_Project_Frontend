@@ -268,19 +268,19 @@ const CommunityList = ({ onCategorySelected = () => {}, resetSignal }) => {
       <div className="px-4">
         {!isListMode && (
           <div className="mb-6">
-            <div className="rounded-[28px] bg-[#0F1725] text-white shadow-lg border border-[#131e31] overflow-hidden">
+            <div className="rounded-[28px] bg-gradient-to-br from-[#e6efff] via-white to-[#dff3ff] text-slate-900 shadow-[0_18px_38px_rgba(59,130,246,0.16)] border border-[#dbe9ff] overflow-hidden">
               <div className="px-5 pt-5 pb-4">
                 <div className="space-y-0.5">
-                  <p className="text-xs text-gray-400">커뮤니티 게시판</p>
-                  <h2 className="text-xl font-extrabold leading-tight">게시판 바로가기</h2>
+                  <p className="text-xs font-semibold text-blue-700">커뮤니티 게시판</p>
+                  <h2 className="text-xl font-extrabold leading-tight text-slate-950">게시판 바로가기</h2>
                 </div>
               </div>
               {previewLoading ? (
-                <div className="px-5 py-6 text-sm text-gray-300">게시판 정보를 불러오는 중입니다...</div>
+                <div className="px-5 py-6 text-sm text-slate-500">게시판 정보를 불러오는 중입니다...</div>
               ) : categories.length === 0 ? (
-                <div className="px-5 py-6 text-sm text-gray-300">등록된 카테고리가 없습니다.</div>
+                <div className="px-5 py-6 text-sm text-slate-500">등록된 카테고리가 없습니다.</div>
               ) : (
-                <div className="divide-y divide-[#1e293b]">
+                <div className="divide-y divide-slate-200">
                   {categories.map((category) => {
                     const latestPost = categoryPreviews[category.category_id];
 
@@ -289,29 +289,29 @@ const CommunityList = ({ onCategorySelected = () => {}, resetSignal }) => {
                         type="button"
                         key={category.category_id}
                         onClick={() => handleCategoryChange(category.category_id)}
-                        className="w-full flex items-center gap-3 px-5 py-4 text-left transition hover:bg-[#141f33]"
+                        className="w-full flex items-center gap-3 px-5 py-4 text-left transition hover:bg-white/70"
                       >
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2">
-                            <span className="text-base font-semibold">{category.category_name}</span>
+                            <span className="text-base font-semibold text-slate-900">{category.category_name}</span>
                             {latestPost && isPostRecent(latestPost.created_at) && (
                               <span className="text-[10px] font-bold px-1.5 py-0.5 bg-red-500 text-white rounded-full leading-none">
                                 N
                               </span>
                             )}
                           </div>
-                          <p className="text-sm text-gray-300 truncate">
+                          <p className="text-sm text-slate-600 truncate">
                             {latestPost ? latestPost.title : '첫 글을 남겨보세요.'}
                           </p>
                         </div>
-                        <span className="text-gray-500 text-lg">›</span>
+                        <span className="text-slate-400 text-lg">›</span>
                       </button>
                     );
                   })}
                 </div>
               )}
               {previewError && (
-                <div className="px-5 py-3 text-sm text-red-300 bg-[#111c2e]">{previewError}</div>
+                <div className="px-5 py-3 text-sm text-red-500 bg-white/70">{previewError}</div>
               )}
             </div>
           </div>

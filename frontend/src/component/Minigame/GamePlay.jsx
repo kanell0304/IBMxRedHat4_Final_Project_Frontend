@@ -144,14 +144,14 @@ const GamePlay = ({ config, onGameEnd, onExit }) => {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-red-100 to-pink-100 flex items-center justify-center p-4">
-        <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full text-center">
+      <div className="min-h-full bg-gradient-to-br from-[#fbeaea] via-white to-[#e8f2ff] flex items-center justify-center p-4">
+        <div className="bg-white rounded-3xl shadow-xl ring-1 ring-white/70 p-8 max-w-md w-full text-center">
           <div className="text-6xl mb-4">⚠️</div>
-          <h2 className="text-2xl font-bold text-red-600 mb-4">오류 발생</h2>
+          <h2 className="text-2xl font-bold text-rose-600 mb-4">오류 발생</h2>
           <p className="text-gray-600 mb-6">{error}</p>
           <button
             onClick={onExit}
-            className="px-6 py-3 bg-gray-500 text-white rounded-xl hover:bg-gray-600 transition-all"
+            className="px-6 py-3 bg-slate-800 text-white rounded-xl hover:bg-slate-900 transition-all"
           >
             메인으로 돌아가기
           </button>
@@ -162,9 +162,9 @@ const GamePlay = ({ config, onGameEnd, onExit }) => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-100 to-blue-100 flex items-center justify-center">
+      <div className="min-h-full bg-gradient-to-br from-[#eef4ff] via-white to-[#e9f9ff] flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-sky-500 mx-auto mb-4"></div>
           <p className="text-xl font-semibold text-gray-700">문제를 불러오는 중...</p>
         </div>
       </div>
@@ -172,11 +172,11 @@ const GamePlay = ({ config, onGameEnd, onExit }) => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-100 via-blue-100 to-pink-100 flex items-center justify-center p-4">
+    <div className="min-h-full bg-gradient-to-br from-[#eef4ff] via-white to-[#e9f9ff] flex items-center justify-center p-4">
       <div className="max-w-4xl w-full">
-        <div className="bg-white rounded-t-3xl shadow-lg p-6 flex justify-between items-center">
+        <div className="bg-white rounded-t-3xl shadow-lg ring-1 ring-white/70 p-6 flex justify-between items-center">
           <div className="flex items-center gap-4">
-            <span className="px-4 py-2 bg-purple-100 text-purple-700 rounded-full font-semibold">
+            <span className="px-4 py-2 bg-sky-100 text-sky-700 rounded-full font-semibold">
               {config.difficulty === 'easy' ? '쉬움' : config.difficulty === 'medium' ? '보통' : '어려움'}
             </span>
             {config.mode === 'target_count' ? (
@@ -194,13 +194,13 @@ const GamePlay = ({ config, onGameEnd, onExit }) => {
           
           <button
             onClick={onExit}
-            className="px-4 py-2 bg-gray-200 text-gray-700 rounded-xl hover:bg-gray-300 transition-all"
+            className="px-4 py-2 bg-slate-100 text-gray-700 rounded-xl hover:bg-slate-200 transition-all"
           >
             나가기
           </button>
         </div>
 
-        <div className="bg-white shadow-2xl p-12 mb-6">
+        <div className="bg-white shadow-xl ring-1 ring-white/70 p-10 mb-6 rounded-b-3xl">
           <div className="text-center">
             <p className="text-sm text-gray-500 mb-4">다음 문장을 똑바로 말해보세요</p>
             <h2 className="text-3xl font-bold text-gray-800 leading-relaxed mb-8">
@@ -208,17 +208,17 @@ const GamePlay = ({ config, onGameEnd, onExit }) => {
             </h2>
             
             {currentSentence?.category && (
-              <span className="inline-block px-4 py-2 bg-blue-100 text-blue-700 rounded-full text-sm">
+              <span className="inline-block px-4 py-2 bg-sky-100 text-sky-700 rounded-full text-sm">
                 {currentSentence.category}
               </span>
             )}
           </div>
         </div>
 
-        <div className="bg-white rounded-b-3xl shadow-lg p-8">
+        <div className="bg-white rounded-3xl shadow-lg ring-1 ring-white/70 p-8">
           {isProcessing ? (
             <div className="text-center py-8">
-              <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-blue-500 mx-auto mb-4"></div>
+              <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-sky-500 mx-auto mb-4"></div>
               <p className="text-lg font-semibold text-gray-700">음성 분석 중...</p>
               <p className="text-sm text-gray-500 mt-2">잠시만 기다려주세요</p>
             </div>
@@ -235,10 +235,10 @@ const GamePlay = ({ config, onGameEnd, onExit }) => {
           )}
 
           {gameStatus && gameStatus.scores.length > 0 && (
-            <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl">
+            <div className="mt-6 p-4 bg-gradient-to-r from-sky-50 to-indigo-50 rounded-xl">
               <div className="text-center">
                 <p className="text-sm text-gray-600 mb-2">마지막 점수</p>
-                <p className="text-3xl font-bold text-blue-600">
+                <p className="text-3xl font-bold text-sky-600">
                   {gameStatus.scores[gameStatus.scores.length - 1].toFixed(1)}점
                 </p>
                 <p className="text-sm text-gray-500 mt-2">
