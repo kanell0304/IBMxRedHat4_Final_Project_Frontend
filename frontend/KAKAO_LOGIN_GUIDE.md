@@ -7,7 +7,7 @@
 ```env
 VITE_KAKAO_CLIENT_ID=여기에_실제_REST_API_키_입력
 VITE_KAKAO_REDIRECT_URI=http://localhost:5173/user/kakao
-VITE_API_BASE_URL=http://localhost:8000
+VITE_API_BASE_URL=http://localhost:8081
 ```
 
 ## 2. 현재 상태 (라우터 없는 버전)
