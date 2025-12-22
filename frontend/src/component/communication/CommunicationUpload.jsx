@@ -47,7 +47,7 @@ export default function CommunicationUpload() {
         <div className="rounded-3xl bg-white shadow-sm p-6 space-y-6 border border-slate-100">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="block text-sm font-semibold text-gray-900 mb-3">🎙️ 대화 녹음 파일</label>
+              <label className="block text-sm font-semibold text-gray-900 mb-3">�️ 대화 녹음 파일</label>
               <div className="border-2 border-dashed border-gray-300 rounded-2xl p-8 text-center hover:border-blue-500 transition cursor-pointer">
                 <input type="file" accept=".wav,.mp3,.m4a,.ogg,.flac" onChange={handleFile} className="hidden" id="file-upload" />
                 <label htmlFor="file-upload" className="cursor-pointer">

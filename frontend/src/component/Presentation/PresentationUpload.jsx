@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
+import PhoneFrame from '../Layout/PhoneFrame';
 
 export default function PresentationUpload() {
   const navigate = useNavigate();
@@ -68,13 +69,14 @@ export default function PresentationUpload() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4">
-      <div className="max-w-2xl mx-auto">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-800 mb-2">
-            음성 파일 업로드
-          </h1>
-          <p className="text-gray-600">
+    <PhoneFrame title="음성 업로드" contentClass="p-4 pb-6 bg-gradient-to-b from-blue-50 via-white to-indigo-50/40">
+      <div className="space-y-5">
+        <div className="rounded-3xl bg-gradient-to-br from-blue-50 via-white to-indigo-50 border border-slate-100 shadow-sm p-5 space-y-2">
+          <p className="text-[12px] font-semibold text-blue-600/80 uppercase tracking-[0.16em]">
+            Upload Audio
+          </p>
+          <h1 className="text-lg font-semibold text-gray-900">음성 파일 업로드</h1>
+          <p className="text-sm text-gray-600">
             분석할 발표 녹음 파일을 업로드해주세요
           </p>
         </div>
@@ -195,15 +197,15 @@ export default function PresentationUpload() {
           </form>
         </div>
 
-        <div className="mt-6 bg-blue-50 rounded-lg p-4">
-          <h3 className="font-medium text-blue-900 mb-2">안내사항</h3>
-          <ul className="text-sm text-blue-800 space-y-1">
+        <div className="rounded-2xl bg-blue-50 text-blue-800 p-4 space-y-2">
+          <h3 className="font-semibold text-blue-900">안내사항</h3>
+          <ul className="text-sm space-y-1">
             <li>• 분석에는 1-2분 정도 소요될 수 있습니다</li>
             <li>• 음질이 좋을수록 더 정확한 분석 결과를 얻을 수 있습니다</li>
             <li>• 배경 소음이 적은 녹음 파일을 권장합니다</li>
           </ul>
         </div>
       </div>
-    </div>
+    </PhoneFrame>
   );
 }

@@ -15,6 +15,7 @@ import InterviewResult from './component/Interview/InterviewResult.jsx';
 import ImmediateResult from './component/Interview/ImmediateResult.jsx';
 import History from './component/History/History.jsx';
 import Profile from './component/Pages/Profile.jsx';
+import PresentationInformation from './component/Presentation/PresentationInformation.jsx';
 import PresentationCreate from './component/Presentation/PresentationCreate.jsx';
 import PresentationUpload from './component/Presentation/PresentationUpload.jsx';
 import PresentationResult from './component/Presentation/PresentationResult.jsx';
@@ -57,6 +58,7 @@ export default function App() {
         <Route path="/interview" element={<Interview />} />
 
         {/* 발표 분석 */}
+        <Route path="/presentation" element={<PresentationInformation />} />
         <Route path="/presentation/create" element={<PresentationCreate />} />
         <Route path="/presentation/upload/:prId" element={<PresentationUpload />} />
         <Route path="/presentation/result/:prId" element={<PresentationResult />} />
