@@ -18,11 +18,11 @@ import PresentationCreate from './component/Presentation/PresentationCreate.jsx'
 import PresentationUpload from './component/Presentation/PresentationUpload.jsx';
 import PresentationResult from './component/Presentation/PresentationResult.jsx';
 import PresentationDetail from './component/Presentation/PresentationDetail.jsx';
-import CommunicationInformation from './component/Communication/CommunicationInformation.jsx';
-import CommunicationList from './component/Communication/CommunicationList.jsx';
-import CommunicationUpload from './component/Communication/CommunicationUpload.jsx';
-import CommunicationSpeakerSelect from './component/Communication/CommunicationSpeakerSelect.jsx';
-import CommunicationResult from './component/Communication/CommunicationResult.jsx';
+import CommunicationInformation from './component/communication/CommunicationInformation.jsx';
+import CommunicationList from './component/communication/CommunicationList.jsx';
+import CommunicationUpload from './component/communication/CommunicationUpload.jsx';
+import CommunicationSpeakerSelect from './component/communication/CommunicationSpeakerSelect.jsx';
+import CommunicationResult from './component/communication/CommunicationResult.jsx';
 import Community from './component/Community/Community.jsx';
 import CommunityWrite from './component/Community/CommunityWrite.jsx';
 import CommunityDetail from './component/Community/CommunityDetail.jsx';
