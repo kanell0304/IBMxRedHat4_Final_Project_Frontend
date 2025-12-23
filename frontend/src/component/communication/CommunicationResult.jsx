@@ -165,7 +165,7 @@ export default function CommunicationResult() {
         )}
 
         <div className="flex gap-3">
-          <button onClick={() => nav('/communication')} className="flex-1 rounded-2xl bg-white text-gray-700 py-3 font-semibold shadow-sm transition hover:bg-gray-50">목록으로</button>
+          <button onClick={() => nav('/history')} className="flex-1 rounded-2xl bg-white text-gray-700 py-3 font-semibold shadow-sm transition hover:bg-gray-50">목록으로</button>
           <button onClick={() => nav('/communication/info')} className="flex-1 rounded-2xl bg-blue-600 text-white py-3 font-semibold shadow-sm transition hover:-translate-y-0.5 hover:bg-blue-700">새 분석 시작</button>
         </div>
       </div>
