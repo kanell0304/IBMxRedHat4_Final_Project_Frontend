@@ -44,7 +44,7 @@ export default function PresentationCreate() {
       }
 
       const response = await axios.post(
-        'http://localhost:8081/presentations/create',
+        'http://43.200.166.166:8081/presentations/create',
         formDataToSend,
         {
           withCredentials: true

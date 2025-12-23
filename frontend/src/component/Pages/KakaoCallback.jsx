@@ -26,7 +26,7 @@ const KakaoCallback = () => {
         const API_BASE =
           import.meta.env.VITE_API_BASE ||
           import.meta.env.VITE_API_BASE_URL ||
-          'http://localhost:8081';
+          'http://43.200.166.166:8081';
 
         const response = await fetch(`${API_BASE}/users/kakao/callback`, {
           method: 'POST',

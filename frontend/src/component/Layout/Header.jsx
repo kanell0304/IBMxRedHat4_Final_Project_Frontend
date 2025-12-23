@@ -9,7 +9,7 @@ export default function Header({ fullWidth = false, dense = false }) {
   const [nickname, setNickname] = useState("");
   const [image, setImage] = useState(defaultProfile);
   const [loading, setLoading] = useState(true);
-  const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8081';
+  const API_BASE = import.meta.env.VITE_API_BASE || 'http://43.200.166.166:8081';
 
   const loadUser = useCallback(async () => {
     try {
@@ -43,7 +43,7 @@ export default function Header({ fullWidth = false, dense = false }) {
 
   const handleLogout = async () => {
     try {
-      await axios.post('http://localhost:8081/users/logout', {}, {
+      await axios.post('http://43.200.166.166:8081/users/logout', {}, {
         withCredentials: true
       });
       setIsLoggedIn(false);

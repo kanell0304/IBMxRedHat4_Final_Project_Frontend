@@ -2,7 +2,7 @@ import axios from 'axios'
 
 
 const api=axios.create({
-    baseURL: import.meta.env.VITE_API_BASE || 'http://localhost:8081',
+    baseURL: import.meta.env.VITE_API_BASE || 'http://43.200.166.166:8081',
     withCredentials: true,
 });
 

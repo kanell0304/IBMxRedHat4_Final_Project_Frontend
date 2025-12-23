@@ -44,7 +44,7 @@ export default function PresentationUpload() {
       }
 
       const response = await axios.post(
-        `http://localhost:8081/presentations/${prId}/analyze`,
+        `http://43.200.166.166:8081/presentations/${prId}/analyze`,
         formData,
         {
           withCredentials: true,

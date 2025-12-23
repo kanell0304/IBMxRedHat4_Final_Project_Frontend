@@ -19,12 +19,12 @@ const MypageContent = () => {
   useEffect(() => {
     const loadUser = async () => {
       try {
-        const res = await axios.get('http://localhost:8081/users/me', {
+        const res = await axios.get('http://43.200.166.166:8081/users/me', {
           withCredentials: true,
         });
         setUser(res.data);
         if (res.data?.profile_image_url) {
-          setImage(`http://localhost:8081${res.data.profile_image_url}`);
+          setImage(`http://43.200.166.166:8081${res.data.profile_image_url}`);
         } else {
           setImage(defaultProfile);
         }

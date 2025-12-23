@@ -16,7 +16,7 @@ export default function PresentationResult() {
   const fetchPresentationData = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8081/presentations/${prId}`,
+        `http://43.200.166.166:8081/presentations/${prId}`,
         { withCredentials: true }
       );
 
