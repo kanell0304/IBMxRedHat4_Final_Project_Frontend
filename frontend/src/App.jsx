@@ -59,6 +59,7 @@ export default function App() {
 
         {/* 발표 분석 */}
         <Route path="/presentation" element={<PresentationInformation />} />
+        <Route path="/presentation/info" element={<PresentationInformation />} />
         <Route path="/presentation/create" element={<PresentationCreate />} />
         <Route path="/presentation/upload/:prId" element={<PresentationUpload />} />
         <Route path="/presentation/result/:prId" element={<PresentationResult />} />

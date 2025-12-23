@@ -7,7 +7,7 @@ const MainPageContent = () => {
   const navigate = useNavigate();
 
   const presentation = () => {
-    navigate("/presentation/create");
+    navigate("/presentation/info");
   };
 
   const interview = () => {
