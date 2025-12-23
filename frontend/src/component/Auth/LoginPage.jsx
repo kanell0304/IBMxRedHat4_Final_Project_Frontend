@@ -14,7 +14,9 @@ export default function LoginPage() {
     try {
       const response = await login({ email, password });
       console.log('로그인 성공:', response.data);
-      navigate('/');
+      const roles = response.data?.user?.roles || [];
+      const isAdmin = roles.some((role) => role?.role_name === 'ADMIN' || role === 'ADMIN');
+      navigate(isAdmin ? '/admin' : '/');
     } catch (error) {
       console.error('로그인 실패:', error);
       alert('이메일 또는 비밀번호가 올바르지 않습니다.');

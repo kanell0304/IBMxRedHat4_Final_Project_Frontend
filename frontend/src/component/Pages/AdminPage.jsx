@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { adminApi } from "../../api/adminApi";
 import { getCategories, createCategory, deleteCategory } from "../../api/communityApi";
+import { useAuth } from "../../hooks/useAuth";
 import PhoneFrame from "../Layout/PhoneFrame";
 import MainLayout from "../Layout/MainLayout";
 import Header from "../Layout/Header";
@@ -25,12 +27,23 @@ const AdminPageContent = () => {
       try {
         const res = await adminApi.getUsers();
         const list = res.data?.users || res.data || [];
+        const toRoleLabel = (u) => {
+          const roles = u.roles || u.user_roles || [];
+          if (Array.isArray(roles) && roles.some((r) => r?.role_name === "ADMIN" || r === "ADMIN")) {
+            return "admin";
+          }
+          const roleText = u.role ?? u.user_role;
+          if (typeof roleText === "string" && roleText.toLowerCase().includes("admin")) {
+            return "admin";
+          }
+          return "user";
+        };
         const normalized = list.map((u, idx) => ({
           id: u.id ?? u.userId ?? u.user_id ?? idx,
           name: u.name ?? u.username ?? u.email ?? "이름없음",
           email: u.email ?? "",
           status: u.status ?? u.user_status ?? "active",
-          role: u.role ?? u.user_role ?? "user",
+          role: toRoleLabel(u),
           raw: u,
         }));
         setUsers(normalized);
@@ -286,10 +299,41 @@ const AdminPageContent = () => {
 };
 
 const AdminPage = () => {
+  const { user, loading, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (loading) return;
+
+    if (!isAuthenticated) {
+      navigate("/login", { replace: true });
+      return;
+    }
+
+    const roles = user?.roles || [];
+    const isAdmin = roles.some((role) => role?.role_name === "ADMIN" || role === "ADMIN");
+    if (!isAdmin) {
+      navigate("/", { replace: true });
+    }
+  }, [loading, isAuthenticated, user, navigate]);
+
+  const roles = user?.roles || [];
+  const isAdmin = roles.some((role) => role?.role_name === "ADMIN" || role === "ADMIN");
+
+  if (loading || !isAdmin) {
+    return (
+      <PhoneFrame title="Admin" contentClass="px-4 pt-4 pb-10 bg-slate-50">
+        <MainLayout fullWidth showHeader={false}>
+          <div className="text-center text-sm text-gray-500 py-10">접근 권한을 확인하는 중...</div>
+        </MainLayout>
+      </PhoneFrame>
+    );
+  }
+
   return (
     <PhoneFrame
       title="Admin"
-      contentClass="px-4 pt-4 pb-10 bg-slate-50"
+      contentClass="px-0 pt-3 pb-10 bg-slate-50"
       headerContent={<Header fullWidth dense />}
     >
       <MainLayout fullWidth showHeader={false}>

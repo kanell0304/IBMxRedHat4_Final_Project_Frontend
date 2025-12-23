@@ -1,14 +1,31 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../hooks/useAuth";
 
 export default function Footer({ fullWidth = false }) {
   const navigate = useNavigate();
   const [isRadialOpen, setIsRadialOpen] = useState(false);
+  const { user } = useAuth();
+
+  const roles = user?.roles || [];
+  const isAdmin = roles.some((role) => role?.role_name === "ADMIN" || role === "ADMIN");
+  const centerLabel = isAdmin ? "관리" : "+";
 
   const items = [
     { key: "home", label: "홈", icon: "🏠", action: () => navigate("/") },
     { key: "feedback", label: "기록", icon: "💬", action: () => navigate("/history") },
-    { key: "center", label: "+", icon: "＋", action: () => setIsRadialOpen(!isRadialOpen) },
+    {
+      key: "center",
+      label: centerLabel,
+      icon: "＋",
+      action: () => {
+        if (isAdmin) {
+          navigate("/admin");
+          return;
+        }
+        setIsRadialOpen(!isRadialOpen);
+      },
+    },
     { key: "community", label: "커뮤니티", icon: "👥", action: () => navigate("/community") },
     { key: "more", label: "더보기", icon: "⋯", action: () => navigate("/mypage") },
   ];
