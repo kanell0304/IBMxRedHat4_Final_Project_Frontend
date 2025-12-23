@@ -27,7 +27,7 @@ const GameResult = ({ result, onRestart }) => {
         </div>
         <div className="grid grid-cols-2 gap-4 mb-8">
           <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-6 text-center">
-            <p className="text-sm text-gray-600 mb-2">평균 점수</p>
+            <p className="text-sm text-gray-600 mb-2">평균 점수(정확도)</p>
             <p className="text-3xl font-bold text-blue-600">
               {result.average_score.toFixed(1)}점
             </p>
