@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import GamePlay from './GamePlay';
 import GameResult from './GameResult';
+import PhoneFrame from '../Layout/PhoneFrame';
 
 const MiniGameMain = () => {
   const [gameState, setGameState] = useState('menu');
@@ -54,11 +55,13 @@ const MiniGameMain = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-100 via-blue-100 to-pink-100 flex items-center justify-center p-4">
-      <div className="max-w-2xl w-full bg-white rounded-3xl shadow-2xl p-8">
-        <h1 className="text-4xl font-bold text-center mb-8 bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-          똑바로 말해요
-        </h1>
+    <PhoneFrame title="미니게임" contentClass="p-4 pb-6 bg-gradient-to-b from-purple-50 via-white to-blue-50/40">
+      <div className="space-y-5">
+        <div className="rounded-3xl bg-gradient-to-br from-purple-50 via-white to-blue-50 border border-slate-100 shadow-sm p-5 text-center">
+          <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+            똑바로 말해요
+          </h1>
+        </div>
         <div className="mb-8">
           <h2 className="text-xl font-semibold mb-4">난이도 선택</h2>
           <div className="grid grid-cols-3 gap-4">
@@ -167,8 +170,8 @@ const MiniGameMain = () => {
           게임 시작
         </button>
 
-        <div className="mt-6 p-4 bg-gray-50 rounded-xl">
-          <h3 className="font-semibold mb-2">게임 방법</h3>
+        <div className="rounded-2xl bg-gray-50 p-4 space-y-2">
+          <h3 className="font-semibold text-gray-900">게임 방법</h3>
           <ul className="text-sm text-gray-600 space-y-1">
             <li>• 화면에 표시된 문장을 정확하게 읽으세요</li>
             <li>• 녹음 버튼을 눌러 음성을 녹음하세요</li>
@@ -177,7 +180,7 @@ const MiniGameMain = () => {
           </ul>
         </div>
       </div>
-    </div>
+    </PhoneFrame>
   );
 };
 

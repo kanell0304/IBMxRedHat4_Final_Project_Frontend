@@ -60,3 +60,57 @@ export const getInterviewResults = async(i_id) => {
 };
 
 
+// 인터뷰 직후 즉시 결과 조회 (총평 + 질문별 평가 + 유사답변 힌트)
+export const getImmediateResult = async(i_id) => {
+    try {
+        const{data}=await api.get(`/interview/${i_id}/immediate_result`);
+        return data;
+    } catch(err) {
+        const status=err?.response?.status;
+        const detail=err?.response?.data?.detail;
+        const message=detail || err?.message || '즉시 결과 조회에 실패했습니다.';
+        throw new Error(status ? `[${status}] ${message}` : message);
+    }
+};
+
+
+// 개별 답변 상세 결과 조회
+export const getAnswerResult = async(answer_id) => {
+    try {
+        const{data}=await api.get(`/interview/answers/${answer_id}/result`);
+        return data;
+    } catch(err) {
+        const status=err?.response?.status;
+        const detail=err?.response?.data?.detail;
+        const message=detail || err?.message || '답변 결과 조회에 실패했습니다.';
+        throw new Error(status ? `[${status}] ${message}` : message);
+    }
+};
+
+
+// 사용자 약점 분석 조회
+export const getUserWeaknesses = async(user_id) => {
+    try {
+        const{data}=await api.get(`/interview/users/${user_id}/weaknesses`);
+        return data;
+    } catch(err) {
+        const status=err?.response?.status;
+        const detail=err?.response?.data?.detail;
+        const message=detail || err?.message || '약점 분석 조회에 실패했습니다.';
+        throw new Error(status ? `[${status}] ${message}` : message);
+    }
+};
+
+
+// 사용자 지표 변화 조회
+export const getUserMetricChanges = async(user_id) => {
+    try {
+        const{data}=await api.get(`/interview/users/${user_id}/metric_changes`);
+        return data;
+    } catch(err) {
+        const status=err?.response?.status;
+        const detail=err?.response?.data?.detail;
+        const message=detail || err?.message || '지표 변화 조회에 실패했습니다.';
+        throw new Error(status ? `[${status}] ${message}` : message);
+    }
+};

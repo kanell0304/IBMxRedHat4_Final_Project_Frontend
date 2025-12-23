@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Tooltip } from 'recharts';
+import PhoneFrame from '../Layout/PhoneFrame';
 
 export default function PresentationResult() {
   const navigate = useNavigate();
@@ -71,13 +72,14 @@ export default function PresentationResult() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4">
-      <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-800 mb-2">
-            당신의 발표를 분석한 결과입니다!
-          </h1>
-          <p className="text-gray-600">{presentationData.title}</p>
+    <PhoneFrame title="분석 결과" contentClass="p-4 pb-6 bg-gradient-to-b from-blue-50 via-white to-indigo-50/40">
+      <div className="space-y-5">
+        <div className="rounded-3xl bg-gradient-to-br from-blue-50 via-white to-indigo-50 border border-slate-100 shadow-sm p-5 space-y-2 text-center">
+          <p className="text-[12px] font-semibold text-blue-600/80 uppercase tracking-[0.16em]">
+            Analysis Complete
+          </p>
+          <h1 className="text-lg font-semibold text-gray-900">당신의 발표를 분석했습니다!</h1>
+          <p className="text-sm text-gray-600">{presentationData.title}</p>
         </div>
 
         <div className="flex items-center justify-center mb-8">
@@ -163,21 +165,21 @@ export default function PresentationResult() {
           </div>
         </div>
 
-        <div className="flex gap-4">
+        <div className="flex gap-3">
           <button
             onClick={() => navigate('/')}
-            className="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition font-medium"
+            className="flex-1 px-4 py-3 border border-gray-200 text-gray-700 rounded-xl hover:bg-gray-50 transition font-semibold"
           >
             홈으로
           </button>
           <button
             onClick={() => navigate(`/presentation/detail/${prId}`)}
-            className="flex-1 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium"
+            className="flex-1 px-4 py-3 bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 text-white rounded-xl font-semibold shadow-[0_8px_20px_rgba(37,99,235,0.25)] transition hover:-translate-y-0.5"
           >
             자세히 보기 →
           </button>
         </div>
       </div>
-    </div>
+    </PhoneFrame>
   );
 }
