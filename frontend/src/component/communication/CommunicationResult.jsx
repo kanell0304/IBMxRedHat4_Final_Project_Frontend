@@ -66,10 +66,16 @@ export default function CommunicationResult() {
   if (loading) return <PhoneFrame title="대화 분석"><div className="flex items-center justify-center min-h-[400px]"><div className="text-center"><div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mx-auto mb-4" /><p className="text-sm text-gray-600">결과를 불러오는 중...</p></div></div></PhoneFrame>;
   if (!data?.result) return <PhoneFrame title="대화 분석"><div className="flex items-center justify-center min-h-[400px]"><div className="text-center space-y-4"><p className="text-sm text-gray-600">분석 결과를 찾을 수 없습니다.</p><button onClick={() => nav('/communication')} className="rounded-2xl bg-blue-600 text-white px-6 py-2.5 font-semibold">목록으로 돌아가기</button></div></div></PhoneFrame>;
 
-  const { result: r, bert_result: b, script_sentences: ss } = data;
+  const { result: r, bert_result: b, script_sentences: ss, llm_result: llm } = data;
   const radar = [{ subject: '말하는 속도', score: r.speaking_speed * 10, fullMark: 100 }, { subject: '침묵', score: r.silence * 10, fullMark: 100 }, { subject: '발음', score: 100 - r.clarity, fullMark: 100 }, { subject: '의미 전달', score: 100 - r.meaning_clarity, fullMark: 100 }];
-  const bar = [{ name: '욕설', count: b?.curse_count || 0 }, { name: '군말/망설임', count: b?.filler_count || 0 }, { name: '말 끊기', count: r.cut || 0 }];
-  const iconMap = { speaking_speed: '🗣️', silence: '🤫', clarity: '🔊', meaning_clarity: '💭', cut: '✂️', curse: '🤬', filler: '🙄' };
+  const bar = [
+    { name: '욕설', count: llm?.curse?.count || 0 },
+    { name: '군말/망설임', count: llm?.filler?.count || 0 },
+    { name: '편향', count: llm?.biased?.count || 0 },
+    { name: '비표준어', count: llm?.slang?.count || 0 },
+    { name: '말 끊기', count: r.cut || 0 }
+  ];
+  const iconMap = { speaking_speed: '🗣️', silence: '🤫', clarity: '🔊', meaning_clarity: '💭', cut: '✂️', curse: '🤬', filler: '🙄', biased: '⚠️', slang: '💬' };
 
   return (
     <PhoneFrame title="대화 분석">
@@ -108,14 +114,9 @@ export default function CommunicationResult() {
             </div>
             <div className="rounded-3xl bg-white shadow-sm p-5">
               <h3 className="text-base font-bold text-gray-900 mb-4">📊 발견된 문제</h3>
-              <ResponsiveContainer width="100%" height={200}>
+              <ResponsiveContainer width="100%" height={250}>
                 <BarChart data={bar}><CartesianGrid strokeDasharray="3 3" /><XAxis dataKey="name" tick={{ fontSize: 12 }} /><YAxis tick={{ fontSize: 10 }} /><Tooltip /><Bar dataKey="count" fill="#2563eb" /></BarChart>
               </ResponsiveContainer>
-            </div>
-            <div className="grid grid-cols-3 gap-3">
-              <div className="rounded-2xl bg-blue-50 p-4"><div className="text-xs text-blue-700 mb-1">표준어 점수</div><div className="text-2xl font-bold text-blue-900">{b?.standard_score?.toFixed(2) || 'N/A'}</div></div>
-              <div className="rounded-2xl bg-red-50 p-4"><div className="text-xs text-red-700 mb-1">욕설</div><div className="text-2xl font-bold text-red-900">{b?.curse_count || 0}회</div></div>
-              <div className="rounded-2xl bg-orange-50 p-4"><div className="text-xs text-orange-700 mb-1">군말/망설임</div><div className="text-2xl font-bold text-orange-900">{b?.filler_count || 0}회</div></div>
             </div>
           </div>
         )}
