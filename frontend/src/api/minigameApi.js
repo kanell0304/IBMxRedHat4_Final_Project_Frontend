@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://43.200.166.166:8081/api/minigame';
+const API_BASE_URL = 'https://api.st-each.com/api/minigame';
 
 export const minigameAPI = {
   startGame: async (difficulty, mode, value) => {

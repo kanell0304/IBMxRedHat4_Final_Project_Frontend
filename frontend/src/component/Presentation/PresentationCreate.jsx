@@ -44,7 +44,7 @@ export default function PresentationCreate() {
       }
 
       const response = await axios.post(
-        'http://43.200.166.166:8081/presentations/create',
+        'https://api.st-each.com/presentations/create',
         formDataToSend,
         {
           withCredentials: true
