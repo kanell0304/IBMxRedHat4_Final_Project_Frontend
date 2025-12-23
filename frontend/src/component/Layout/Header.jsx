@@ -9,7 +9,7 @@ export default function Header({ fullWidth = false, dense = false }) {
   const [nickname, setNickname] = useState("");
   const [image, setImage] = useState(defaultProfile);
   const [loading, setLoading] = useState(true);
-  const API_BASE = import.meta.env.VITE_API_BASE || 'http://43.200.166.166:8081';
+  const API_BASE = import.meta.env.VITE_API_BASE || 'https://api.st-each.com';
 
   const loadUser = useCallback(async () => {
     try {
