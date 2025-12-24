@@ -114,3 +114,17 @@ export const getUserMetricChanges = async(user_id) => {
         throw new Error(status ? `[${status}] ${message}` : message);
     }
 };
+
+// 인터뷰 상태 조회
+export const getInterviewStatus=async(i_id)=>{
+    try {
+        const{data}=await api.get(`/interview/${i_id}/status`);
+        return data
+    } catch(err) {
+        const status=err?.response?.status;
+        const datail=err?.response?.data?.datail;
+        const message=datail || err?.message || '상태 조회에 실패했습니다.';
+    throw new Error(status ? `[${status}] ${message}` : message);
+    }
+};
+

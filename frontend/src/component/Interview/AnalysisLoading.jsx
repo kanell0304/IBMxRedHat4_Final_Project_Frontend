@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { analyzeFullInterview } from '../../api/interviewSessionApi';
+import { useInterviewNotification } from './InterviewNotificationContext';
+
+
 
 const AnalysisLoading = ({ interviewId }) => {
   const navigate = useNavigate();
   const [progress, setProgress] = useState(0);
   const [currentStep, setCurrentStep] = useState({ text: '답변 수집 중' });
+  const [hasSkipped, setHasSkipped] = useState(false);
 
   const steps = [
     { percent: 15, text: '답변 수집 중' },
@@ -40,6 +44,11 @@ const AnalysisLoading = ({ interviewId }) => {
       try {
         await analyzeFullInterview(interviewId);
 
+        // "나중에 보기"를 눌렀다면 navigate 하지 않음
+        if (hasSkipped) {
+          return;
+        }
+
         // 분석 완료 - 100% 표시 후 즉시 결과 페이지로 이동
         setProgress(100);
         setTimeout(() => {
@@ -47,16 +56,22 @@ const AnalysisLoading = ({ interviewId }) => {
         }, 1000);
       } catch (err) {
         // 실패 시에도 즉시 결과 페이지로 이동 (부분 결과라도 표시)
-        setTimeout(() => {
-          navigate(`/interview/immediate/${interviewId}`);
-        }, 2000);
+        if (!hasSkipped) {
+          setTimeout(() => {
+            navigate(`/interview/immediate/${interviewId}`);
+          }, 2000);
+        }
       }
     };
 
     runAnalysis();
-  }, [interviewId, navigate]);
+  }, [interviewId, navigate, hasSkipped]);
+
+  const { registerPendingAnalysis }=useInterviewNotification();
 
   const handleSkip = () => {
+    setHasSkipped(true);
+    registerPendingAnalysis(interviewId);
     navigate('/');
   };
 
