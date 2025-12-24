@@ -91,6 +91,8 @@ const AdminPageContent = () => {
   );
 
   const deleteUser = async (user) => {
+    if (user.role === "admin") return;
+
     const confirmed = window.confirm(`정말 삭제하시겠습니까?\n${user.name} (${user.email})`);
     if (!confirmed) return;
 
@@ -205,16 +207,18 @@ const AdminPageContent = () => {
                   <span className="text-xs px-3 py-1 rounded-full bg-slate-100 text-slate-700 border border-slate-200">
                     {user.role}
                   </span>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      deleteUser(user);
-                    }}
-                    disabled={updatingUserId === user.id}
-                    className="text-xs font-semibold px-3 py-2 rounded-lg bg-white border border-rose-200 text-rose-600 hover:border-rose-300 hover:text-rose-700 transition disabled:opacity-60"
-                  >
-                    {updatingUserId === user.id ? "삭제중..." : "삭제"}
-                  </button>
+                  {user.role !== "admin" && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        deleteUser(user);
+                      }}
+                      disabled={updatingUserId === user.id}
+                      className="text-xs font-semibold px-3 py-2 rounded-lg bg-white border border-rose-200 text-rose-600 hover:border-rose-300 hover:text-rose-700 transition disabled:opacity-60"
+                    >
+                      {updatingUserId === user.id ? "삭제중..." : "삭제"}
+                    </button>
+                  )}
                 </div>
               </div>
               {expandedUserId === user.id && (
