@@ -12,7 +12,7 @@ const getUserId = async () => {
   return userId;
 };
 
-export const createInterview = async ({question_type, job_group, job_role, difficulty}) => {
+export const createInterview = async ({question_type, job_group, job_role, difficulty, language="ko"}) => {
   const isCommonOnly = question_type === '공통질문만';
   const userId = await getUserId();
   const payload = {
@@ -22,6 +22,7 @@ export const createInterview = async ({question_type, job_group, job_role, diffi
     job_group: job_group || null,
     job_role: isCommonOnly ? null : job_role,
     total_questions: 5,
+    language: language,
   };
 
   const { data } = await api.post('/interview/start', payload);

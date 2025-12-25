@@ -13,6 +13,8 @@ import JobEng from './component/Interview/JobEng.jsx';
 import Interview from './component/Interview/Interview.jsx';
 import InterviewResult from './component/Interview/InterviewResult.jsx';
 import ImmediateResult from './component/Interview/ImmediateResult.jsx';
+import InterviewEnglish from './component/Interview/InterviewEnglish.jsx';
+import InterviewResultEnglish from './component/Interview/InterviewResultEnglish.jsx';
 import { InterviewNotificationProvider } from './component/Interview/InterviewNotificationContext.jsx';
 import History from './component/History/History.jsx';
 import Profile from './component/Pages/Profile.jsx';
@@ -33,6 +35,8 @@ import CommunityEdit from './component/Community/CommunityEdit.jsx';
 import MiniGameMain from './component/Minigame/MiniGameMain.jsx';
 import AdminPage from './component/Pages/AdminPage.jsx';
 
+
+
 export default function App() {
   return (
     <BrowserRouter>
@@ -51,13 +55,18 @@ export default function App() {
           <Route path="/find-password" element={<FindPasswordRequestPage />} />
           <Route path="/reset-password" element={<FindPasswordResetPage />} />
 
-          {/* 인터뷰 */}
+          {/* 인터뷰 - ko */}
           <Route path="/interview/info" element={<Information />} />
           <Route path="/interview/job" element={<Job/>} />
           <Route path="/interview/immediate/:interviewId" element={<ImmediateResult />} />
           <Route path="/interview/result/:interviewId" element={<InterviewResult />} />
           <Route path="/interview/job-en" element={<JobEng />} />
           <Route path="/interview" element={<Interview />} />
+
+          {/* 인터뷰 - en */}
+          <Route path="/interview/job-en" element={<JobEng />} />
+          <Route path="/interview/english" element={<InterviewEnglish />} />
+          <Route path="/interview/english/result/:interviewId" element={<InterviewResultEnglish />} />
 
           {/* 발표 분석 */}
           <Route path="/presentation" element={<PresentationInformation />} />
