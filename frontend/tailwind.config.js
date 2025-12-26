@@ -50,9 +50,9 @@ export default {
       },
 
       boxShadow: {
-        'DEFAULT': '0 0.5rem 1.5rem rgba(16, 185, 129, 0.08)',
-        'lg': '0 0.75rem 2rem rgba(16, 185, 129, 0.2)',
-        'button': '0 0.25rem 1rem rgba(16, 185, 129, 0.3)',
+        'DEFAULT': '0 0.5rem 1.5rem rgba(0, 0, 0, 0.08)',
+        'lg': '0 0.75rem 2rem rgba(0, 0, 0, 0.1)',
+        'button': '0 0.25rem 1rem rgba(0, 0, 0, 0.3)',
       },
 
       backgroundImage: {

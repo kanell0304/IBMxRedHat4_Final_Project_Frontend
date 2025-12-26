@@ -28,12 +28,18 @@ export default function CommunicationUpload() {
     setProgress(0);
     const formData = new FormData();
     formData.append('file', file);
-    const { data } = await api.post('/communication/upload', formData, {
-      params: { user_id: 1 },
-      onUploadProgress: (p) => setProgress(Math.round((p.loaded * 100) / p.total))
-    });
-    setLoading(false);
-    if (data.c_id) nav(`/communication/speaker/${data.c_id}`);
+    try {
+      const { data } = await api.post('/communication/upload', formData, {
+        params: { user_id: 1 },
+        onUploadProgress: (p) => setProgress(Math.round((p.loaded * 100) / p.total))
+      });
+      if (data.c_id) nav(`/communication/speaker/${data.c_id}`);
+    } catch (err) {
+      const msg = err.response?.data?.detail || err.message || '파일 업로드 중 오류가 발생했습니다.';
+      alert(msg);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -41,13 +47,12 @@ export default function CommunicationUpload() {
       <div className="space-y-5">
         <div className="space-y-1">
           <p className="text-xs font-semibold text-gray-500">대화 분석</p>
-          <h1 className="text-2xl font-extrabold text-gray-900">파일 업로드</h1>
+          <h1 className="text-xl font-extrabold text-gray-900">파일 업로드</h1>
           <p className="text-sm text-gray-600">분석할 대화 파일을 업로드하세요</p>
         </div>
         <div className="rounded-3xl bg-white shadow-sm p-6 space-y-6 border border-slate-100">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="block text-sm font-semibold text-gray-900 mb-3">�️ 대화 녹음 파일</label>
               <div className="border-2 border-dashed border-gray-300 rounded-2xl p-8 text-center hover:border-blue-500 transition cursor-pointer">
                 <input type="file" accept=".wav,.mp3,.m4a,.ogg,.flac" onChange={handleFile} className="hidden" id="file-upload" />
                 <label htmlFor="file-upload" className="cursor-pointer">
@@ -63,7 +68,7 @@ export default function CommunicationUpload() {
                     <div>
                       <div className="text-4xl mb-2">📁</div>
                       <p className="text-sm font-semibold text-gray-900">파일을 선택하세요</p>
-                      <p className="text-[13px] text-gray-600 mt-2">WAV, MP3, M4A, OGG, FLAC</p>
+                      <p className="text-[13px] text-gray-600 mt-2">WAV 파일만 분석이 가능합니다.</p>
                     </div>
                   )}
                 </label>
@@ -87,10 +92,10 @@ export default function CommunicationUpload() {
           </form>
         </div>
         <div className="rounded-2xl bg-blue-50 text-blue-800 px-4 py-3 flex items-center gap-2">
-          <span className="text-lg">ℹ️</span>
+          <span className="text-lg text-blue-800 px-2">!</span>
           <div className="text-sm">
-            <p className="font-semibold">음질이 좋을수록 정확한 분석이 가능해요</p>
-            <p className="text-[13px] text-blue-700">배경 소음이 적은 녹음 파일을 권장합니다</p>
+            <p className="font-semibold text-xs">음질이 좋을수록 정확한 분석이 가능해요</p>
+            <p className="text-[13px] text-blue-500">배경 소음이 적은 녹음 파일을 권장합니다</p>
           </div>
         </div>
       </div>
