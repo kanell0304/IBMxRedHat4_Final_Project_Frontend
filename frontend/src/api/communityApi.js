@@ -48,10 +48,10 @@ export const getPosts = (params = {}) => {
 };
 
 // 게시글 상세 조회
-export const getPostDetail = (postId, userId = null) => {
+export const getPostDetail = (postId, userId = null, incrementView = true) => {
   const params = {};
   if (userId) params.user_id = userId;
-  
+  params.increment_view = incrementView;
   return apiClient.get(`/community/posts/${postId}`, { params });
 };
 
