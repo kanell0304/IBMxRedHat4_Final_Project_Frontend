@@ -11,17 +11,39 @@ export default function CommunicationSpeakerSelect() {
 
   useEffect(() => {
     (async () => {
-      await api.post(`/communication/${c_id}/stt`);
-      const { data } = await api.get(`/communication/${c_id}`);
-      const words = data?.stt_results?.[0]?.json_data?.results?.[0]?.alternatives?.[0]?.words || [];
-      const map = {};
-      words.forEach(w => {
-        const sp = w.speakerLabel || '1';
-        if (!map[sp]) map[sp] = { speaker: sp, firstUtterance: w.word || '', wordCount: 0 };
-        map[sp].wordCount++;
-      });
-      setSpeakers(Object.values(map).sort((a, b) => a.speaker - b.speaker));
-      setStatus('ready');
+      try {
+        await api.post(`/communication/${c_id}/stt`);
+        const { data } = await api.get(`/communication/${c_id}`);
+        const words = data?.stt_results?.[0]?.json_data?.results?.[0]?.alternatives?.[0]?.words || [];
+        const map = {};
+        const firstAppearance = {};
+
+        words.forEach((w, idx) => {
+          const sp = w.speakerLabel || '1';
+          if (!map[sp]) {
+            map[sp] = { speaker: sp, firstUtterance: '', wordCount: 0 };
+            firstAppearance[sp] = idx;
+          }
+          map[sp].wordCount++;
+        });
+
+        Object.keys(firstAppearance).forEach(sp => {
+          const startIdx = firstAppearance[sp];
+          const utteranceWords = [];
+          for (let i = startIdx; i < words.length; i++) {
+            const currentSpeaker = words[i].speakerLabel || '1';
+            if (currentSpeaker === sp) utteranceWords.push(words[i].word || '');
+            else break;
+          }
+          map[sp].firstUtterance = utteranceWords.join(' ');
+        });
+
+        setSpeakers(Object.values(map).sort((a, b) => a.speaker - b.speaker));
+        setStatus('ready');
+      } catch (e) {
+        console.error(e);
+        // Handle error appropriately
+      }
     })();
   }, [c_id]);
 
@@ -33,60 +55,78 @@ export default function CommunicationSpeakerSelect() {
 
   if (status !== 'ready') return (
     <PhoneFrame title="대화 분석">
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mx-auto mb-4" />
-          <p className="text-sm font-semibold text-gray-900">
-            {status === 'stt' ? '음성 인식 처리 중...' : '분석 중입니다...'}
-          </p>
-          <p className="text-[13px] text-gray-600 mt-2">
-            {status === 'stt' ? '1-2분 정도 소요될 수 있습니다' : '대화 내용을 분석하고 있습니다. 잠시만 기다려주세요.'}
-          </p>
-        </div>
+      <div className="flex flex-col items-center justify-center h-[60vh] text-center px-4">
+        <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-6" />
+        <h3 className="text-lg font-bold text-gray-900 mb-2">
+          {status === 'stt' ? '음성 인식 처리 중...' : '분석 중입니다...'}
+        </h3>
+        <p className="text-sm text-gray-500">
+          {status === 'stt' ? '잠시만 기다려주세요.' : '대화 내용을 분석하고 있습니다.'}
+        </p>
       </div>
     </PhoneFrame>
   );
 
   return (
-    <PhoneFrame title="대화 분석">
-      <div className="space-y-5">
-        <div className="space-y-1">
-          <p className="text-xs font-semibold text-gray-500">대화 분석</p>
-          <h1 className="text-2xl font-extrabold text-gray-900">화자 선택</h1>
-          <p className="text-sm text-gray-600">분석할 화자를 선택하세요</p>
-        </div>
-        <div className="rounded-3xl bg-white shadow-sm p-6 space-y-4 border border-slate-100">
-          <h2 className="text-lg font-semibold text-gray-900">👥 감지된 화자 목록</h2>
+    <PhoneFrame title="대화 분석" showTitleRow={true}>
+      <div className="flex flex-col justify-between min-h-[624px] -mb-6">
+        <div className="space-y-8">
+          {/* Header */}
+          <div className="px-1 pt-2">
+            <p className="text-xs font-bold text-gray-500 mb-1">대화 분석 서비스</p>
+            <h1 className="text-xl font-bold text-gray-900 tracking-tight mb-4">화자 선택</h1>
+            <p className="text-sm text-gray-600 leading-relaxed">
+              여러 명의 화자가 인식됐어요.<br />
+              분석을 원하는 화자를 선택해주세요.
+            </p>
+          </div>
+
+          {/* Speaker Grid */}
           {speakers.length === 0 ? (
-            <div className="text-center py-8"><p className="text-sm text-gray-600">화자를 감지하지 못했습니다.</p></div>
+            <div className="bg-white rounded-3xl p-8 text-center shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-gray-100">
+              <p className="text-gray-400">감지된 화자가 없습니다.</p>
+            </div>
           ) : (
-            <div className="space-y-3">
-              {speakers.map(s => (
-                <button key={s.speaker} onClick={() => setSel(s.speaker)}
-                  className={`w-full rounded-2xl p-4 transition ${sel === s.speaker ? 'bg-blue-50 border-2 border-blue-600' : 'bg-gray-50 border-2 border-transparent hover:border-gray-300'}`}>
-                  <div className="flex items-start gap-3">
-                    <div className={`h-12 w-12 rounded-2xl flex items-center justify-center text-xl font-bold ${sel === s.speaker ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'}`}>
-                      {s.speaker}
+            <div className="grid grid-cols-2 gap-4 px-2">
+              {speakers.map(s => {
+                const isSelected = sel === s.speaker;
+                return (
+                  <button 
+                    key={s.speaker} 
+                    onClick={() => setSel(s.speaker)}
+                    className="flex flex-col items-center text-center group"
+                  >
+                    {/* Icon Circle */}
+                    <div className={`w-24 h-24 rounded-full flex items-center justify-center mb-4 transition-all duration-300 shadow-sm ${isSelected ? 'bg-blue-400 text-white scale-110 shadow-blue-200' : 'bg-gray-300 text-white group-hover:bg-gray-400'}`}>
+                      <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                      </svg>
                     </div>
-                    <div className="flex-1 text-left">
-                      <div className="flex items-center gap-2 mb-1">
-                        <h3 className="text-sm font-bold text-gray-900">화자 {s.speaker}</h3>
-                        {sel === s.speaker && <span className="text-[10px] bg-blue-600 text-white px-2 py-0.5 rounded-full">선택됨</span>}
-                      </div>
-                      <p className="text-[13px] text-gray-600 mb-2">발화 단어 수: {s.wordCount}개</p>
-                      <div className="bg-white rounded-lg p-2 border border-gray-200">
-                        <p className="text-[11px] text-gray-600">첫 번째 발언</p>
-                        <p className="text-[13px] text-gray-900">"{s.firstUtterance}..."</p>
-                      </div>
+                    
+                    {/* Info */}
+                    <div className="space-y-1">
+                      <p className={`text-sm font-bold ${isSelected ? 'text-blue-600' : 'text-gray-500'}`}>
+                        {s.wordCount} 단어
+                      </p>
+                      <p className="text-sm text-gray-800 font-medium line-clamp-2 px-1 break-keep leading-snug">
+                        {s.firstUtterance}
+                      </p>
                     </div>
-                  </div>
-                </button>
-              ))}
+                  </button>
+                );
+              })}
             </div>
           )}
-          <button onClick={analyze} disabled={!sel}
-            className="w-full rounded-2xl bg-blue-600 text-white py-3 font-semibold shadow-sm transition hover:-translate-y-0.5 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed disabled:hover:translate-y-0">
-            분석 시작
+        </div>
+
+        {/* Sticky Bottom Button */}
+        <div className="sticky bottom-0 left-0 right-0 p-4 -mx-4 bg-white border-t border-gray-50">
+          <button 
+            onClick={analyze} 
+            disabled={!sel}
+            className="w-full max-w-[340px] mx-auto block py-4 rounded-full bg-blue-500 text-white font-bold text-lg shadow-xl shadow-blue-200 active:scale-95 transition-transform disabled:bg-gray-300 disabled:shadow-none disabled:cursor-not-allowed"
+          >
+            피드백 받기
           </button>
         </div>
       </div>

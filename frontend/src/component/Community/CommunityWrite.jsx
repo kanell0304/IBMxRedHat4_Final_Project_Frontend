@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { getCategories, createPost } from '../../api/communityApi';
 import { useAuth } from '../../hooks/useAuth';
 import PhoneFrame from '../Layout/PhoneFrame';
@@ -7,14 +7,17 @@ import MainLayout from '../Layout/MainLayout';
 
 export default function CommunityWrite() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user, isAuthenticated, loading: authLoading } = useAuth();
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const preselectedCategoryId = location.state?.selectedCategoryId;
+  const preselectedCategoryName = location.state?.selectedCategoryName;
 
   // 폼 데이터
   const [formData, setFormData] = useState({
-    category_id: '',
+    category_id: preselectedCategoryId ? String(preselectedCategoryId) : '',
     title: '',
     content: '',
   });
@@ -132,11 +135,16 @@ export default function CommunityWrite() {
     return null;
   }
 
+  const activeCategoryName =
+    categories.find((category) => String(category.category_id) === String(formData.category_id))
+      ?.category_name || preselectedCategoryName;
+  const headerTitle = activeCategoryName || '게시글 작성';
+
   const content = (
     <div className="w-full max-w-md mx-auto px-4 py-5 space-y-4">
       {/* 헤더 */}
       <div className="space-y-1">
-        <h1 className="text-xl font-extrabold text-slate-900">게시글 작성</h1>
+        <h1 className="text-xl font-extrabold text-slate-900">{headerTitle}</h1>
         <p className="text-sm text-slate-600">여러분의 경험과 후기를 공유해주세요</p>
       </div>
 
@@ -259,7 +267,7 @@ export default function CommunityWrite() {
   );
 
   return (
-    <PhoneFrame showTitleRow title="게시글 작성" contentClass="px-0 pt-[2px] pb-4">
+    <PhoneFrame showTitleRow title={headerTitle} contentClass="px-0 pt-[2px] pb-4">
       <MainLayout fullWidth showHeader={false} showFooter={false}>
         {content}
       </MainLayout>

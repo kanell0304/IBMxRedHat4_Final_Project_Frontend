@@ -27,17 +27,11 @@ export default function CommunityDetail() {
       return;
     }
     
-    // 이미 호출했으면 리턴
-    if (hasFetchedRef.current) {
-      return;
-    }
-    hasFetchedRef.current = true;
-    
-    const loadPost = async () => {
+    const loadPost = async (incrementView) => {
       setLoading(true);
       try {
         // user가 있을 때만 user_id 전달
-        const response = await getPostDetail(postId, user?.user_id);
+        const response = await getPostDetail(postId, user?.user_id, incrementView);
         setPost(response.data.data.post);
         setComments(response.data.data.comments);
         setError(null);
@@ -49,7 +43,13 @@ export default function CommunityDetail() {
       }
     };
     
-    loadPost();
+    // 첫 호출만 조회수 증가, 이후 사용자 정보가 바뀌어도 증가시키지 않음
+    if (!hasFetchedRef.current) {
+      hasFetchedRef.current = true;
+      loadPost(true);
+    } else {
+      loadPost(false);
+    }
     
     return () => {
       hasFetchedRef.current = false;
@@ -73,16 +73,27 @@ export default function CommunityDetail() {
     }
   };
 
-  // 날짜 포맷팅
+  // 날짜 포맷팅 (KST, 연-월-일 시:분)
   const formatDate = (dateString) => {
+    if (!dateString) return '';
     const date = new Date(dateString);
-    return date.toLocaleString('ko-KR', {
+    if (Number.isNaN(date.getTime())) return '';
+    return new Intl.DateTimeFormat('ko-KR', {
+      timeZone: 'Asia/Seoul',
       year: 'numeric',
-      month: 'long',
-      day: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
       hour: '2-digit',
       minute: '2-digit',
-    });
+    }).format(date);
+  };
+
+  const isEdited = (createdAt, updatedAt) => {
+    if (!createdAt || !updatedAt) return false;
+    const created = new Date(createdAt);
+    const updated = new Date(updatedAt);
+    if (Number.isNaN(created.getTime()) || Number.isNaN(updated.getTime())) return false;
+    return updated.getTime() - created.getTime() > 1000;
   };
 
   // 좋아요 토글
@@ -249,29 +260,27 @@ export default function CommunityDetail() {
     const isAuthor = user && user.user_id === comment.user_id;
 
     return (
-      <div
-        key={comment.comment_id}
-        className={`${isReply ? 'ml-12 mt-3' : 'mt-4'} p-4 bg-gray-50 rounded-lg`}
-      >
-        <div className="flex justify-between items-start mb-2">
-          <div>
+      <div key={comment.comment_id} className={`${isReply ? 'ml-12 mt-3' : 'mt-4'} p-4 bg-gray-50 rounded-lg`}>
+        <div className="flex justify-between items-center mb-2 gap-3">
+          <div className="flex items-center flex-wrap gap-2 text-sm text-gray-500">
             <span className="font-medium text-gray-900">{comment.author_nickname}</span>
-            <span className="ml-3 text-sm text-gray-500">{formatDate(comment.created_at)}</span>
-            {comment.updated_at !== comment.created_at && (
-              <span className="ml-2 text-xs text-gray-400">(수정됨)</span>
+            <span className="text-gray-300">•</span>
+            <span>{formatDate(comment.created_at)}</span>
+            {isEdited(comment.created_at, comment.updated_at) && (
+              <span className="text-xs text-gray-400 px-1 py-0.5 bg-gray-100 rounded-md">(수정됨)</span>
             )}
           </div>
           {isAuthor && !isEditing && (
-            <div className="flex gap-2">
+            <div className="flex gap-3 text-sm items-center whitespace-nowrap">
               <button
                 onClick={() => startEditComment(comment)}
-                className="text-sm text-blue-600 hover:text-blue-800"
+                className="text-blue-600 hover:text-blue-800 leading-5"
               >
                 수정
               </button>
               <button
                 onClick={() => handleDeleteComment(comment.comment_id)}
-                className="text-sm text-red-600 hover:text-red-800"
+                className="text-red-600 hover:text-red-800 leading-5"
               >
                 삭제
               </button>
@@ -288,10 +297,7 @@ export default function CommunityDetail() {
               rows={3}
             />
             <div className="mt-2 flex gap-2">
-              <button
-                onClick={() => handleEditCommentSubmit(comment.comment_id)}
-                className="px-4 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 text-sm"
-              >
+              <button onClick={() => handleEditCommentSubmit(comment.comment_id)} className="px-4 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 text-sm">
                 수정 완료
               </button>
               <button
@@ -389,12 +395,7 @@ export default function CommunityDetail() {
   const isAuthor = user && user.user_id === post.user_id;
 
   return (
-    <PhoneFrame
-      showTitleRow
-      title="게시글 상세"
-      contentClass="px-0 pt-[2px] pb-4"
-      onBack={handleBackToList}
-    >
+    <PhoneFrame showTitleRow title="게시글 상세" contentClass="px-0 pt-[2px] pb-4" onBack={handleBackToList}>
       <MainLayout fullWidth showHeader={false} showFooter={false}>
         <div className="w-full max-w-xl mx-auto px-4 py-4 space-y-6">
           {/* 게시글 카드 */}
@@ -410,8 +411,8 @@ export default function CommunityDetail() {
                 <div className="flex items-center gap-3">
                   <span className="font-semibold text-slate-800">{post.author_nickname}</span>
                   <span className="text-slate-300">•</span>
-                  <span>{formatDate(post.created_at)}</span>
-                  {post.updated_at !== post.created_at && (
+                  <span>{formatDate(isEdited(post.created_at, post.updated_at) ? post.updated_at : post.created_at)}</span>
+                  {isEdited(post.created_at, post.updated_at) && (
                     <span className="text-xs text-slate-400">(수정됨)</span>
                   )}
                 </div>
@@ -436,18 +437,8 @@ export default function CommunityDetail() {
                     : 'bg-slate-50 text-slate-700 hover:bg-slate-100'
                 }`}
               >
-                <svg
-                  className={`w-5 h-5 ${post.is_liked ? 'fill-current' : ''}`}
-                  fill={post.is_liked ? 'currentColor' : 'none'}
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                  />
+                <svg className={`w-5 h-5 ${post.is_liked ? 'fill-current' : ''}`} fill={post.is_liked ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
                 </svg>
                 <span className="font-semibold">{post.like_count}</span>
               </button>
@@ -490,24 +481,13 @@ export default function CommunityDetail() {
                   rows={3}
                 />
                 <div className="flex justify-end">
-                  <button
-                    type="submit"
-                    className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-                  >
-                    댓글 작성
-                  </button>
+                  <button type="submit" className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">댓글 작성</button>
                 </div>
               </form>
             ) : (
               <div className="mb-6 p-4 bg-slate-50 rounded-xl text-center text-sm text-slate-600">
                 댓글을 작성하려면{' '}
-                <button
-                  onClick={() => navigate('/login')}
-                  className="text-blue-600 hover:text-blue-800 font-semibold"
-                >
-                  로그인
-                </button>
-                이 필요합니다.
+                <button onClick={() => navigate('/login')} className="text-blue-600 hover:text-blue-800 font-semibold">로그인</button> 이 필요합니다.
               </div>
             )}
 

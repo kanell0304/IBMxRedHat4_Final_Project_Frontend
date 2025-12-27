@@ -160,6 +160,15 @@ const CommunityList = ({ onCategorySelected = () => {}, resetSignal }) => {
       navigate('/login');
       return;
     }
+    if (selectedCategory) {
+      navigate('/community/write', {
+        state: {
+          selectedCategoryId: selectedCategory,
+          selectedCategoryName: getCategoryName(selectedCategory),
+        },
+      });
+      return;
+    }
     navigate('/community/write');
   };
 
@@ -178,19 +187,17 @@ const CommunityList = ({ onCategorySelected = () => {}, resetSignal }) => {
   };
 
   const formatDate = (dateString) => {
+    if (!dateString) return '';
     const date = new Date(dateString);
-    const now = new Date();
-    const diff = now - date;
-    const diffMinutes = Math.floor(diff / 60000);
-    const diffHours = Math.floor(diff / 3600000);
-    const diffDays = Math.floor(diff / 86400000);
-
-    if (diffMinutes < 1) return '방금 전';
-    if (diffMinutes < 60) return `${diffMinutes}분 전`;
-    if (diffHours < 24) return `${diffHours}시간 전`;
-    if (diffDays < 7) return `${diffDays}일 전`;
-
-    return date.toLocaleDateString('ko-KR');
+    if (Number.isNaN(date.getTime())) return '';
+    return new Intl.DateTimeFormat('ko-KR', {
+      timeZone: 'Asia/Seoul',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+    }).format(date);
   };
 
   const renderPagination = () => {

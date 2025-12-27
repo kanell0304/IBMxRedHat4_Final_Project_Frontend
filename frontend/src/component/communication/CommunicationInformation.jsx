@@ -4,45 +4,64 @@ import PhoneFrame from '../Layout/PhoneFrame';
 const CommunicationInformation = () => {
   const nav = useNavigate();
   const items = [
-    { icon: '🎙️', title: '대화 녹음 분석', desc: '실제 대화 녹음 파일을 업로드하여 분석합니다.' },
-    { icon: '👥', title: '화자 자동 감지', desc: '화자를 구분하고 분석 대상을 선택할 수 있어요.' },
-    { icon: '📊', title: '종합 리포트', desc: '말투·속도·명료도 사용을 한눈에 확인합니다.' },
-    { icon: '💡', title: '개선 가이드', desc: '바로 적용할 수 있는 개선 팁을 제시합니다.' },
-    { icon: '📌', title: '시작 전 체크', desc: '배경 소음이 적은 녹음 파일을 준비해주세요.' },
+    { icon: '🎙️', title: '대화 녹음 분석', desc: '통화 녹음 파일을 업로드하여 분석합니다.' },
+    { icon: '👥', title: '화자 자동 감지', desc: '대화 참여자를 자동으로 구분합니다.' },
+    { icon: '📊', title: '종합 리포트', desc: '말투, 속도, 발음 등을 상세히 분석합니다.' },
+    { icon: '💡', title: '맞춤형 조언', desc: '더 나은 대화를 위한 개선점을 제안합니다.' },
   ];
 
   return (
-    <PhoneFrame title="대화 분석" contentClass="p-5 pb-7 bg-gradient-to-b from-slate-50 via-white to-indigo-50/40">
-      <div className="space-y-5">
-        <div className="rounded-3xl bg-gradient-to-br from-blue-50 via-white to-indigo-50 border border-slate-100 shadow-sm p-5 space-y-2">
-          <p className="text-[12px] font-semibold text-blue-600/80 uppercase tracking-[0.16em]">Communication</p>
-          <h1 className="text-lg font-semibold text-gray-900">AI 대화 분석 서비스</h1>
-          <p className="text-sm text-gray-600 leading-relaxed">
-            녹음 파일을 올리면 화자 분리부터 개선 포인트까지<br />한 번에 리포트로 받아보세요.
+    <PhoneFrame title="대화 분석" showTitleRow={true}>
+      <div className="space-y-8">
+        {/* Hero Section */}
+        <div className="px-1 pt-4">
+          <p className="text-xs font-bold text-blue-600 uppercase tracking-widest mb-2">Communication AI</p>
+          <h1 className="text-3xl font-extrabold text-gray-900 leading-tight mb-3">
+            내 말투를<br />
+            <span className="text-blue-600">객관적으로</span>
+            <br></br>
+            <span className="text-blue-600">분석</span>해 보세요
+          </h1>
+          <p className="text-base text-gray-500 leading-relaxed">
+            당신은 얼마나 잘 말하고 있을까요? AI 분석으로 알아보세요.
           </p>
         </div>
-        <div className="rounded-3xl bg-white shadow-sm p-5 space-y-3 border border-slate-100">
-          <div className="flex items-center gap-2 text-sm font-semibold text-blue-600">
-            <span className="h-2 w-2 rounded-full bg-blue-600" />진행 안내
-          </div>
-          <div className="divide-y divide-slate-100">
-            {items.map(i => (
-              <div key={i.title} className="py-3.5 flex items-start gap-3">
-                <span className="text-lg leading-tight">{i.icon}</span>
-                <div className="space-y-1">
-                  <p className="text-sm font-semibold text-gray-900">{i.title}</p>
-                  <p className="text-[13px] leading-snug text-gray-600">{i.desc}</p>
-                </div>
+
+        {/* Feature List */}
+        <div className="space-y-4">
+          {items.map((item, i) => (
+            <div key={i} className="flex items-start gap-4 p-4 rounded-3xl bg-white shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-gray-100">
+              <div className="w-12 h-12 flex items-center justify-center text-xl flex-shrink-0">
+                {item.icon}
               </div>
-            ))}
-          </div>
+              <div>
+                <h3 className="text-base font-bold text-gray-900 mb-1">{item.title}</h3>
+                <p className="text-sm text-gray-500 leading-snug">{item.desc}</p>
+              </div>
+            </div>
+          ))}
         </div>
-        <div className="rounded-3xl bg-white shadow-sm p-6 space-y-3 border border-slate-100">
-          <h3 className="text-base font-semibold text-gray-900">준비가 끝났나요?</h3>
-          <p className="text-sm text-gray-600">아래 버튼을 눌러 바로 파일 업로드를 시작하세요!</p>
-          <button onClick={() => nav('/communication/upload')}
-            className="w-full rounded-2xl bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 text-white py-3 font-semibold shadow-[0_10px_24px_rgba(37,99,235,0.25)] transition hover:-translate-y-0.5 hover:shadow-[0_12px_28px_rgba(37,99,235,0.3)]">
-            대화 분석 시작하기
+
+        {/* Info Box */}
+        <div className="bg-gray-50 rounded-3xl p-6 border border-gray-100">
+          <h3 className="text-sm font-bold text-gray-900 mb-2">📌 준비물</h3>
+          <ul className="space-y-2">
+            <li className="flex items-center gap-2 text-sm text-gray-600">
+              <span className="text-blue-500">✓</span> 통화 녹음 파일 (wav)
+            </li>
+            <li className="flex items-center gap-2 text-sm text-gray-600">
+              <span className="text-blue-500">✓</span> 1분 이하 대화 내용
+            </li>
+          </ul>
+        </div>
+
+        {/* Fixed Bottom Button */}
+        <div className="sticky bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-white via-white to-transparent -mx-4">
+          <button 
+            onClick={() => nav('/communication/upload')}
+            className="w-full max-w-[340px] mx-auto block py-4 rounded-full bg-blue-600 text-white font-bold text-lg shadow-xl shadow-blue-200 active:scale-95 transition-transform"
+          >
+            분석 시작하기
           </button>
         </div>
       </div>

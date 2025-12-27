@@ -73,7 +73,7 @@ const Job = () => {
 
   return (
     <PhoneFrame title="모의 면접">
-      <div className="space-y-5">
+      <div className="space-y-5 pb-20">
         <div className="space-y-1">
           <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-blue-600/80">
             Question Type
@@ -208,22 +208,22 @@ const Job = () => {
             </div>
           )}
 
-          {iForm.question_type && (
-            <div className="pt-2">
-              <button
-                type="button"
-                onClick={i_start}
-                disabled={!canStart || loading}
-                className={`w-full px-4 py-4 rounded-2xl bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-500 text-white font-bold text-base shadow-lg shadow-blue-200 hover:shadow-blue-300 hover:-translate-y-[1px] focus:outline-none focus:ring-2 focus:ring-blue-200 active:translate-y-0 transition duration-150 ${
-                  canStart && !loading ? '' : 'opacity-60 cursor-not-allowed hover:translate-y-0 hover:shadow-none'
-                }`}
-              >
-                {loading ? '시작 중...' : canStart ? '모의 면접 시작' : '옵션을 선택해 주세요'}
-              </button>
-            </div>
-          )}
-
           {errorMsg && <p className="text-sm text-red-500">{errorMsg}</p>}
+        </div>
+
+        <div className="sticky bottom-0 left-0 right-0 -mx-4 px-4">
+          <div className="bg-white/95 backdrop-blur pt-2 pb-4 border-t border-slate-100">
+            <button
+              type="button"
+              onClick={i_start}
+              disabled={!canStart || loading}
+              className={`w-full px-4 py-4 rounded-2xl bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-500 text-white font-bold text-base shadow-lg shadow-blue-200 hover:shadow-blue-300 hover:-translate-y-[1px] focus:outline-none focus:ring-2 focus:ring-blue-200 active:translate-y-0 transition duration-150 ${
+                canStart && !loading ? '' : 'opacity-60 cursor-not-allowed hover:translate-y-0 hover:shadow-none'
+              }`}
+            >
+              {loading ? '시작 중...' : canStart ? '모의 면접 시작' : '옵션을 선택해 주세요'}
+            </button>
+          </div>
         </div>
       </div>
     </PhoneFrame>

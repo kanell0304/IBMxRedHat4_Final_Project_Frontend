@@ -43,7 +43,7 @@ export default function CommunityEdit() {
         setCategories(categoriesResponse.data);
 
         // 게시글 조회
-        const postResponse = await getPostDetail(postId);
+        const postResponse = await getPostDetail(postId, null, false);
         const post = postResponse.data.data.post;
 
         // 작성자 확인
@@ -194,10 +194,7 @@ export default function CommunityEdit() {
     return renderFrame(
       <div className="flex flex-col justify-center items-center min-h-[60vh] space-y-4">
         <div className="text-base text-red-600">{error}</div>
-        <button
-          onClick={() => navigate('/community')}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm"
-        >
+        <button onClick={() => navigate('/community')} className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm">
           목록으로
         </button>
       </div>
@@ -236,14 +233,7 @@ export default function CommunityEdit() {
             <span className="text-[11px] text-slate-500">수정 불가</span>
           </div>
           <div className="relative">
-            <select
-              id="category_id"
-              name="category_id"
-              value={formData.category_id}
-              onChange={handleChange}
-              disabled
-              className="w-full appearance-none px-3 py-2 rounded-xl bg-slate-50 text-slate-700 border border-slate-200 pr-10 cursor-not-allowed"
-            >
+            <select id="category_id" name="category_id" value={formData.category_id} onChange={handleChange} disabled className="w-full appearance-none px-3 py-2 rounded-xl bg-slate-50 text-slate-700 border border-slate-200 pr-10 cursor-not-allowed">
               <option value="">카테고리를 선택해주세요</option>
               {categories.map((category) => (
                 <option key={category.category_id} value={category.category_id}>
@@ -268,18 +258,7 @@ export default function CommunityEdit() {
             </label>
             <span className="text-xs text-slate-400">{formData.title.length}/200</span>
           </div>
-          <input
-            type="text"
-            id="title"
-            name="title"
-            value={formData.title}
-            onChange={handleChange}
-            maxLength={200}
-            placeholder="제목을 입력해주세요"
-            className={`w-full px-3 py-2 rounded-xl bg-slate-50 border focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-              validationErrors.title ? 'border-red-400' : 'border-slate-200'
-            }`}
-          />
+          <input type="text" id="title" name="title" value={formData.title} onChange={handleChange} maxLength={200} placeholder="제목을 입력해주세요" className={`w-full px-3 py-2 rounded-xl bg-slate-50 border focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${validationErrors.title ? 'border-red-400' : 'border-slate-200'}`} />
           {validationErrors.title && <p className="text-xs text-red-500">{validationErrors.title}</p>}
         </div>
 
