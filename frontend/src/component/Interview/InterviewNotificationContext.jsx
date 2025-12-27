@@ -17,7 +17,6 @@ export const InterviewNotificationProvider = ({ children }) => {
   const [notification, setNotification] = useState(null);
   const [pendingInterviewId, setPendingInterviewId] = useState(null);
 
-  // DB 상태를 주기적으로 체크 (백그라운드 분석 감지)
   useEffect(() => {
     if (!pendingInterviewId) return;
 
@@ -25,22 +24,19 @@ export const InterviewNotificationProvider = ({ children }) => {
       try {
         const statusData = await getInterviewStatus(pendingInterviewId);
 
-        // status=2는 분석 완료
         if (statusData.status === 2) {
-          // 알림 표시
           setNotification({
             interviewId: pendingInterviewId,
+            language: statusData.language || 'ko',
             message: '모의면접 분석이 완료되었어요!',
           });
 
-          // 폴링 중지
           setPendingInterviewId(null);
         }
       } catch (err) {
         console.error('상태 체크 실패:', err);
-        // 에러 발생 시에도 계속 폴링 (네트워크 일시 오류 대비)
       }
-    }, 3000); // 3초마다 체크
+    }, 3000);
 
     return () => clearInterval(checkInterval);
   }, [pendingInterviewId]);
@@ -51,8 +47,11 @@ export const InterviewNotificationProvider = ({ children }) => {
 
   const goToResult = () => {
     if (notification?.interviewId) {
-      navigate(`/interview/immediate/${notification.interviewId}`);
+      const id = notification.interviewId;
       dismissNotification();
+      setTimeout(() => {
+        navigate(`/interview/immediate/${id}`);
+      }, 100);
     }
   };
 

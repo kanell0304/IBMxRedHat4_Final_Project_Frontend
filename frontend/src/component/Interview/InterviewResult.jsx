@@ -1,6 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getInterviewResults } from '../../api/interviewSessionApi';
+import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from 'recharts';
+
+const calculateOverallQuality = (report) => {
+  const scores = [
+    report.non_standard?.score || 0,
+    report.filler_words?.score || 0,
+    report.discourse_clarity?.score || 0,
+    report.content_overall?.score || 0
+  ];
+  return Math.round(scores.reduce((acc, score) => acc + score, 0) / scores.length);
+};
 
 const InterviewResult = () => {
 
@@ -115,7 +126,6 @@ const InterviewResult = () => {
 
 
         const overallResult=results.find((r)=>r.scope==='overall')?.report;
-        const perQuestionResults=results.filter((r)=>r.scope==='per_question');
 
         return (
              <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
@@ -130,7 +140,7 @@ const InterviewResult = () => {
             onClick={() => navigate('/history')}
             className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition"
           >
-            히스토리로
+            기록으로
           </button>
         </div>
       </div>
@@ -169,8 +179,8 @@ const InterviewResult = () => {
           <OverallSummary report={overallResult} />
         )}
 
-        {activeTab === 'per_question' && (
-          <PerQuestionList results={perQuestionResults} />
+        {activeTab === 'per_question' && overallResult && (
+          <PerQuestionList report={overallResult} />
         )}
       </div>
     </div>
@@ -179,6 +189,14 @@ const InterviewResult = () => {
 
 // OverallSummary 컴포넌트
 const OverallSummary = ({ report }) => {
+  const radarData = [
+    { subject: '언어 정확성', score: report.non_standard?.score || 0, fullMark: 100 },
+    { subject: '발화 간결성', score: report.filler_words?.score || 0, fullMark: 100 },
+    { subject: '구조 명확성', score: report.discourse_clarity?.score || 0, fullMark: 100 },
+    { subject: '내용 적절성', score: report.content_overall?.score || 0, fullMark: 100 },
+    { subject: '전반적 품질', score: calculateOverallQuality(report), fullMark: 100 }
+  ];
+
   return (
     <div className="space-y-6">
       {/* 종합 코멘트 */}
@@ -189,23 +207,54 @@ const OverallSummary = ({ report }) => {
         </p>
       </div>
 
-      {/* 비표준어/속어 */}
+      {/* 오각형 레이더 차트 */}
+      <div className="bg-white rounded-2xl shadow-md border border-gray-200 p-6">
+        <h2 className="text-lg font-bold text-gray-900 mb-4">종합 역량 분석</h2>
+        <ResponsiveContainer width="100%" height={350}>
+          <RadarChart data={radarData}>
+            <PolarGrid stroke="#e5e7eb" />
+            <PolarAngleAxis
+              dataKey="subject"
+              tick={{ fill: '#374151', fontSize: 12, fontWeight: 500 }}
+            />
+            <PolarRadiusAxis
+              angle={90}
+              domain={[0, 100]}
+              tick={{ fill: '#9ca3af', fontSize: 11 }}
+            />
+            <Radar
+              name="점수"
+              dataKey="score"
+              stroke="#3b82f6"
+              fill="#3b82f6"
+              fillOpacity={0.6}
+            />
+          </RadarChart>
+        </ResponsiveContainer>
+        <div className="mt-4 grid grid-cols-2 md:grid-cols-5 gap-2">
+          {radarData.map((item, idx) => (
+            <div key={idx} className="text-center">
+              <p className="text-xs text-gray-500">{item.subject}</p>
+              <p className="text-lg font-bold text-blue-600">{item.score}점</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
       <AnalysisCard
-        title="비표준어/속어 사용"
+        title="언어 정확성"
         data={report.non_standard}
         color="red"
       />
 
-      {/* 군말/망설임 */}
       <AnalysisCard
-        title="군말/망설임"
+        title="발화 간결성"
         data={report.filler_words}
         color="yellow"
       />
 
-      {/* 담화 명료성 */}
       <AnalysisCard
-        title="담화/문장 구조 명료성"
+        title="구조 명확성"
         data={report.discourse_clarity}
         color="green"
       />
@@ -215,39 +264,47 @@ const OverallSummary = ({ report }) => {
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-bold text-gray-900">내용 적절성</h3>
           <div className="flex items-center gap-3">
-            <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-bold">
-              {report.content_overall.grade}
-            </span>
+            {report.content_overall?.grade && (
+              <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-bold">
+                {report.content_overall.grade}
+              </span>
+            )}
             <div className="text-3xl font-bold text-blue-600">
-              {report.content_overall.score}점
+              {report.content_overall?.score || 0}점
             </div>
           </div>
         </div>
 
         <div className="space-y-4">
-          <div>
-            <h4 className="font-semibold text-green-700 mb-2">잘한 점</h4>
-            <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
-              {report.content_overall.strengths.map((item, idx) => (
-                <li key={idx}>{item}</li>
-              ))}
-            </ul>
-          </div>
+          {report.content_overall?.strengths && report.content_overall.strengths.length > 0 && (
+            <div>
+              <h4 className="font-semibold text-green-700 mb-2">잘한 점</h4>
+              <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
+                {report.content_overall.strengths.map((item, idx) => (
+                  <li key={idx}>{item}</li>
+                ))}
+              </ul>
+            </div>
+          )}
 
-          <div>
-            <h4 className="font-semibold text-orange-700 mb-2">부족한 점</h4>
-            <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
-              {report.content_overall.weaknesses.map((item, idx) => (
-                <li key={idx}>{item}</li>
-              ))}
-            </ul>
-          </div>
+          {report.content_overall?.weaknesses && report.content_overall.weaknesses.length > 0 && (
+            <div>
+              <h4 className="font-semibold text-orange-700 mb-2">부족한 점</h4>
+              <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
+                {report.content_overall.weaknesses.map((item, idx) => (
+                  <li key={idx}>{item}</li>
+                ))}
+              </ul>
+            </div>
+          )}
 
-          <div className="bg-gray-50 rounded-lg p-4 mt-4">
-            <p className="text-sm text-gray-800 leading-relaxed">
-              {report.content_overall.summary}
-            </p>
-          </div>
+          {report.content_overall?.summary && (
+            <div className="bg-gray-50 rounded-lg p-4 mt-4">
+              <p className="text-sm text-gray-800 leading-relaxed">
+                {report.content_overall.summary}
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -268,14 +325,16 @@ const OverallSummary = ({ report }) => {
                 <div className="flex items-center justify-between mb-4">
                     <h3 className="text-lg font-bold text-gray-900">{title}</h3>
                     <div className="flex items-center gap-3">
-                        <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-bold">
-                            {data.grade}
-                        </span>
-                        <div className="text-3xl font-bold text-blue-600">{data.score}점</div>
+                        {data?.grade && (
+                            <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-bold">
+                                {data.grade}
+                            </span>
+                        )}
+                        <div className="text-3xl font-bold text-blue-600">{data?.score || 0}점</div>
                     </div>
                 </div>
 
-                {data.detected_examples.length > 0 && (
+                {data?.detected_examples && data.detected_examples.length > 0 && (
                     <div className={`rounded-lg p-4 mb-4 border ${colorClasses[color]}`}>
                         <h4 className="font-semibold mb-2">발견된 예시</h4>
                         <ul className="list-disc list-inside space-y-1 text-sm">
@@ -287,18 +346,22 @@ const OverallSummary = ({ report }) => {
                     )}
 
                     <div className="space-y-3 text-sm text-gray-700">
-                        <div>
-                            <span className="font-semibold text-gray-900">평가 이유:</span>
-                            <p className="mt-1">{data.reason}</p>
-                        </div>
+                        {data?.reason && (
+                            <div>
+                                <span className="font-semibold text-gray-900">평가 이유:</span>
+                                <p className="mt-1">{data.reason}</p>
+                            </div>
+                        )}
 
-                        <div>
-                            <span className="font-semibold text-gray-900">개선 방법:</span>
-                            <p className="mt-1">{data.improvement}</p>
-                        </div>
+                        {data?.improvement && (
+                            <div>
+                                <span className="font-semibold text-gray-900">개선 방법:</span>
+                                <p className="mt-1">{data.improvement}</p>
+                            </div>
+                        )}
                     </div>
 
-                    {data.revised_examples.length > 0 && (
+                    {data?.revised_examples && data.revised_examples.length > 0 && (
                         <div className="mt-4 bg-blue-50 rounded-lg p-4">
                             <h4 className="font-semibold text-blue-900 mb-2">개선 예시</h4>
                             <div className="space-y-2">
@@ -317,8 +380,8 @@ const OverallSummary = ({ report }) => {
 
 
 // PerQuestionList 컴포넌트
-const PerQuestionList = ({ results }) => {
-  if (!results || results.length === 0) {
+const PerQuestionList = ({ report }) => {
+  if (!report.content_per_question || report.content_per_question.length === 0) {
     return (
       <div className="bg-white rounded-2xl shadow-md border border-gray-200 p-8 text-center">
         <p className="text-gray-500">질문별 평가 데이터가 없습니다.</p>
@@ -328,8 +391,8 @@ const PerQuestionList = ({ results }) => {
 
   return (
     <div className="space-y-4">
-      {results.map((result, idx) => (
-        <PerQuestionCard key={idx} data={result.report} />
+      {report.content_per_question.map((question, idx) => (
+        <PerQuestionCard key={idx} data={question} />
       ))}
     </div>
   );
@@ -341,7 +404,6 @@ const PerQuestionCard = ({ data }) => {
 
   return (
     <div className="bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden">
-      {/* Header */}
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition"
@@ -355,10 +417,20 @@ const PerQuestionCard = ({ data }) => {
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-bold">
-            {data.grade}
-          </span>
-          <span className="text-2xl font-bold text-blue-600">{data.score}점</span>
+          {data.is_appropriate !== undefined && (
+            <div className="group relative">
+              <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                data.is_appropriate
+                  ? 'bg-green-100 text-green-700'
+                  : 'bg-red-100 text-red-700'
+              }`}>
+                {data.is_appropriate ? '적절' : '개선필요'}
+              </span>
+              <div className="invisible group-hover:visible absolute right-0 top-full mt-1 w-48 bg-gray-800 text-white text-xs rounded-lg p-2 z-10 shadow-lg">
+                질문 의도에 {data.is_appropriate ? '부합' : '미흡'}
+              </div>
+            </div>
+          )}
           <svg
             className={`w-5 h-5 text-gray-400 transition-transform ${
               isOpen ? 'rotate-180' : ''
@@ -372,18 +444,39 @@ const PerQuestionCard = ({ data }) => {
         </div>
       </button>
 
-      {/* Content */}
       {isOpen && (
         <div className="px-6 pb-6 pt-2 border-t border-gray-100 space-y-4">
-          <div>
-            <h4 className="font-semibold text-gray-900 mb-2">평가</h4>
-            <p className="text-sm text-gray-700 leading-relaxed">{data.comment}</p>
-          </div>
+          {data.user_answer && (
+            <div className="bg-gray-50 rounded-lg p-3">
+              <h4 className="font-semibold text-gray-900 mb-2 text-xs">내 답변</h4>
+              <p className="text-sm text-gray-700 leading-relaxed">{data.user_answer}</p>
+            </div>
+          )}
 
-          <div className="bg-blue-50 rounded-lg p-4">
-            <h4 className="font-semibold text-blue-900 mb-2">개선 제안</h4>
-            <p className="text-sm text-gray-800 leading-relaxed">{data.suggestion}</p>
-          </div>
+          {data.comment && (
+            <div>
+              <h4 className="font-semibold text-gray-900 mb-2">평가</h4>
+              <p className="text-sm text-gray-700 leading-relaxed">{data.comment}</p>
+            </div>
+          )}
+
+          {data.suggestion && (
+            <div className="bg-blue-50 rounded-lg p-4">
+              <h4 className="font-semibold text-blue-900 mb-2">개선 제안</h4>
+              <p className="text-sm text-gray-800 leading-relaxed">{data.suggestion}</p>
+            </div>
+          )}
+
+          {data.evidence_sentences && data.evidence_sentences.length > 0 && (
+            <div className="bg-red-50 rounded-lg p-3">
+              <h4 className="font-semibold text-red-700 mb-2 text-xs">문제가 된 표현</h4>
+              <ul className="space-y-1">
+                {data.evidence_sentences.map((sent, idx) => (
+                  <li key={idx} className="text-sm text-gray-700">• {sent}</li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
       )}
     </div>

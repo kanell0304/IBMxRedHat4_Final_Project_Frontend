@@ -30,13 +30,13 @@ const formatDate = (value) => {
 
 const HistoryContent = () => {
   const [tab, setTab] = useState('interview');
+  const [languageFilter, setLanguageFilter] = useState('all');
   const [uid, setUid] = useState(null);
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  // 성장분석 데이터
   const [weaknesses, setWeaknesses] = useState(null);
   const [metricChanges, setMetricChanges] = useState(null);
   const [analysisLoading, setAnalysisLoading] = useState(false);
@@ -194,7 +194,24 @@ const HistoryContent = () => {
           ))}
         </div>
 
-        {/* 전체 삭제 버튼 - 인사이트 탭이 아닐 때만 표시 */}
+        {tab === 'interview' && (
+          <div className="flex gap-2">
+            {['all', 'ko', 'en'].map((lang) => (
+              <button
+                key={lang}
+                onClick={() => setLanguageFilter(lang)}
+                className={`flex-1 px-3 py-2 text-xs font-semibold rounded-lg transition ${
+                  languageFilter === lang
+                    ? 'bg-blue-500 text-white'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                }`}
+              >
+                {lang === 'all' ? '전체' : lang === 'ko' ? '한국어' : 'English'}
+              </button>
+            ))}
+          </div>
+        )}
+
         {tab !== 'analysis' && items.length > 0 && (
           <div className="flex justify-end">
             <button
@@ -224,6 +241,7 @@ const HistoryContent = () => {
                   typeLabel={typeLabel}
                   formatDate={formatDate}
                   onSelect={openItem}
+                  languageFilter={languageFilter}
                 />
               )}
               {tab === 'presentation' && (

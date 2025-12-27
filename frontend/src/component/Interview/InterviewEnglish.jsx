@@ -3,8 +3,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import useRecorder from './useRecorder.js';
 import { createAnswerRow, uploadAndAnalyze } from './../../api/interviewSessionApi';
 import Waveform from './Waveform.jsx';
-import AnalysisLoading from './AnalysisLoading.jsx';
 import PhoneFrame from '../Layout/PhoneFrame.jsx';
+import AnalysisLoadingEnglish from './AnalysisLoadingEnglish';
 
 const InterviewEnglish = () => {
 
@@ -160,7 +160,7 @@ const InterviewEnglish = () => {
 
   // 로딩 화면 표시
   if (showAnalysisLoading) {
-    return <AnalysisLoading interviewId={interviewId} />;
+    return <AnalysisLoadingEnglish interviewId={interviewId} />;
   }
 
   return (

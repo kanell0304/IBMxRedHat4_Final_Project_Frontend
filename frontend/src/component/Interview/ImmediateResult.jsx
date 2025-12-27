@@ -79,6 +79,13 @@ const ImmediateResult = () => {
 
   const { overall_report, question_details, similar_hint } = result;
 
+  const isEnglish = overall_report && 'comments' in overall_report;
+
+  // 전체 평균 점수 계산
+  const averageScore = question_details && question_details.length > 0
+    ? Math.round(question_details.reduce((sum, q) => sum + (q.score || 0), 0) / question_details.length)
+    : 0;
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-indigo-50">
       {/* Header */}
@@ -88,14 +95,14 @@ const ImmediateResult = () => {
             Mock Interview
           </p>
           <h1 className="text-2xl font-black tracking-tight text-gray-900 mt-1">
-            면접 결과 요약
+            {isEnglish ? 'Quick Summary' : '한눈에 보기'}
           </h1>
         </div>
       </div>
 
       {/* Content */}
       <div className="max-w-3xl mx-auto px-4 py-8 space-y-6">
-        
+
         {/* 유사 답변 힌트 (조건부 표시) */}
         {similar_hint && (
           <div className="bg-yellow-50 border border-yellow-200 rounded-2xl p-6">
@@ -116,65 +123,65 @@ const ImmediateResult = () => {
           </div>
         )}
 
-        {/* 총평 요약 */}
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-          <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-            <span className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
-              <svg className="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </span>
-            총평
-          </h2>
-          <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
-            {overall_report?.overall_comment || '총평이 준비 중입니다.'}
-          </p>
-
-          {/* 내용 적절성 요약 */}
-          {overall_report?.content_overall && (
-            <div className="mt-4 pt-4 border-t border-gray-100">
-              <div className="flex items-center gap-3 mb-3">
-                <span className="text-3xl font-bold text-blue-600">
-                  {overall_report.content_overall.score}점
-                </span>
-                <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-semibold">
-                  {overall_report.content_overall.grade}
-                </span>
-              </div>
-              <p className="text-gray-600 text-sm">{overall_report.content_overall.summary}</p>
+        {/* 전체 점수 대시보드 */}
+        <div className="bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl shadow-xl p-8 text-white">
+          <div className="text-center space-y-4">
+            <p className="text-blue-100 text-sm font-semibold">전체 평균</p>
+            <div className="text-7xl font-black">
+              {isEnglish
+                ? (overall_report.score || averageScore)
+                : (overall_report?.content_overall?.score || averageScore)
+              }
+              <span className="text-4xl">점</span>
             </div>
-          )}
+            <div className="inline-block px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full">
+              <span className="text-lg font-bold">
+                {isEnglish
+                  ? overall_report.grade
+                  : (overall_report?.content_overall?.grade || '평가 중')
+                }
+              </span>
+            </div>
+          </div>
         </div>
 
-        {/* 질문별 간단 피드백 */}
+        {/* 질문별 스코어카드 */}
         <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
           <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
             <span className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center">
               <svg className="w-5 h-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
               </svg>
             </span>
-            질문별 평가
+            질문별 점수
           </h2>
 
-          <div className="space-y-4">
+          <div className="grid grid-cols-1 gap-3">
             {question_details && question_details.length > 0 ? (
               question_details.map((q, idx) => (
-                <QuestionCard key={idx} question={q} />
+                <ScoreCard key={idx} question={q} />
               ))
             ) : (
-              <p className="text-gray-500 text-center py-4">질문별 평가 데이터가 없습니다.</p>
+              <p className="text-gray-500 text-center py-4">평가 데이터가 없습니다.</p>
             )}
           </div>
         </div>
 
         {/* 상세 결과 보기 버튼 */}
-        <button
-          onClick={() => navigate(`/interview/result/${interviewId}`)}
-          className="w-full py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-bold hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 shadow-lg hover:shadow-xl"
-        >
-          상세 결과 보기 →
-        </button>
+        <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-6 border border-purple-200">
+          <div className="text-center space-y-3">
+            <p className="text-gray-700 font-medium">더 자세한 분석이 궁금하신가요?</p>
+            <button
+              onClick={() => navigate(`/interview/result/${interviewId}`)}
+              className="w-full py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-bold hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
+            >
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              상세 분석 리포트 보기
+            </button>
+          </div>
+        </div>
 
         <div className="flex gap-3">
           <button
@@ -196,81 +203,42 @@ const ImmediateResult = () => {
 };
 
 
-// 질문 카드 컴포넌트
-const QuestionCard = ({ question }) => {
-  const [isOpen, setIsOpen] = useState(false);
-
+// 스코어카드 컴포넌트 - 확장 불가, 점수/배지만 표시
+const ScoreCard = ({ question }) => {
   return (
-    <div className="border border-gray-200 rounded-xl overflow-hidden">
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="w-full px-4 py-3 flex items-center justify-between hover:bg-gray-50 transition"
-      >
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-600 font-bold text-sm flex items-center justify-center">
-            Q{question.q_index}
-          </div>
-          <span className="text-left font-medium text-gray-900 text-sm line-clamp-1">
-            {question.q_text}
-          </span>
+    <div className="flex items-center justify-between p-4 bg-gradient-to-r from-gray-50 to-slate-50 rounded-xl border border-gray-200 hover:shadow-md transition">
+      <div className="flex items-center gap-3 flex-1 min-w-0">
+        <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-600 font-bold text-sm flex items-center justify-center flex-shrink-0">
+          Q{question.q_index}
         </div>
-        <div className="flex items-center gap-2">
-          {/* 적절성 배지 */}
-          <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
-            question.is_appropriate 
-              ? 'bg-green-100 text-green-700' 
+        <span className="font-medium text-gray-900 text-sm truncate">
+          {question.q_text}
+        </span>
+      </div>
+
+      <div className="flex items-center gap-3 flex-shrink-0">
+        {/* 점수 표시 */}
+        {question.score !== undefined && (
+          <div className="text-right">
+            <span className="text-2xl font-bold text-blue-600">{question.score}</span>
+            <span className="text-sm text-gray-500">점</span>
+          </div>
+        )}
+
+        {/* 적절성 배지 */}
+        <div className="group relative">
+          <span className={`px-3 py-1.5 rounded-full text-xs font-bold ${
+            question.is_appropriate
+              ? 'bg-green-100 text-green-700'
               : 'bg-red-100 text-red-700'
           }`}>
-            {question.is_appropriate ? '적절' : '개선필요'}
+            {question.is_appropriate ? '✓ 적절' : '! 개선'}
           </span>
-          <svg
-            className={`w-5 h-5 text-gray-400 transition-transform ${isOpen ? 'rotate-180' : ''}`}
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-          </svg>
-        </div>
-      </button>
-
-      {isOpen && (
-        <div className="px-4 pb-4 pt-2 border-t border-gray-100 space-y-3">
-          {/* 사용자 답변 */}
-          {question.user_answer && (
-            <div className="bg-gray-50 rounded-lg p-3">
-              <p className="text-xs font-semibold text-gray-500 mb-1">내 답변</p>
-              <p className="text-sm text-gray-700">{question.user_answer}</p>
-            </div>
-          )}
-
-          {/* 질문 의도 */}
-          <div>
-            <p className="text-xs font-semibold text-gray-500 mb-1">질문 의도</p>
-            <p className="text-sm text-gray-700">{question.question_intent}</p>
+          <div className="invisible group-hover:visible absolute right-0 top-full mt-1 w-48 bg-gray-800 text-white text-xs rounded-lg p-2 z-10 shadow-lg">
+            질문 의도에 {question.is_appropriate ? '부합' : '미흡'}
           </div>
-
-          {/* 피드백 */}
-          {question.feedback && (
-            <div className="bg-blue-50 rounded-lg p-3">
-              <p className="text-xs font-semibold text-blue-700 mb-1">피드백</p>
-              <p className="text-sm text-gray-700">{question.feedback}</p>
-            </div>
-          )}
-
-          {/* 증거 문장 */}
-          {question.evidence_sentences && question.evidence_sentences.length > 0 && (
-            <div className="bg-red-50 rounded-lg p-3">
-              <p className="text-xs font-semibold text-red-700 mb-1">주요 발견</p>
-              <ul className="space-y-1">
-                {question.evidence_sentences.map((sent, idx) => (
-                  <li key={idx} className="text-sm text-gray-700">• {sent}</li>
-                ))}
-              </ul>
-            </div>
-          )}
         </div>
-      )}
+      </div>
     </div>
   );
 };

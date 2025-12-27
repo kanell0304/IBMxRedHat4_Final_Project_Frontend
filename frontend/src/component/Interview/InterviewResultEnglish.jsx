@@ -126,7 +126,7 @@ const InterviewResultEnglish = () => {
             onClick={() => navigate('/history')}
             className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition"
           >
-            히스토리로
+            기록으로
           </button>
         </div>
       </div>
@@ -145,39 +145,50 @@ const InterviewResultEnglish = () => {
 const EnglishResultSummary = ({ report }) => {
   return (
     <div className="space-y-6">
-      {/* 종합 점수 */}
       <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl p-8">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-2xl font-bold text-blue-900">Overall Score</h2>
-          <div className="text-5xl font-black text-blue-600">
-            {report.score || 0}점
+          <div className="flex items-center gap-4">
+            <span className="px-4 py-2 bg-white border-2 border-blue-600 text-blue-600 rounded-xl text-2xl font-black">
+              {report.grade || 'B'}
+            </span>
+            <div className="text-5xl font-black text-blue-600">
+              {report.score || 0}점
+            </div>
           </div>
         </div>
       </div>
 
-      {/* 총평 */}
       <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
         <h2 className="text-lg font-bold text-gray-900 mb-3">총평</h2>
-        <p className="text-gray-800 leading-relaxed whitespace-pre-wrap">
-          {report.comments || '총평이 없습니다.'}
-        </p>
+        <div className="space-y-3">
+          {Array.isArray(report.comments)
+            ? report.comments.map((comment, idx) => (
+                <p key={idx} className="text-gray-800 leading-relaxed">
+                  • {comment}
+                </p>
+              ))
+            : <p className="text-gray-800">{report.comments || '총평이 없습니다.'}</p>
+          }
+        </div>
       </div>
 
-      {/* STT Metrics */}
+      <div className="bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200 rounded-2xl p-6 shadow-sm">
+        <h2 className="text-lg font-bold text-amber-900 mb-3">개선사항</h2>
+        <div className="space-y-3">
+          {Array.isArray(report.improvements)
+            ? report.improvements.map((improvement, idx) => (
+                <p key={idx} className="text-gray-800 leading-relaxed">
+                  • {improvement}
+                </p>
+              ))
+            : <p className="text-gray-800">{report.improvements || '개선사항이 없습니다.'}</p>
+          }
+        </div>
+      </div>
+
       {report.stt_metrics && (
         <STTMetricsCard metrics={report.stt_metrics} />
-      )}
-
-      {/* Transcript */}
-      {report.transcript && (
-        <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
-          <h2 className="text-lg font-bold text-gray-900 mb-3">전체 답변 내용</h2>
-          <div className="bg-gray-50 rounded-lg p-4">
-            <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">
-              {report.transcript}
-            </p>
-          </div>
-        </div>
       )}
     </div>
   );
