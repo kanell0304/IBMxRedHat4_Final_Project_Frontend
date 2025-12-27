@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { getInterviewResults } from '../../api/interviewSessionApi';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from 'recharts';
 
-const calculateOverallQuality = (report) => {
+const calculateAnswerCompleteness = (report) => {
   const scores = [
     report.non_standard?.score || 0,
     report.filler_words?.score || 0,
@@ -115,7 +115,7 @@ const InterviewResult = () => {
                                 </div>
 
                                 <p className="text-xs text-gray-500 pt-2">
-                                    문제가 계속되면 히스토리 페이지에서 결과를 확인하거나 고객센터에 문의해주세요.
+                                    문제가 계속되면 기록 페이지에서 결과를 확인하거나 고객센터에 문의해주세요.
                                 </p>
                             </div>
                         </div>
@@ -133,7 +133,7 @@ const InterviewResult = () => {
       <div className="bg-white border-b border-gray-200 px-4 py-4 shadow-sm">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">면접 결과</h1>
+            <h1 className="text-2xl font-bold text-gray-900">답변 전달력 종합 분석</h1>
             <p className="text-sm text-gray-500 mt-1">AI 기반 종합 분석 결과입니다.</p>
           </div>
           <button
@@ -194,7 +194,7 @@ const OverallSummary = ({ report }) => {
     { subject: '발화 간결성', score: report.filler_words?.score || 0, fullMark: 100 },
     { subject: '구조 명확성', score: report.discourse_clarity?.score || 0, fullMark: 100 },
     { subject: '내용 적절성', score: report.content_overall?.score || 0, fullMark: 100 },
-    { subject: '전반적 품질', score: calculateOverallQuality(report), fullMark: 100 }
+    { subject: '답변 완성도', score: calculateAnswerCompleteness(report), fullMark: 100 }
   ];
 
   return (

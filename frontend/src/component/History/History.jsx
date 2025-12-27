@@ -434,10 +434,10 @@ const MetricChangeSection = ({ data }) => {
         </h3>
         <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 text-center">
           <p className="text-yellow-800 text-sm font-medium">
-            📊 최소 10회 이상의 모의면접이 필요합니다
+            📊 최소 6회 이상의 모의면접이 필요합니다
           </p>
           <p className="text-yellow-600 text-xs mt-1">
-            현재 {data.total_interviews}회 완료 · ({10 - data.total_interviews}회 더 필요)
+            현재 {data.total_interviews}회 완료 · ({6 - data.total_interviews}회 더 필요)
           </p>
         </div>
       </div>
