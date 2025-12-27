@@ -78,7 +78,7 @@ const MainPageContent = () => {
       <div className="w-full max-w-full mx-auto bg-white px-0 pt-4 pb-2 space-y-5">
         <div className="rounded-3xl bg-gradient-to-br from-[#eef4ff] via-white to-[#effbff] shadow-sm p-6 flex gap-4 items-start border border-white/80">
           <div className="flex-1 space-y-3">
-            <h1 className="text-[24px] font-extrabold text-gray-900 leading-snug">
+            <h1 className="text-[22px] font-extrabold text-gray-900 leading-snug">
               STEACH, <br/> 말투 분석은 스티치!
             </h1>
             <p className="text-sm text-gray-600">하루 10분도 좋아요. AI가 바로 점검해 성장 기록을 남깁니다.</p>

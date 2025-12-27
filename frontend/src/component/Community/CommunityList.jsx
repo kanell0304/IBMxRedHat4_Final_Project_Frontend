@@ -160,6 +160,15 @@ const CommunityList = ({ onCategorySelected = () => {}, resetSignal }) => {
       navigate('/login');
       return;
     }
+    if (selectedCategory) {
+      navigate('/community/write', {
+        state: {
+          selectedCategoryId: selectedCategory,
+          selectedCategoryName: getCategoryName(selectedCategory),
+        },
+      });
+      return;
+    }
     navigate('/community/write');
   };
 
