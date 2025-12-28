@@ -3,10 +3,10 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import useRecorder from './useRecorder.js';
 import { createAnswerRow, uploadAndAnalyze } from './../../api/interviewSessionApi';
 import Waveform from './Waveform.jsx';
-import AnalysisLoading from './AnalysisLoading.jsx';
 import PhoneFrame from '../Layout/PhoneFrame.jsx';
+import AnalysisLoadingEnglish from './AnalysisLoadingEnglish';
 
-const Interview = () => {
+const InterviewEnglish = () => {
 
   const location=useLocation();
   const navigate=useNavigate();
@@ -38,8 +38,8 @@ const Interview = () => {
   // 데이터 검증
   useEffect(()=>{
     if (!interviewId || !questions.length){
-      alert('모의면접 정보가 없습니다. 다시 시작해주세요.');
-      navigate('/interview/job');
+      alert('Interview information is missing. Please start again.');
+      navigate('/interview/job-en');
     }
   }, [interviewId, questions, navigate]);
 
@@ -88,7 +88,7 @@ const Interview = () => {
 
   const handleStopRecording=()=>{
     if(recordingTime<MIN_RECORDING_TIME){
-      setError(`녹음 시간이 너무 짧습니다. 최소 ${MIN_RECORDING_TIME}초 이상 녹음해주세요.`);
+      setError(`Recording is too short. Please record at least ${MIN_RECORDING_TIME} seconds.`);
       return;
     }
 
@@ -111,7 +111,7 @@ const Interview = () => {
 
       // 2. 백그라운드 업로드 시작
       uploadAndAnalyze(answerRow.i_answer_id, audioBlob).catch((err) => {
-        console.error('백그라운드 업로드 실패:', err);
+        console.error('Background upload failed:', err);
       });
 
       // 3. answer_id 저장
@@ -130,7 +130,7 @@ const Interview = () => {
         setShowAnalysisLoading(true);
       }
     } catch (err) {
-      console.error('답변 처리 실패:', err);
+      console.error('Answer processing failed:', err);
       setError(err.message);
       setUploadStatus('error');
     }
@@ -160,11 +160,11 @@ const Interview = () => {
 
   // 로딩 화면 표시
   if (showAnalysisLoading) {
-    return <AnalysisLoading interviewId={interviewId} />;
+    return <AnalysisLoadingEnglish interviewId={interviewId} />;
   }
 
   return (
-    <PhoneFrame title="모의 면접" contentClass="p-4 pb-8 bg-gradient-to-b from-blue-50 via-white to-indigo-50/40">
+    <PhoneFrame title="English Interview" contentClass="p-4 pb-8 bg-gradient-to-b from-blue-50 via-white to-indigo-50/40">
       <div className="space-y-6">
         {/* Header */}
         <div className="flex items-center gap-3">
@@ -172,7 +172,7 @@ const Interview = () => {
             type="button"
             onClick={handleExit}
             className="w-10 h-10 rounded-full bg-white border border-gray-200 text-gray-700 flex items-center justify-center shadow-sm hover:bg-gray-50 transition"
-            aria-label="나가기"
+            aria-label="Exit"
           >
             ←
           </button>
@@ -181,7 +181,7 @@ const Interview = () => {
               Mock Interview
             </p>
             <h1 className="text-2xl font-black tracking-tight text-gray-900">
-              질문 {currentQuestionIndex + 1} / {totalQuestions}
+              Question {currentQuestionIndex + 1} / {totalQuestions}
             </h1>
           </div>
         </div>
@@ -207,7 +207,7 @@ const Interview = () => {
                 {currentQuestion.question_text}
               </h2>
               <p className="text-sm text-gray-500 mt-2">
-                최소 {MIN_RECORDING_TIME}초 이상 답변해주세요.
+                Please answer for at least {MIN_RECORDING_TIME} seconds.
               </p>
             </div>
           </div>
@@ -222,9 +222,9 @@ const Interview = () => {
                 {preparingCountdown}
               </div>
               <div className="space-y-2">
-                <p className="text-xl text-gray-800 font-bold">준비 시간</p>
+                <p className="text-xl text-gray-800 font-bold">Preparation Time</p>
                 <p className="text-sm text-gray-600">
-                  질문을 읽고 답변을 준비하세요.
+                  Read the question and prepare your answer.
                 </p>
               </div>
               <div className="w-full max-w-md mx-auto bg-gray-200 rounded-full h-3 overflow-hidden">
@@ -237,7 +237,7 @@ const Interview = () => {
                 onClick={handleSkipCountdown}
                 className="mt-6 px-8 py-3 bg-white border-2 border-gray-300 text-gray-700 rounded-xl font-semibold hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 shadow-sm hover:shadow"
               >
-                건너뛰기 →
+                Skip →
               </button>
             </div>
           )}
@@ -254,7 +254,7 @@ const Interview = () => {
                   </span>
                 </div>
                 <div className="text-sm text-gray-600">
-                  최소 <span className="font-semibold text-gray-800">{MIN_RECORDING_TIME}초</span>
+                  Min <span className="font-semibold text-gray-800">{MIN_RECORDING_TIME}s</span>
                 </div>
               </div>
 
@@ -274,7 +274,7 @@ const Interview = () => {
                     <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 001-1V8a1 1 0 00-1-1H8z"/>
                     </svg>
-                    답변 완료
+                    Finish Answer
                   </span>
                 </button>
               </div>
@@ -291,7 +291,7 @@ const Interview = () => {
               onClick={() => setError(null)}
               className="text-xs text-red-600 underline hover:text-red-800"
             >
-              닫기
+              Close
             </button>
           </div>
         )}
@@ -300,20 +300,20 @@ const Interview = () => {
         {showExitModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-white rounded-2xl p-6 max-w-sm mx-4 shadow-xl">
-              <h3 className="text-lg font-bold text-gray-900 mb-2">면접을 종료하시겠습니까?</h3>
-              <p className="text-sm text-gray-600 mb-6">진행 중인 면접이 저장되지 않을 수 있습니다.</p>
+              <h3 className="text-lg font-bold text-gray-900 mb-2">Exit the interview?</h3>
+              <p className="text-sm text-gray-600 mb-6">Your progress may not be saved.</p>
               <div className="flex gap-3">
                 <button
                   onClick={() => setShowExitModal(false)}
                   className="flex-1 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300"
                 >
-                  취소
+                  Cancel
                 </button>
                 <button
                   onClick={confirmExit}
                   className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700"
                 >
-                  나가기
+                  Exit
                 </button>
               </div>
             </div>
@@ -324,4 +324,4 @@ const Interview = () => {
   );
 };
 
-export default Interview;
+export default InterviewEnglish;

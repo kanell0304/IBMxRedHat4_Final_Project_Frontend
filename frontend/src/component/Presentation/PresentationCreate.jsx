@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import PhoneFrame from '../Layout/PhoneFrame';
 
 export default function PresentationCreate() {
   const navigate = useNavigate();
@@ -64,15 +65,11 @@ export default function PresentationCreate() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4">
-      <div className="max-w-2xl mx-auto">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-800 mb-2">
-            발표 분석 서비스
-          </h1>
-          <p className="text-gray-600">
-            당신의 발표를 분석하고 개선점을 찾아드립니다
-          </p>
+    <PhoneFrame title="발표 분석" contentClass="p-4 pb-6 bg-gradient-to-b from-blue-50 via-white to-indigo-50/40">
+      <div className="space-y-5">
+        <div className="text-center py-2">
+          <p className="text-sm font-medium text-gray-500">새로운 분석 시작</p>
+          <h2 className="text-xl font-bold text-gray-800">발표 정보 입력</h2>
         </div>
 
         <div className="flex items-center justify-center mb-8">
@@ -91,11 +88,7 @@ export default function PresentationCreate() {
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-xl p-8">
-          <h2 className="text-2xl font-bold text-gray-800 mb-6">
-            발표 정보 입력
-          </h2>
-
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -167,10 +160,10 @@ export default function PresentationCreate() {
           </form>
         </div>
 
-        <div className="mt-6 text-center text-sm text-gray-600">
+        <div className="text-center text-sm text-gray-500">
           <p>다음 단계에서 음성 파일을 업로드하실 수 있습니다</p>
         </div>
       </div>
-    </div>
+    </PhoneFrame>
   );
 }
