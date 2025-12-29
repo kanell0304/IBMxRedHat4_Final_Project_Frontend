@@ -54,7 +54,7 @@ export default function CommunicationResult() {
 
   useEffect(() => {
     if (c_id && tab === 'script') {
-      const baseUrl = api.defaults.baseURL || import.meta.env.VITE_API_BASE_URL || 'http://localhost:8081';
+      const baseUrl = api.defaults.baseURL || import.meta.env.VITE_API_BASE_URL || 'https://api.st-each.com';
       audioRef.current = new Audio(`${baseUrl}/communication/${c_id}/audio`);
       audioRef.current.preload = 'auto';
       return () => { audioRef.current?.pause(); audioRef.current = null; };
