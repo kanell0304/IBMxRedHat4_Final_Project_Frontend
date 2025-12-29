@@ -12,13 +12,10 @@ import Job from './component/Interview/Job.jsx';
 import JobEng from './component/Interview/JobEng.jsx';
 import Interview from './component/Interview/Interview.jsx';
 import InterviewResult from './component/Interview/InterviewResult.jsx';
-<<<<<<< HEAD
-=======
 import ImmediateResult from './component/Interview/ImmediateResult.jsx';
 import InterviewEnglish from './component/Interview/InterviewEnglish.jsx';
 import InterviewResultEnglish from './component/Interview/InterviewResultEnglish.jsx';
 import { InterviewNotificationProvider } from './component/Interview/InterviewNotificationContext.jsx';
->>>>>>> develop
 import History from './component/History/History.jsx';
 import Profile from './component/Pages/Profile.jsx';
 import PresentationInformation from './component/Presentation/PresentationInformation.jsx';
