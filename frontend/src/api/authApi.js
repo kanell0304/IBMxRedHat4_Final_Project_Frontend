@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const apiClient = axios.create({
-  baseURL: 'https://www.st-each.com',
+  baseURL: 'https://api.st-each.com',
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',

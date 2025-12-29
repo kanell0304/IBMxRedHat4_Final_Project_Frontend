@@ -45,7 +45,7 @@ export default function PresentationUpload() {
       }
 
       const response = await axios.post(
-        `https://st-each.com/presentations/${prId}/analyze`,
+        `https://api.st-each.com/presentations/${prId}/analyze`,
         formData,
         {
           withCredentials: true,

@@ -17,7 +17,7 @@ export default function PresentationResult() {
   const fetchPresentationData = async () => {
     try {
       const response = await axios.get(
-        `https://st-each.com/presentations/${prId}`,
+        `https://api.st-each.com/presentations/${prId}`,
         { withCredentials: true }
       );
 

@@ -19,12 +19,12 @@ const MypageContent = () => {
   useEffect(() => {
     const loadUser = async () => {
       try {
-        const res = await axios.get('https://st-each.com/users/me', {
+        const res = await axios.get('https://api.st-each.com/users/me', {
           withCredentials: true,
         });
         setUser(res.data);
         if (res.data?.profile_image_url) {
-          setImage(`https://st-each.com${res.data.profile_image_url}`);
+          setImage(`https://api.st-each.com${res.data.profile_image_url}`);
         } else {
           setImage(defaultProfile);
         }
