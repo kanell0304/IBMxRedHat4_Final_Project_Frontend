@@ -54,7 +54,8 @@ export default function SignupPage() {
 
     } catch (error) {
       console.error('회원가입 실패:', error);
-      alert('회원가입 중 오류가 발생했습니다. (예: 이메일 중복)');
+      const msg = error?.response?.data?.detail || '회원가입 중 오류가 발생했습니다.';
+      alert(msg);
     }
   };
 

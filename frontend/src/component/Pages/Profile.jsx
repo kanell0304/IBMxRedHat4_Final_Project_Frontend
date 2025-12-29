@@ -116,7 +116,7 @@ const ProfileContent = () => {
   const displayImage = preview || image || defaultProfile;
 
   return (
-    <div className="w-full max-w-full mx-auto space-y-5 px-0 md:px-1">
+    <div className="w-full max-w-5xl mx-auto space-y-5 px-0 md:px-3">
       <div className="overflow-hidden border border-slate-100 bg-white rounded-[28px] shadow-[0_18px_60px_rgba(15,23,42,0.12)]">
         <div className="h-24 bg-gradient-to-r from-indigo-500 via-blue-500 to-cyan-400" />
         <div className="-mt-14 px-4 md:px-6 pb-8">
@@ -137,7 +137,7 @@ const ProfileContent = () => {
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.18em] text-blue-600">Profile</p>
                 <h1 className="text-3xl font-black text-gray-900">개인정보 수정</h1>
-                <p className="text-sm text-gray-600">사진과 기본 정보를 업데이트하세요.</p>
+                <p className="text-sm text-gray-600 whitespace-nowrap">사진과 기본 정보를 업데이트하세요.</p>
               </div>
             </div>
         </div>
@@ -170,34 +170,42 @@ const ProfileContent = () => {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="p-5 rounded-2xl border border-slate-200 bg-white shadow-[0_6px_18px_rgba(15,23,42,0.05)] space-y-2">
-                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-gray-500">Phone</p>
-                <label className="block text-sm font-bold text-gray-900">휴대전화번호</label>
-                <input
-                  type="tel"
-                  name="phone"
-                  value={formatPhone(form.phone)}
-                  onChange={handleChange}
-                  placeholder="010-0000-0000"
-                  className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm focus:ring-2 focus:ring-blue-400 focus:border-transparent transition bg-white"
-                />
-                <p className="text-xs text-gray-500">연락처가 변경되었다면 업데이트하세요.</p>
+            <div className="p-5 rounded-2xl border border-slate-200 bg-gray-50/70 shadow-sm space-y-2">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-gray-500">Phone</p>
+                  <label className="block text-sm font-bold text-gray-900">휴대전화번호</label>
+                </div>
+                <span className="text-[11px] px-2 py-1 rounded-full bg-gray-100 text-gray-600 border border-gray-200">옵션</span>
               </div>
+              <input
+                type="tel"
+                name="phone"
+                value={formatPhone(form.phone)}
+                onChange={handleChange}
+                placeholder="010-0000-0000"
+                className="w-full rounded-xl border border-gray-300 px-4 py-3 text-sm focus:ring-2 focus:ring-blue-400 focus:border-transparent transition bg-white"
+              />
+              <p className="text-xs text-gray-500">연락처가 변경되었다면 업데이트하세요.</p>
+            </div>
 
-              <div className="p-5 rounded-2xl border border-slate-200 bg-white shadow-[0_6px_18px_rgba(15,23,42,0.05)] space-y-2">
-                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-gray-500">Password</p>
-                <label className="block text-sm font-bold text-gray-900">비밀번호</label>
-                <input
-                  type="password"
-                  name="password"
-                  value={form.password}
-                  onChange={handleChange}
-                  placeholder="새 비밀번호 (미입력 시 변경 없음)"
-                  className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm focus:ring-2 focus:ring-blue-400 focus:border-transparent transition bg-white"
-                />
-                <p className="text-xs text-gray-500">비워두면 비밀번호는 변경되지 않습니다.</p>
+            <div className="p-5 rounded-2xl border border-slate-200 bg-gray-50/70 shadow-sm space-y-2">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-gray-500">Password</p>
+                  <label className="block text-sm font-bold text-gray-900">비밀번호</label>
+                </div>
+                <span className="text-[11px] px-2 py-1 rounded-full bg-gray-100 text-gray-600 border border-gray-200">보안</span>
               </div>
+              <input
+                type="password"
+                name="password"
+                value={form.password}
+                onChange={handleChange}
+                placeholder="새 비밀번호 (미입력 시 변경 없음)"
+                className="w-full rounded-xl border border-gray-300 px-4 py-3 text-sm focus:ring-2 focus:ring-blue-400 focus:border-transparent transition bg-white"
+              />
+              <p className="text-xs text-gray-500">비워두면 비밀번호는 변경되지 않습니다.</p>
             </div>
           </form>
           <div className="flex justify-end gap-2 mt-6">

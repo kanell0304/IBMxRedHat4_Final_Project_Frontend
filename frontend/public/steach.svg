@@ -1,11 +1,29 @@
-<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+<svg xmlns="http://www.w3.org/2000/svg" width="768" height="949" viewBox="0 0 768 949" role="img" aria-labelledby="title desc">
+  <title id="title">Steach Logo S</title>
+  <desc id="desc">Sticker-style blue letter S matching provided artwork with layered strokes</desc>
   <defs>
-    <linearGradient id="steach-grad" x1="14" y1="12" x2="50" y2="52" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#2563EB"/>
-      <stop offset="1" stop-color="#8B5CF6"/>
+    <linearGradient id="fill-main" x1="160" y1="80" x2="620" y2="840" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#1f86ff"/>
+      <stop offset="1" stop-color="#1a6ae6"/>
+    </linearGradient>
+    <linearGradient id="fill-highlight" x1="210" y1="140" x2="420" y2="640" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#8bc1ff"/>
+      <stop offset="1" stop-color="#5fa8ff"/>
     </linearGradient>
   </defs>
-  <rect width="64" height="64" rx="14" fill="#0F172A"/>
-  <path d="M22 17.5c4-4.5 16-5.5 20.5-0.9 3 3.1 2 8-3.5 9.8l-12.2 4.2c-6 2-6.1 8.6 0.3 10.7 3.9 1.3 8.4 0.6 11.7-1.8" fill="none" stroke="url(#steach-grad)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
-  <circle cx="32" cy="32" r="30" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="2"/>
+
+  <!-- Base S path -->
+  <path id="s-letter" d="M612 122C567 52 470 16 354 26C236 37 142 108 129 206C118 287 161 354 248 393L362 445C464 490 499 526 497 572C494 632 445 668 360 672C302 675 249 654 214 622C185 596 170 555 176 510C97 550 74 648 131 730C197 828 330 874 474 856C614 838 700 756 704 640C707 542 657 469 553 424L420 365C344 331 312 300 314 257C317 204 374 170 452 174C528 178 585 212 622 270C648 313 657 361 652 405C734 334 734 214 612 122Z"/>
+
+  <!-- Sticker cut line -->
+  <use href="#s-letter" fill="none" stroke="#f7f7f7" stroke-width="34" stroke-linejoin="round" stroke-linecap="round"/>
+
+  <!-- Outer navy stroke -->
+  <use href="#s-letter" fill="none" stroke="#001b63" stroke-width="54" stroke-linejoin="round" stroke-linecap="round"/>
+
+  <!-- Inner main fill -->
+  <use href="#s-letter" fill="url(#fill-main)" stroke="#0a2f84" stroke-width="12" stroke-linejoin="round" stroke-linecap="round"/>
+
+  <!-- Soft inner highlight -->
+  <path d="M600 160C540 110 440 96 340 120C270 140 220 185 222 248C224 310 270 350 340 380L460 430C530 460 580 510 580 570C580 650 520 700 430 710C340 720 260 690 220 640C200 615 190 585 190 560" fill="none" stroke="url(#fill-highlight)" stroke-width="26" stroke-linecap="round" stroke-linejoin="round" opacity="0.95"/>
 </svg>

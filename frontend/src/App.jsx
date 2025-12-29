@@ -12,8 +12,16 @@ import Job from './component/Interview/Job.jsx';
 import JobEng from './component/Interview/JobEng.jsx';
 import Interview from './component/Interview/Interview.jsx';
 import InterviewResult from './component/Interview/InterviewResult.jsx';
+<<<<<<< HEAD
+=======
+import ImmediateResult from './component/Interview/ImmediateResult.jsx';
+import InterviewEnglish from './component/Interview/InterviewEnglish.jsx';
+import InterviewResultEnglish from './component/Interview/InterviewResultEnglish.jsx';
+import { InterviewNotificationProvider } from './component/Interview/InterviewNotificationContext.jsx';
+>>>>>>> develop
 import History from './component/History/History.jsx';
 import Profile from './component/Pages/Profile.jsx';
+import PresentationInformation from './component/Presentation/PresentationInformation.jsx';
 import PresentationCreate from './component/Presentation/PresentationCreate.jsx';
 import PresentationUpload from './component/Presentation/PresentationUpload.jsx';
 import PresentationResult from './component/Presentation/PresentationResult.jsx';
@@ -28,54 +36,69 @@ import CommunityWrite from './component/Community/CommunityWrite.jsx';
 import CommunityDetail from './component/Community/CommunityDetail.jsx';
 import CommunityEdit from './component/Community/CommunityEdit.jsx';
 import MiniGameMain from './component/Minigame/MiniGameMain.jsx';
+import AdminPage from './component/Pages/AdminPage.jsx';
+
+
 
 export default function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        {/* 메인페이지 */}
-        <Route path="/" element={<MainPage />} />
-        <Route path="/mypage" element={<Mypage />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/history" element={<History />} />
+      <InterviewNotificationProvider>
+        <Routes>
+          {/* 메인페이지 */}
+          <Route path="/" element={<MainPage />} />
+          <Route path="/mypage" element={<Mypage />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/history" element={<History />} />
 
-        {/* 로그인 페이지*/}
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/user/kakao" element={<KakaoCallback />} />
-        <Route path="/signup" element={<SignupPage />} />
-        <Route path="/find-password" element={<FindPasswordRequestPage />} />
-        <Route path="/reset-password" element={<FindPasswordResetPage />} />
+          {/* 로그인 페이지*/}
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/user/kakao" element={<KakaoCallback />} />
+          <Route path="/signup" element={<SignupPage />} />
+          <Route path="/find-password" element={<FindPasswordRequestPage />} />
+          <Route path="/reset-password" element={<FindPasswordResetPage />} />
 
-        {/* 인터뷰 */}
-        <Route path="/interview/info" element={<Information />} />
-        <Route path="/interview/job" element={<Job/>} />
-        <Route path="/interview/result/:interviewId" element={<InterviewResult />} />
-        <Route path="/interview/job-en" element={<JobEng />} />
-        <Route path="/interview" element={<Interview />} />
+          {/* 인터뷰 - ko */}
+          <Route path="/interview/info" element={<Information />} />
+          <Route path="/interview/job" element={<Job/>} />
+          <Route path="/interview/immediate/:interviewId" element={<ImmediateResult />} />
+          <Route path="/interview/result/:interviewId" element={<InterviewResult />} />
+          <Route path="/interview/job-en" element={<JobEng />} />
+          <Route path="/interview" element={<Interview />} />
 
-        {/* 발표 분석 */}
-        <Route path="/presentation/create" element={<PresentationCreate />} />
-        <Route path="/presentation/upload/:prId" element={<PresentationUpload />} />
-        <Route path="/presentation/result/:prId" element={<PresentationResult />} />
-        <Route path="/presentation/detail/:prId" element={<PresentationDetail />} />
+          {/* 인터뷰 - en */}
+          <Route path="/interview/job-en" element={<JobEng />} />
+          <Route path="/interview/english" element={<InterviewEnglish />} />
+          <Route path="/interview/english/result/:interviewId" element={<InterviewResultEnglish />} />
 
-        {/* 대화 분석 */}
-        <Route path="/communication/info" element={<CommunicationInformation />} />
-        <Route path="/communication" element={<CommunicationList />} />
-        <Route path="/communication/upload" element={<CommunicationUpload />} />
-        <Route path="/communication/speaker/:c_id" element={<CommunicationSpeakerSelect />} />
-        <Route path="/communication/result/:c_id" element={<CommunicationResult />} />
+          {/* 발표 분석 */}
+          <Route path="/presentation" element={<PresentationInformation />} />
+          <Route path="/presentation/info" element={<PresentationInformation />} />
+          <Route path="/presentation/create" element={<PresentationCreate />} />
+          <Route path="/presentation/upload/:prId" element={<PresentationUpload />} />
+          <Route path="/presentation/result/:prId" element={<PresentationResult />} />
+          <Route path="/presentation/detail/:prId" element={<PresentationDetail />} />
 
-        {/* 커뮤니티 */}
-        <Route path="/community" element={<Community />} />
-        <Route path="/community/write" element={<CommunityWrite />} />
-        <Route path="/community/:postId" element={<CommunityDetail />} />
-        <Route path="/community/edit/:postId" element={<CommunityEdit />} />
+          {/* 대화 분석 */}
+          <Route path="/communication/info" element={<CommunicationInformation />} />
+          <Route path="/communication" element={<CommunicationList />} />
+          <Route path="/communication/upload" element={<CommunicationUpload />} />
+          <Route path="/communication/speaker/:c_id" element={<CommunicationSpeakerSelect />} />
+          <Route path="/communication/result/:c_id" element={<CommunicationResult />} />
 
-        {/* 미니게임 */}
-        <Route path="/minigame" element={<MiniGameMain />} />
+          {/* 커뮤니티 */}
+          <Route path="/community" element={<Community />} />
+          <Route path="/community/write" element={<CommunityWrite />} />
+          <Route path="/community/:postId" element={<CommunityDetail />} />
+          <Route path="/community/edit/:postId" element={<CommunityEdit />} />
 
-      </Routes>
+          {/* 미니게임 */}
+          <Route path="/minigame" element={<MiniGameMain />} />
+
+          {/* 어드민 */}
+          <Route path="/admin" element={<AdminPage />} />
+        </Routes>
+      </InterviewNotificationProvider>
     </BrowserRouter>
   );
 }

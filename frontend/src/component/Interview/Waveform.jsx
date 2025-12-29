@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 function calcRms(u8) {
   let sumSq = 0;
@@ -12,13 +12,27 @@ function calcRms(u8) {
 const Waveform = ({ audioData, width = 520, height = 120 }) => {
   const canvasRef = useRef(null);
   const levelRef = useRef(0);
+  const [canvasWidth, setCanvasWidth] = useState(width);
+
+  useEffect(() => {
+    const updateSize = () => {
+      const parentWidth = canvasRef.current?.parentElement?.clientWidth;
+      if (parentWidth && parentWidth !== canvasWidth) {
+        setCanvasWidth(parentWidth);
+      }
+    };
+
+    updateSize();
+    window.addEventListener("resize", updateSize);
+    return () => window.removeEventListener("resize", updateSize);
+  }, [canvasWidth]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
 
-    const w = width;
+    const w = canvasWidth;
     const h = height;
     const centerY = h / 2;
 
@@ -37,7 +51,7 @@ const Waveform = ({ audioData, width = 520, height = 120 }) => {
     const SILENCE_THRESHOLD = 0.01;
     const ATTACK = 0.35;
     const RELEASE = 0.08;
-    const MAX_AMPLITUDE = h * 0.45;
+    const MAX_AMPLITUDE = h * 0.35;
 
     const rms = calcRms(audioData);
     const target =
@@ -86,9 +100,10 @@ const Waveform = ({ audioData, width = 520, height = 120 }) => {
   return (
     <canvas
       ref={canvasRef}
-      width={width}
+      width={canvasWidth}
       height={height}
-      className="rounded-2xl"
+      className="rounded-2xl w-full"
+      style={{ height }}
     />
   );
 };

@@ -19,15 +19,19 @@ const JobEng = () => {
     setLoading(true);
     setErrorMsg('');
     try {
-      const data = await createInterview(iForm);
+      const data = await createInterview({
+        ...iForm,
+        language:"en"
+      });
       const resolvedInterviewId = data.i_id || data.interview_id || data.interviewId;
       const payload = {
         interviewId: resolvedInterviewId,
         questions: data.questions || [],
         interviewForm: iForm,
+        language: "en"
       };
       sessionStorage.setItem('interviewSession', JSON.stringify(payload));
-      navigate('/interview', { state: payload });
+      navigate('/interview/english', { state: payload });
     } catch (err) {
       const status = err?.response?.status;
       const detail = err?.response?.data?.detail;
