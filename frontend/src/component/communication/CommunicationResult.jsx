@@ -101,13 +101,7 @@ export default function CommunicationResult() {
     { subject: '의미 명확성', score: r.meaning_clarity, fullMark: 100 },
     { subject: '대화 흐름', score: cutScore, fullMark: 100 }
   ];
-  const bar = [
-    { name: '욕설', count: llm?.curse?.count || 0 },
-    { name: '군말/망설임', count: llm?.filler?.count || 0 },
-    { name: '편향', count: llm?.biased?.count || 0 },
-    { name: '비표준어', count: llm?.slang?.count || 0 },
-    { name: '말 끊기', count: r.cut || 0 }
-  ];
+
   const iconMap = { speaking_speed: '🗣️', silence: '🤫', clarity: '🔊', meaning_clarity: '💭', cut: '✂️', curse: '🤬', filler: '🙄', biased: '⚠️', slang: '💬' };
 
   return (
@@ -161,22 +155,6 @@ export default function CommunicationResult() {
                     <div className="text-lg font-bold text-blue-900">{i.score.toFixed(1)}</div>
                   </div>
                 ))}
-              </div>
-            </div>
-
-            {/* Bar Chart */}
-            <div className="bg-white p-5 rounded-3xl shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-gray-100">
-              <h3 className="text-base font-bold text-gray-900 mb-4">📊 발견된 문제</h3>
-              <div className="h-[280px] w-full">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={bar}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f3f4f6" />
-                    <XAxis dataKey="name" tick={{ fontSize: 11, fill: '#6b7280' }} interval={0} angle={-45} textAnchor="end" height={60} />
-                    <YAxis tick={{ fontSize: 10, fill: '#6b7280' }} axisLine={false} tickLine={false} />
-                    <Tooltip cursor={{ fill: '#f9fafb' }} contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }} />
-                    <Bar dataKey="count" fill="#3b82f6" radius={[4, 4, 0, 0]} />
-                  </BarChart>
-                </ResponsiveContainer>
               </div>
             </div>
 
