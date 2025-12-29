@@ -21,7 +21,7 @@ const ProfileContent = () => {
   const [preview, setPreview] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
   const [loading, setLoading] = useState(true);
-  const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8081';
+  const API_BASE = import.meta.env.VITE_API_BASE || 'https://st-each.com';
 
   useEffect(() => {
     const loadProfile = async () => {
