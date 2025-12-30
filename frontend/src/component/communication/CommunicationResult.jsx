@@ -47,7 +47,7 @@ export default function CommunicationResult() {
 
   useEffect(() => {
     if (c_id && tab === 'script') {
-      audioRef.current = new Audio(`${import.meta.env.VITE_API_BASE_URL || 'https://api.st-each.com'}/communication/${c_id}/audio`);
+      audioRef.current = new Audio(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8081'}/communication/${c_id}/audio`);
       audioRef.current.preload = 'auto';
       return () => { audioRef.current?.pause(); audioRef.current = null; };
     }
@@ -127,7 +127,7 @@ export default function CommunicationResult() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-xl font-bold text-gray-900 tracking-tight">분석 결과</h1>
-              <p className="text-sm text-gray-500 mt-1">{c_id}번 대화의 상세 리포트입니다.</p>
+              <p className="text-sm text-gray-500 mt-1">완료된 분석 결과를 확인해보세요.</p>
             </div>
             <button onClick={() => nav('/communication')} className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-gray-200 transition">↺</button>
           </div>
