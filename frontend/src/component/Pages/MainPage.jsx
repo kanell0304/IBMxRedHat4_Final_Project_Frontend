@@ -1,10 +1,17 @@
 import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import PhoneFrame from "../Layout/PhoneFrame";
 import MainLayout from "../Layout/MainLayout";
 import Header from "../Layout/Header";
 
 const MainPageContent = () => {
   const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setIsLoggedIn(!!token);
+  }, []);
 
   const presentation = () => {
     navigate("/presentation/info");
@@ -79,9 +86,17 @@ const MainPageContent = () => {
         <div className="rounded-3xl bg-gradient-to-br from-[#eef4ff] via-white to-[#effbff] shadow-sm p-6 flex gap-4 items-start border border-white/80">
           <div className="flex-1 space-y-3">
             <h1 className="text-[22px] font-extrabold text-gray-900 leading-snug">
-              STEACH, <br/> 말투 분석은 스티치!
+              {isLoggedIn ? (
+                <>지금의 말투를<br/>기록하세요</>
+              ) : (
+                <>오늘의 말투가,<br/>내일의 소통을 만들어요</>
+              )}
             </h1>
-            <p className="text-sm text-gray-600">하루 10분도 좋아요. AI가 바로 점검해 성장 기록을 남깁니다.</p>
+            <p className="text-sm text-gray-600">
+              {isLoggedIn
+                ? "쌓일수록, 소통이 보이기 시작해요"
+                : "말투를 이해하면 소통이 쉬워져요"}
+            </p>
           </div>
           <div className="text-4xl" aria-hidden>
             🎁
