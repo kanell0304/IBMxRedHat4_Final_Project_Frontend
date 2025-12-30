@@ -45,7 +45,7 @@ export default function CommunicationList() {
         {/* Header */}
         <div className="px-1 flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 tracking-tight">내 분석 목록</h1>
+            <h1 className="text-xl font-bold text-gray-900 tracking-tight">내 분석 목록</h1>
             <p className="text-sm text-gray-500 mt-1">지금까지 분석한 대화 기록입니다.</p>
           </div>
         </div>

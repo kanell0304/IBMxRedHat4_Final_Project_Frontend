@@ -389,10 +389,12 @@ const WeaknessCard = ({ weakness, rank }) => {
               <ul className="space-y-1">
                 {weakness.evidence_sentences.map((sent, idx) => (
                   <li key={idx} className="text-sm text-gray-700">
-                    • "{sent.sentence}"
-                    <span className="text-gray-400 text-xs ml-1">
-                      ({formatDateShort(sent.created_at)})
-                    </span>
+                    • "{sent.text || sent.sentence}"
+                    {sent.created_at ? (
+                      <span className="text-gray-400 text-xs ml-1">
+                        ({formatDateShort(sent.created_at)})
+                      </span>
+                    ) : null}
                   </li>
                 ))}
               </ul>
@@ -447,7 +449,12 @@ const MetricChangeSection = ({ data }) => {
   return (
     <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
       <h3 className="font-bold text-gray-900 mb-3 flex items-center gap-2">
-        <span className="text-lg">📈</span> 지표 변화 추이
+        <span
+          className="text-lg"
+          title="해석 가이드: 상승이 긍정적 - 발화 속도(WPM), STT 신뢰도. 하락이 긍정적 - 침묵 횟수, 침묵 비율, 격식 불일치"
+        >
+          📈
+        </span> 지표 변화 추이
       </h3>
 
       {/* 요약 */}
@@ -474,13 +481,24 @@ const MetricChangeSection = ({ data }) => {
 const MetricChangeCard = ({ change }) => {
   const isPositive = change.is_positive;
   const changePercent = change.change_percent;
+  const metricHints = {
+    '발화 속도(WPM)': '올라갈수록 좋습니다. 너무 느리면 개선 필요',
+    '침묵 횟수': '내려갈수록 좋습니다. 침묵이 많으면 주의',
+    '침묵 비율': '내려갈수록 좋습니다. 침묵 구간이 많으면 주의',
+    'STT 신뢰도': '올라갈수록 좋습니다. 낮으면 정확도 주의',
+    '격식 불일치': '내려갈수록 좋습니다. 반말/격식 불일치는 줄이는 게 좋습니다.',
+  };
+  const hint = metricHints[change.metric_name] || '변화율이 높으면 성능에 영향이 크니 확인하세요.';
   
   return (
-    <div className={`rounded-lg p-3 border ${
+    <div
+      className={`rounded-lg p-3 border ${
       isPositive 
         ? 'bg-green-50 border-green-200' 
         : 'bg-red-50 border-red-200'
-    }`}>
+    }`}
+      title={hint}
+    >
       <div className="flex items-center justify-between">
         <div>
           <p className={`font-semibold text-sm ${isPositive ? 'text-green-800' : 'text-red-800'}`}>
@@ -500,16 +518,7 @@ const MetricChangeCard = ({ change }) => {
           <p className={`text-lg font-bold ${isPositive ? 'text-green-600' : 'text-red-600'}`}>
             {changePercent > 0 ? '+' : ''}{changePercent.toFixed(1)}%
           </p>
-          <div className="flex items-center justify-end gap-1">
-            {change.direction === 'up' ? (
-              <svg className={`w-4 h-4 ${isPositive ? 'text-green-500' : 'text-red-500'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
-              </svg>
-            ) : (
-              <svg className={`w-4 h-4 ${isPositive ? 'text-green-500' : 'text-red-500'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-              </svg>
-            )}
+          <div className="flex items-center justify-end">
             <span className={`text-xs ${isPositive ? 'text-green-600' : 'text-red-600'}`}>
               {isPositive ? '개선' : '주의'}
             </span>

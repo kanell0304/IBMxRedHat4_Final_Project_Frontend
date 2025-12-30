@@ -34,28 +34,20 @@ const DetailSection = ({ title, json }) => {
 export default function CommunicationResult() {
   const nav = useNavigate(), { c_id } = useParams();
   const [data, setData] = useState(null), [loading, setLoading] = useState(true);
-  const [tab, setTab] = useState('scores'), [openFb, setOpenFb] = useState(null);
-  const fbRef = useRef(null);
-  const audioRef = useRef(null);
-  const [playingId, setPlayingId] = useState(null);
+  const [tab, setTab] = useState('scores'), [playingId, setPlayingId] = useState(null), [openFb, setOpenFb] = useState(null);
+  const audioRef = useRef(null), fbRef = useRef(null);
 
   useEffect(() => {
     (async () => {
-      try {
-        const { data: d } = await api.get(`/communication/${c_id}`);
-        setData(d);
-      } catch (e) {
-        console.error(e);
-      } finally {
-        setLoading(false);
-      }
+      const { data: d } = await api.get(`/communication/${c_id}`);
+      setData(d);
+      setLoading(false);
     })();
   }, [c_id]);
 
   useEffect(() => {
     if (c_id && tab === 'script') {
-      const baseUrl = api.defaults.baseURL || import.meta.env.VITE_API_BASE_URL || 'https://api.st-each.com';
-      audioRef.current = new Audio(`${baseUrl}/communication/${c_id}/audio`);
+      audioRef.current = new Audio(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8081'}/communication/${c_id}/audio`);
       audioRef.current.preload = 'auto';
       return () => { audioRef.current?.pause(); audioRef.current = null; };
     }
@@ -67,6 +59,29 @@ export default function CommunicationResult() {
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
   }, [openFb]);
+
+  const playSegment = (sentence) => {
+    if (!audioRef.current) return;
+    if (playingId === sentence.c_ss_id) {
+      audioRef.current.pause();
+      setPlayingId(null);
+      return;
+    }
+    const startSec = parseFloat(sentence.start_time) || 0;
+    const endSec = parseFloat(sentence.end_time) || startSec + 5;
+    audioRef.current.currentTime = startSec;
+    audioRef.current.play();
+    setPlayingId(sentence.c_ss_id);
+    const handleTimeUpdate = () => {
+      if (audioRef.current.currentTime >= endSec) {
+        audioRef.current.pause();
+        setPlayingId(null);
+        audioRef.current.removeEventListener('timeupdate', handleTimeUpdate);
+      }
+    };
+    audioRef.current.addEventListener('timeupdate', handleTimeUpdate);
+    audioRef.current.addEventListener('ended', () => setPlayingId(null), { once: true });
+  };
 
   
   if (loading) return (
@@ -200,12 +215,20 @@ export default function CommunicationResult() {
                   const isTarget = s.speaker_label === b?.target_speaker;
                   const hasFb = s.feedback?.length > 0;
                   const isPlaying = playingId === s.c_ss_id;
-                  
+
                   return (
                     <div key={s.c_ss_id} className={`flex ${isTarget ? 'justify-end' : 'justify-start'} gap-2 relative group`}>
-                      
+
+                      {!isTarget && s.start_time && (
+                        <button
+                          onClick={() => playSegment(s)}
+                          className="w-7 h-7 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-600 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-300 transition-all shadow-sm flex-shrink-0 self-end mb-5"
+                        >
+                          {isPlaying ? '⏸' : '▶'}
+                        </button>
+                      )}
+
                       <div className={`max-w-[80%] flex flex-col gap-1 ${isTarget ? 'items-end' : 'items-start'}`}>
-                        {/* Feedback Badges */}
                         {hasFb && isTarget && (
                           <div className="flex flex-wrap gap-1 justify-end mb-1">
                             {s.feedback.map((fb, i) => (
@@ -215,29 +238,37 @@ export default function CommunicationResult() {
                             ))}
                           </div>
                         )}
-                        
-                        {/* Bubble */}
-                        <div 
+
+                        <div
                           onClick={() => hasFb && isTarget && setOpenFb(openFb === s.c_ss_id ? null : s.c_ss_id)}
                           className={`
                             relative px-4 py-3 rounded-2xl text-sm leading-relaxed shadow-sm transition-all
-                            ${isTarget 
-                              ? 'bg-blue-600 text-white rounded-tr-none' 
+                            ${isTarget
+                              ? 'bg-blue-600 text-white rounded-tr-none'
                               : 'bg-white text-gray-800 border border-gray-100 rounded-tl-none'
                             }
                             ${hasFb && isTarget ? 'ring-2 ring-red-300 ring-offset-1 cursor-pointer' : ''}
+                            ${isPlaying ? 'ring-2 ring-blue-400' : ''}
                           `}
                         >
                           {s.text}
                         </div>
-                        
-                        {/* Time */}
+
                         {s.start_time && (
                           <span className="text-[10px] text-gray-400 px-1">
                             {s.start_time}
                           </span>
                         )}
                       </div>
+
+                      {isTarget && s.start_time && (
+                        <button
+                          onClick={() => playSegment(s)}
+                          className="w-7 h-7 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-600 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-300 transition-all shadow-sm flex-shrink-0 self-end mb-5"
+                        >
+                          {isPlaying ? '⏸' : '▶'}
+                        </button>
+                      )}
                     </div>
                   );
                 })}
