@@ -43,7 +43,7 @@ export default function Header({ fullWidth = false, dense = false }) {
 
   const handleLogout = async () => {
     try {
-      await axios.post('https://api.st-each.com/users/logout', {}, {
+      await axios.post(`${API_BASE}/users/logout`, {}, {
         withCredentials: true
       });
       setIsLoggedIn(false);
