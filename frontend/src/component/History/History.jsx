@@ -167,7 +167,12 @@ const HistoryContent = () => {
     if (tab === 'communication') {
       navigate(`/communication/result/${item.c_id}`);
     } else if (tab === 'interview') {
-      navigate(`/interview/result/${item.i_id}`);
+      const isEnglish = item.language === 'en';
+      if (isEnglish) {
+        navigate(`/interview/english/result/${item.i_id}`);
+      } else {
+        navigate(`/interview/result/${item.i_id}`);
+      }
     } else if (tab === 'presentation') {
       navigate(`/presentation/result/${item.pr_id}`);
     }
