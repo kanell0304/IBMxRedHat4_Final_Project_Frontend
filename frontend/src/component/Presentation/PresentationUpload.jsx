@@ -10,7 +10,7 @@ export default function PresentationUpload() {
   const [estimatedSyllables, setEstimatedSyllables] = useState('');
   const [loading, setLoading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
-  const API_BASE = import.meta.env.VITE_API_BASE || 'https://api.st-each.com'
+  const API_BASE = import.meta.env.VITE_API_BASE_URL || 'https://api.st-each.com'
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];

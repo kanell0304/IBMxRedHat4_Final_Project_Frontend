@@ -44,7 +44,7 @@ export default function PresentationCreate() {
         formDataToSend.append('target_duration', targetDurationInSeconds.toString());
       }
 
-      const API_BASE = import.meta.env.VITE_API_BASE || 'https://api.st-each.com'
+      const API_BASE = import.meta.env.VITE_API_BASE_URL || 'https://api.st-each.com'
 
       const response = await axios.post(
         `${API_BASE}/presentations/create`,

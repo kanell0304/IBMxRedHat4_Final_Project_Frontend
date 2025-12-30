@@ -9,7 +9,7 @@ export default function PresentationResult() {
   const { prId } = useParams();
   const [loading, setLoading] = useState(true);
   const [presentationData, setPresentationData] = useState(null);
-  const API_BASE = import.meta.env.VITE_API_BASE || 'https://api.st-each.com'
+  const API_BASE = import.meta.env.VITE_API_BASE_URL || 'https://api.st-each.com'
 
   useEffect(() => {
     fetchPresentationData();
