@@ -47,7 +47,7 @@ export default function CommunicationResult() {
 
   useEffect(() => {
     if (c_id && tab === 'script') {
-      audioRef.current = new Audio(`${import.meta.env.VITE_API_BASE || 'https://api.st-each.com'}/communication/${c_id}/audio`);
+      audioRef.current = new Audio(`${import.meta.env.VITE_API_BASE_URL || 'https://api.st-each.com'}/communication/${c_id}/audio`);
       audioRef.current.preload = 'auto';
       return () => { audioRef.current?.pause(); audioRef.current = null; };
     }

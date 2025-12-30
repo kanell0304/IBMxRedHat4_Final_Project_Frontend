@@ -91,7 +91,7 @@ const CommunicationInformation = () => {
         <div className="sticky bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-white via-white to-transparent -mx-4">
           <button 
             onClick={() => nav('/communication/upload')}
-            className="w-full max-w-[340px] mx-auto block py-4 rounded-full bg-blue-600 text-white font-bold text-lg shadow-xl shadow-blue-200 active:scale-95 transition-transform"
+            className="w-full max-w-[340px] mx-auto block py-4 rounded-full bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 text-white font-semibold shadow-[0_8px_20px_rgba(37,99,235,0.25)] active:scale-95 transition-transform"
           >
             분석 시작하기
           </button>
