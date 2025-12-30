@@ -9,6 +9,7 @@ export default function PresentationResult() {
   const { prId } = useParams();
   const [loading, setLoading] = useState(true);
   const [presentationData, setPresentationData] = useState(null);
+  const API_BASE = import.meta.env.VITE_API_BASE || 'https://api.st-each.com'
 
   useEffect(() => {
     fetchPresentationData();
@@ -17,7 +18,7 @@ export default function PresentationResult() {
   const fetchPresentationData = async () => {
     try {
       const response = await axios.get(
-        `https://api.st-each.com/presentations/${prId}`,
+        `${API_BASE}/presentations/${prId}`,
         { withCredentials: true }
       );
 
