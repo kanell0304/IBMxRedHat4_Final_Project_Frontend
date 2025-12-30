@@ -15,16 +15,17 @@ const MypageContent = () => {
   const [image, setImage] = useState(defaultProfile);
   const [recent, setRecent] = useState([]);
   const [recentLoading, setRecentLoading] = useState(false);
+  const API_BASE = import.meta.env.VITE_API_BASE || 'https://api.st-each.com'
 
   useEffect(() => {
     const loadUser = async () => {
       try {
-        const res = await axios.get('https://api.st-each.com/users/me', {
+        const res = await axios.get(`${API_BASE}/users/me`, {
           withCredentials: true,
         });
         setUser(res.data);
         if (res.data?.profile_image_url) {
-          setImage(`https://api.st-each.com${res.data.profile_image_url}`);
+          setImage(`${API_BASE}${res.data.profile_image_url}`);
         } else {
           setImage(defaultProfile);
         }
