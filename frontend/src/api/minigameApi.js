@@ -1,4 +1,5 @@
-const API_BASE_URL = 'https://api.st-each.com/api/minigame';
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'https://api.st-each.com'
+const API_BASE_URL = `${API_BASE}/api/minigame`;
 
 export const minigameAPI = {
   startGame: async (difficulty, mode, value) => {

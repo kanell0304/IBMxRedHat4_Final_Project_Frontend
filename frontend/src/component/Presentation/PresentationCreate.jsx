@@ -1,10 +1,28 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import PhoneFrame from '../Layout/PhoneFrame';
 
 export default function PresentationCreate() {
   const navigate = useNavigate();
+  const [userId, setUserId] = useState(null);
+  const API_BASE = import.meta.env.VITE_API_BASE_URL || 'https://api.st-each.com';
+
+  useEffect(() => {
+    const load_user = async () => {
+      try {
+        const res = await axios.get(`${API_BASE}/users/me`, {
+          withCredentials: true
+        });
+        setUserId(res.data.user_id);
+        console.log(res.data);
+      } catch (error) {
+        console.error('유저 정보 로드 실패')
+      }
+    }
+    load_user();
+  }, []);
+
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -32,7 +50,7 @@ export default function PresentationCreate() {
     try {
       // FormData 형태로 변경
       const formDataToSend = new FormData();
-      formDataToSend.append('user_id', '1'); // 현재 로그인한 사용자의 user_id로 변경이 필요 향후 작업 예정
+      formDataToSend.append('user_id', userId); // 현재 로그인한 사용자의 user_id로 변경이 필요 향후 작업 예정
       formDataToSend.append('title', formData.title);
       
       if (formData.description) {
@@ -44,8 +62,10 @@ export default function PresentationCreate() {
         formDataToSend.append('target_duration', targetDurationInSeconds.toString());
       }
 
+      const API_BASE = import.meta.env.VITE_API_BASE_URL || 'https://api.st-each.com'
+
       const response = await axios.post(
-        'https://api.st-each.com/presentations/create',
+        `${API_BASE}/presentations/create`,
         formDataToSend,
         {
           withCredentials: true

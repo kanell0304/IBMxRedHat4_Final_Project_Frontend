@@ -21,7 +21,7 @@ const ProfileContent = () => {
   const [preview, setPreview] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
   const [loading, setLoading] = useState(true);
-  const API_BASE = import.meta.env.VITE_API_BASE || 'https://api.st-each.com';
+  const API_BASE = import.meta.env.VITE_API_BASE_URL || 'https://api.st-each.com';
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -40,6 +40,7 @@ const ProfileContent = () => {
           setImage(`${API_BASE}${res.data.profile_image_url}`);
         }
       } catch (err) {
+        console.log();
       } finally {
         setLoading(false);
       }

@@ -8,6 +8,44 @@ export default function CommunicationSpeakerSelect() {
   const [status, setStatus] = useState('stt'); // 'stt' | 'ready' | 'analyzing'
   const [speakers, setSpeakers] = useState([]);
   const [sel, setSel] = useState(null);
+  const [progress, setProgress] = useState(0);
+  const [currentStep, setCurrentStep] = useState({ text: '' });
+
+  const sttSteps = [
+    { percent: 20, text: '음성 파일 처리 중' },
+    { percent: 40, text: '화자 분리 중' },
+    { percent: 70, text: '음성 인식 중' },
+    { percent: 90, text: '텍스트 변환 중' }
+  ];
+
+  const analysisSteps = [
+    { percent: 25, text: '대화 내용 분석 중' },
+    { percent: 50, text: 'BERT 모델 분석 중' },
+    { percent: 75, text: 'LLM 피드백 생성 중' },
+    { percent: 90, text: '최종 리포트 작성 중' }
+  ];
+
+  useEffect(() => {
+    if (status === 'ready') return;
+
+    const steps = status === 'stt' ? sttSteps : analysisSteps;
+    let currentStepIndex = 0;
+    setProgress(0);
+    setCurrentStep(steps[0]);
+
+    const interval = setInterval(() => {
+      setProgress((prev) => {
+        const next = Math.min(prev + 1, 95);
+        while (currentStepIndex < steps.length - 1 && next >= steps[currentStepIndex + 1].percent) {
+          currentStepIndex++;
+        }
+        setCurrentStep(steps[currentStepIndex]);
+        return next;
+      });
+    }, 150);
+
+    return () => clearInterval(interval);
+  }, [status]);
 
   useEffect(() => {
     (async () => {
@@ -39,10 +77,10 @@ export default function CommunicationSpeakerSelect() {
         });
 
         setSpeakers(Object.values(map).sort((a, b) => a.speaker - b.speaker));
+        setProgress(100);
         setStatus('ready');
       } catch (e) {
         console.error(e);
-        // Handle error appropriately
       }
     })();
   }, [c_id]);
@@ -50,22 +88,72 @@ export default function CommunicationSpeakerSelect() {
   const analyze = async () => {
     setStatus('analyzing');
     const { data } = await api.post(`/communication/${c_id}/analyze`, null, { params: { target_speaker: sel } });
+    setProgress(100);
     if (data.c_result_id) nav(`/communication/result/${c_id}`);
   };
 
-  if (status !== 'ready') return (
-    <PhoneFrame title="대화 분석">
-      <div className="flex flex-col items-center justify-center h-[60vh] text-center px-4">
-        <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-6" />
-        <h3 className="text-lg font-bold text-gray-900 mb-2">
-          {status === 'stt' ? '음성 인식 처리 중...' : '분석 중입니다...'}
-        </h3>
-        <p className="text-sm text-gray-500">
-          {status === 'stt' ? '잠시만 기다려주세요.' : '대화 내용을 분석하고 있습니다.'}
-        </p>
-      </div>
-    </PhoneFrame>
-  );
+  if (status !== 'ready') {
+    const steps = status === 'stt' ? sttSteps : analysisSteps;
+    return (
+      <PhoneFrame title="대화 분석">
+        <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
+          <div className="w-full max-w-md space-y-8">
+            {/* 스피너 */}
+            <div className="flex justify-center">
+              <div className="relative w-16 h-16">
+                <div className="absolute inset-0 rounded-full bg-gradient-to-br from-blue-50 to-indigo-50"></div>
+                <div className="absolute inset-0 rounded-full border-4 border-blue-600 border-t-transparent animate-spin"></div>
+              </div>
+            </div>
+
+            {/* 제목 */}
+            <div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">
+                {status === 'stt' ? '음성 인식 처리 중' : '분석 중입니다'}
+              </h3>
+              <p className="text-sm text-gray-600">
+                {status === 'stt' ? 'AI가 대화 내용을 분석하고 있습니다.' : '대화 내용을 종합 분석하고 있습니다.'}
+              </p>
+            </div>
+
+            {/* 프로그레스 바 */}
+            <div className="space-y-3">
+              <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                <div
+                  className="h-full bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 transition-all duration-300 ease-out"
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-gray-700 font-medium">{currentStep.text}</span>
+                <span className="text-gray-500">{progress}%</span>
+              </div>
+            </div>
+
+            {/* 단계 리스트 */}
+            <div className="bg-gradient-to-br from-slate-50 to-gray-50 rounded-2xl p-5 space-y-3">
+              {steps.map((step, idx) => (
+                <div key={idx} className="flex items-center gap-3">
+                  {progress >= step.percent ? (
+                    <div className="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center flex-shrink-0">
+                      <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                  ) : (
+                    <div className="w-5 h-5 rounded-full border-2 border-gray-300 flex-shrink-0" />
+                  )}
+                  <span className={`text-sm ${progress >= step.percent ? 'text-gray-900 font-semibold' : 'text-gray-500'}`}>
+                    {step.text}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </PhoneFrame>
+    );
+  }
 
   return (
     <PhoneFrame title="대화 분석" showTitleRow={true}>

@@ -1,8 +1,40 @@
 import { useNavigate } from 'react-router-dom';
 import PhoneFrame from '../Layout/PhoneFrame';
+import React from 'react';
+import { useAuth } from '../../hooks/useAuth';
 
 const CommunicationInformation = () => {
   const nav = useNavigate();
+  const { isAuthenticated, loading } = useAuth();
+
+  if (!loading && !isAuthenticated) {
+    return (
+      <PhoneFrame title="모의 면접">
+        <div className="min-h-[60vh] flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-emerald-50 rounded-3xl mx-4 p-6">
+          <div className="text-center space-y-4">
+            <p className="text-red-500 font-semibold text-lg">로그인이 필요한 서비스입니다.</p>
+            <div className="flex flex-col gap-2">
+              <button
+                type="button"
+                onClick={() => nav('/login')}
+                className="w-full rounded-xl bg-blue-600 text-white py-3 font-semibold shadow-sm hover:bg-blue-700 transition"
+              >
+                로그인 하러 가기
+              </button>
+              <button
+                type="button"
+                onClick={() => nav('/')}
+                className="w-full rounded-xl bg-white text-gray-700 py-3 font-semibold border border-gray-200 hover:border-blue-200 transition"
+              >
+                메인으로 돌아가기
+              </button>
+            </div>
+          </div>
+        </div>
+      </PhoneFrame>
+    );
+  }
+
   const items = [
     { icon: '🎙️', title: '대화 녹음 분석', desc: '통화 녹음 파일을 업로드하여 분석합니다.' },
     { icon: '👥', title: '화자 자동 감지', desc: '대화 참여자를 자동으로 구분합니다.' },
@@ -59,7 +91,7 @@ const CommunicationInformation = () => {
         <div className="sticky bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-white via-white to-transparent -mx-4">
           <button 
             onClick={() => nav('/communication/upload')}
-            className="w-full max-w-[340px] mx-auto block py-4 rounded-full bg-blue-600 text-white font-bold text-lg shadow-xl shadow-blue-200 active:scale-95 transition-transform"
+            className="w-full max-w-[340px] mx-auto block py-4 rounded-full bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 text-white font-semibold shadow-[0_8px_20px_rgba(37,99,235,0.25)] active:scale-95 transition-transform"
           >
             분석 시작하기
           </button>

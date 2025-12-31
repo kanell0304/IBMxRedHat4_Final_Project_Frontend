@@ -9,7 +9,7 @@ export default function Header({ fullWidth = false, dense = false }) {
   const [nickname, setNickname] = useState("");
   const [image, setImage] = useState(defaultProfile);
   const [loading, setLoading] = useState(true);
-  const API_BASE = import.meta.env.VITE_API_BASE || 'https://api.st-each.com';
+  const API_BASE = import.meta.env.VITE_API_BASE_URL || 'https://api.st-each.com';
 
   const loadUser = useCallback(async () => {
     try {
@@ -43,7 +43,7 @@ export default function Header({ fullWidth = false, dense = false }) {
 
   const handleLogout = async () => {
     try {
-      await axios.post('https://api.st-each.com/users/logout', {}, {
+      await axios.post(`${API_BASE}/users/logout`, {}, {
         withCredentials: true
       });
       setIsLoggedIn(false);

@@ -9,6 +9,7 @@ export default function PresentationResult() {
   const { prId } = useParams();
   const [loading, setLoading] = useState(true);
   const [presentationData, setPresentationData] = useState(null);
+  const API_BASE = import.meta.env.VITE_API_BASE_URL || 'https://api.st-each.com'
 
   useEffect(() => {
     fetchPresentationData();
@@ -17,7 +18,7 @@ export default function PresentationResult() {
   const fetchPresentationData = async () => {
     try {
       const response = await axios.get(
-        `https://api.st-each.com/presentations/${prId}`,
+        `${API_BASE}/presentations/${prId}`,
         { withCredentials: true }
       );
 
@@ -111,59 +112,59 @@ export default function PresentationResult() {
           </div>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6 mb-6">
-          <div className="bg-white rounded-2xl shadow-xl p-6">
-            <h2 className="text-xl font-bold text-gray-800 mb-4 text-center">
-              세부 점수
-            </h2>
-            <ResponsiveContainer width="100%" height={300}>
-              <RadarChart data={radarData}>
-                <PolarGrid />
-                <PolarAngleAxis dataKey="subject" />
-                <PolarRadiusAxis angle={90} domain={[0, 100]} />
-                <Radar
-                  name="점수"
-                  dataKey="score"
-                  stroke="#2563eb"
-                  fill="#3b82f6"
-                  fillOpacity={0.6}
-                />
-                <Tooltip />
-              </RadarChart>
-            </ResponsiveContainer>
-            <div className="grid grid-cols-2 gap-2 mt-4 text-sm">
-              <div className="flex items-center justify-between bg-gray-50 px-3 py-2 rounded">
-                <span className="text-gray-600">음량</span>
-                <span className="font-bold text-blue-600">{scores.volume}</span>
-              </div>
-              <div className="flex items-center justify-between bg-gray-50 px-3 py-2 rounded">
-                <span className="text-gray-600">피치</span>
-                <span className="font-bold text-blue-600">{scores.pitch}</span>
-              </div>
-              <div className="flex items-center justify-between bg-gray-50 px-3 py-2 rounded">
-                <span className="text-gray-600">속도</span>
-                <span className="font-bold text-blue-600">{scores.speed}</span>
-              </div>
-              <div className="flex items-center justify-between bg-gray-50 px-3 py-2 rounded">
-                <span className="text-gray-600">침묵</span>
-                <span className="font-bold text-blue-600">{scores.silence}</span>
-              </div>
-              <div className="flex items-center justify-between bg-gray-50 px-3 py-2 rounded col-span-2">
-                <span className="text-gray-600">명료도</span>
-                <span className="font-bold text-blue-600">{scores.clarity}</span>
-              </div>
-            </div>
-          </div>
+        <div className="flex flex-col gap-6 mb-6">
+  <div className="bg-white rounded-2xl shadow-xl p-6 w-full">
+    <h2 className="text-xl font-bold text-gray-800 mb-4 text-center">
+      세부 점수
+    </h2>
+    <ResponsiveContainer width="100%" height={300}>
+      <RadarChart data={radarData}>
+        <PolarGrid />
+        <PolarAngleAxis dataKey="subject" />
+        <PolarRadiusAxis angle={90} domain={[0, 100]} />
+        <Radar
+          name="점수"
+          dataKey="score"
+          stroke="#2563eb"
+          fill="#3b82f6"
+          fillOpacity={0.6}
+        />
+        <Tooltip />
+      </RadarChart>
+    </ResponsiveContainer>
+    <div className="grid grid-cols-2 gap-2 mt-4 text-sm">
+      <div className="flex items-center justify-between bg-gray-50 px-3 py-2 rounded">
+        <span className="text-gray-600">음량</span>
+        <span className="font-bold text-blue-600">{scores.volume}</span>
+      </div>
+      <div className="flex items-center justify-between bg-gray-50 px-3 py-2 rounded">
+        <span className="text-gray-600">피치</span>
+        <span className="font-bold text-blue-600">{scores.pitch}</span>
+      </div>
+      <div className="flex items-center justify-between bg-gray-50 px-3 py-2 rounded">
+        <span className="text-gray-600">속도</span>
+        <span className="font-bold text-blue-600">{scores.speed}</span>
+      </div>
+      <div className="flex items-center justify-between bg-gray-50 px-3 py-2 rounded">
+        <span className="text-gray-600">침묵</span>
+        <span className="font-bold text-blue-600">{scores.silence}</span>
+      </div>
+      <div className="flex items-center justify-between bg-gray-50 px-3 py-2 rounded col-span-2">
+        <span className="text-gray-600">명료도</span>
+        <span className="font-bold text-blue-600">{scores.clarity}</span>
+      </div>
+    </div>
+  </div>
 
-          <div className="bg-white rounded-2xl shadow-xl p-6">
-            <h2 className="text-xl font-bold text-gray-800 mb-4">
-              간단한 피드백
-            </h2>
-            <div className="bg-blue-50 rounded-lg p-4 text-gray-700 leading-relaxed">
-              {feedback.brief}
-            </div>
-          </div>
-        </div>
+  <div className="bg-white rounded-2xl shadow-xl p-6 w-full">
+    <h2 className="text-xl font-bold text-gray-800 mb-4">
+      간단한 피드백
+    </h2>
+    <div className="bg-blue-50 rounded-lg p-4 text-gray-700 leading-relaxed">
+      {feedback.brief}
+    </div>
+  </div>
+</div>
 
         <div className="flex gap-3">
           <button
