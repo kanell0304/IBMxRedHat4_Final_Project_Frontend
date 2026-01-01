@@ -13,9 +13,9 @@ export default function PresentationAnalysisLoading() {
 
   const steps = [
     { percent: 15, text: '음성 파일 처리 중' },
-    { percent: 30, text: '음성 분석 중' },
+    { percent: 30, text: '음성을 분석 중' },
     { percent: 50, text: 'AI가 감정을 분석 중' },
-    { percent: 70, text: '결과를 점수화 하는 중' },
+    { percent: 70, text: '결과를 점수화하는 중' },
     { percent: 90, text: '종합 피드백 생성 중' },
   ];
 
