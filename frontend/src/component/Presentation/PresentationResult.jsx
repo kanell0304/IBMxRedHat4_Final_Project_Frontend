@@ -24,6 +24,7 @@ export default function PresentationResult() {
 
       if (response.data.success) {
         setPresentationData(response.data.data);
+        console.log(response.data.data);
       }
     } catch (error) {
       console.error('데이터 조회 실패:', error);

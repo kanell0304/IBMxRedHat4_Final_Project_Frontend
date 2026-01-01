@@ -45,7 +45,8 @@ export default function PresentationUpload() {
         formData.append('estimated_syllables', estimatedSyllables);
       }
 
-      const response = await axios.post(
+      // 업로드 및 분석 시작 (백그라운드에서 처리)
+      axios.post(
         `${API_BASE}/presentations/${prId}/analyze`,
         formData,
         {
@@ -53,18 +54,23 @@ export default function PresentationUpload() {
           onUploadProgress: (progressEvent) => {
             const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
             setUploadProgress(progress);
+            
+            // 업로드가 100% 완료되면 즉시 분석 로딩 화면으로 이동
+            if (progress === 100) {
+              setTimeout(() => {
+                navigate(`/presentation/analyzing/${prId}`);
+              }, 500); // 0.5초 후 이동 (사용자가 100% 확인할 수 있도록)
+            }
           }
         }
-      );
+      ).catch(error => {
+        console.error('분석 중 오류:', error);
+      });
 
-      if (response.data.success) {
-        navigate(`/presentation/result/${prId}`);
-      }
     } catch (error) {
-      console.error('분석 실패:', error);
-      const errorMessage = error.response?.data?.detail || '분석 중 오류가 발생했습니다.';
+      console.error('업로드 실패:', error);
+      const errorMessage = error.response?.data?.detail || '업로드 중 오류가 발생했습니다.';
       alert(errorMessage);
-    } finally {
       setLoading(false);
     }
   };
@@ -166,7 +172,7 @@ export default function PresentationUpload() {
             {loading && (
               <div className="space-y-2">
                 <div className="flex justify-between text-sm text-gray-600">
-                  <span>분석 중...</span>
+                  <span>업로드 중...</span>
                   <span>{uploadProgress}%</span>
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-2.5">
