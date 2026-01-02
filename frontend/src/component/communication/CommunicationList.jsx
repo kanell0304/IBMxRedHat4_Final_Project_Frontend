@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios'; // 1. axios 임포트 추가 필수!
 import api from '../../services/api';
 import PhoneFrame from '../Layout/PhoneFrame';
 
@@ -7,18 +8,36 @@ export default function CommunicationList() {
   const nav = useNavigate();
   const [list, setList] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [userId, setUserId] = useState(null);
+  
+  const API_BASE = import.meta.env.VITE_API_BASE_URL || 'https://api.st-each.com';
 
   useEffect(() => {
-    (async () => {
+    const fetchData = async () => {
+      setLoading(true);
       try {
-        const { data } = await api.get('/communication/users/1/communications');
-        setList(data);
-      } catch (e) {
-        console.error(e);
+        const res = await axios.get(`${API_BASE}/users/me`, {
+          withCredentials: true
+        });
+        
+        const uid = res.data.user_id;
+        setUserId(uid);
+        console.log("유저 정보 로드 완료:", uid);
+
+        if (uid) {
+          const { data } = await api.get(`/communication/users/${uid}/communications`);
+          setList(data);
+        } else {
+          console.error("유저 ID가 없습니다.");
+        }
+      } catch (error) {
+        console.error('데이터 로드 실패:', error);
       } finally {
         setLoading(false);
       }
-    })();
+    };
+
+    fetchData();
   }, []);
 
   const formatDate = (d) => new Date(d).toLocaleString('ko-KR', { month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
@@ -42,7 +61,6 @@ export default function CommunicationList() {
   return (
     <PhoneFrame title="대화 분석" showTitleRow={true}>
       <div className="space-y-6 pb-24">
-        {/* Header */}
         <div className="px-1 flex items-center justify-between">
           <div>
             <h1 className="text-xl font-bold text-gray-900 tracking-tight">내 분석 목록</h1>
@@ -50,7 +68,6 @@ export default function CommunicationList() {
           </div>
         </div>
 
-        {/* New Analysis Button */}
         <button 
           onClick={() => nav('/communication/info')}
           className="w-full py-4 rounded-3xl bg-blue-600 text-white font-bold text-lg shadow-xl shadow-blue-200 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
@@ -58,7 +75,6 @@ export default function CommunicationList() {
           <span className="text-2xl font-light">+</span> 새 분석 시작
         </button>
 
-        {/* List */}
         {list.length === 0 ? (
           <div className="bg-white rounded-3xl p-10 text-center shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-gray-100 mt-4">
             <div className="text-5xl mb-4 opacity-20">💬</div>
