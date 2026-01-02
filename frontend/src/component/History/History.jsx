@@ -46,6 +46,7 @@ const HistoryContent = () => {
       try {
         const res = await getMe();
         setUid(res.data.user_id);
+        console.log(`user_id: ${res.data.user_id}`);
       } catch {
         setError('로그인이 필요합니다.');
       }
