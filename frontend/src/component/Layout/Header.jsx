@@ -61,8 +61,8 @@ export default function Header({ fullWidth = false, dense = false }) {
   };
 
   const innerClasses = dense
-    ? 'flex justify-between items-center min-h-[56px] py-1'
-    : 'flex justify-between items-center min-h-[68px]';
+    ? 'flex justify-between items-center min-h-[50px] py-1'
+    : 'flex justify-between items-center min-h-[60px]';
 
   const Content = () => (
     <div className={innerClasses}>
