@@ -29,6 +29,7 @@ export default function Community() {
       contentClass="px-0 pt-[2px] pb-0"
       headerContent={activeCategoryId ? null : <Header fullWidth dense />}
       onBack={handleBack}
+      fullWidth
     >
       <MainLayout fullWidth showHeader={false} showFooter={!activeCategoryId}>
         <CommunityList onCategorySelected={handleCategorySelected} resetSignal={resetSignal} />

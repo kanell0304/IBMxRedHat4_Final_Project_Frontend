@@ -165,6 +165,9 @@ const MainPage = () => {
       showTitleRow={false}
       contentClass="px-0 pt-[2px] pb-0"
       headerContent={<Header fullWidth dense />}
+      frameHeight={800}
+      frameMaxHeight={800}
+      fullWidth
     >
       <MainLayout fullWidth showHeader={false}>
         <MainPageContent />

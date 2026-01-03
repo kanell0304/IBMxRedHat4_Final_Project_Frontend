@@ -98,8 +98,10 @@ export default function Header({ fullWidth = false, dense = false }) {
     </div>
   );
 
-  const wrapperClass = fullWidth ? 'w-full mx-auto bg-white border-b border-gray-100' : 'w-full max-w-3xl mx-auto bg-white border-b border-gray-100';
-  const innerWidth = fullWidth ? 'w-full mx-auto' : 'w-full max-w-2xl mx-auto';
+  const wrapperClass = fullWidth
+    ? 'w-full max-w-6xl mx-auto bg-white px-4'
+    : 'w-full max-w-4xl mx-auto bg-white px-4';
+  const innerWidth = 'w-full mx-auto';
 
   if (loading) {
     return (

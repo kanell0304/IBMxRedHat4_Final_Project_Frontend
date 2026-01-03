@@ -326,7 +326,7 @@ const AdminPage = () => {
 
   if (loading || !isAdmin) {
     return (
-      <PhoneFrame title="Admin" contentClass="px-4 pt-4 pb-10 bg-slate-50">
+      <PhoneFrame title="Admin" contentClass="px-4 pt-4 pb-10 bg-slate-50" fullWidth>
         <MainLayout fullWidth showHeader={false}>
           <div className="text-center text-sm text-gray-500 py-10">접근 권한을 확인하는 중...</div>
         </MainLayout>
@@ -339,6 +339,7 @@ const AdminPage = () => {
       title="Admin"
       contentClass="px-0 pt-3 pb-10 bg-slate-50"
       headerContent={<Header fullWidth dense />}
+      fullWidth
     >
       <MainLayout fullWidth showHeader={false}>
         <AdminPageContent />
