@@ -1,15 +1,18 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../services/api';
 import PhoneFrame from '../Layout/PhoneFrame';
+import axios from 'axios';
 
 export default function CommunicationUpload() {
   const nav = useNavigate();
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0);
-
-  const validFormats = ['.wav', '.mp3', '.m4a', '.ogg', '.flac'];
+  const [userId, setUserId] = useState(null);
+  const API_BASE = import.meta.env.VITE_API_BASE_URL || 'https://api.st-each.com';
+  
+  const validFormats = ['.wav', '.mp3', '.m4a', '.ogg', '.flac']; 
 
   const handleFile = (e) => {
     const f = e.target.files[0];
@@ -22,6 +25,20 @@ export default function CommunicationUpload() {
     setFile(f);
   };
 
+  useEffect(() => {
+  const loadUser = async () => {
+    try {
+      const res = await axios.get(`${API_BASE}/users/me`, {
+        withCredentials: true
+      });
+      setUserId(res.data.user_id);
+    } catch (error) {
+      console.error('유저 정보 로드 실패', error);
+    }
+  };
+  loadUser();
+}, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -30,7 +47,7 @@ export default function CommunicationUpload() {
     formData.append('file', file);
     try {
       const { data } = await api.post('/communication/upload', formData, {
-        params: { user_id: 1 },
+        params: { user_id: userId },
         onUploadProgress: (p) => setProgress(Math.round((p.loaded * 100) / p.total))
       });
       if (data.c_id) nav(`/communication/speaker/${data.c_id}`);

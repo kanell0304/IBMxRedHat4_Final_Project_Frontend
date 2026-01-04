@@ -46,6 +46,7 @@ const HistoryContent = () => {
       try {
         const res = await getMe();
         setUid(res.data.user_id);
+        console.log(`user_id: ${res.data.user_id}`);
       } catch {
         setError('로그인이 필요합니다.');
       }
@@ -232,7 +233,7 @@ const HistoryContent = () => {
           </div>
         )}
 
-        <div className="bg-gradient-to-br from-[#e8f2ff] via-white to-[#e6fff5] rounded-2xl p-4 border border-white">
+        <div className="bg-[#e8f2ff] rounded-2xl p-4 border border-white">
           {loading || analysisLoading ? (
             <div className="text-center text-sm text-gray-500 py-10">불러오는 중...</div>
           ) : (
@@ -549,6 +550,7 @@ export default function History() {
       showTitleRow={false}
       contentClass="px-0 pt-[2px] pb-0"
       headerContent={<Header fullWidth dense />}
+      fullWidth
     >
       <MainLayout fullWidth showHeader={false}>
         <HistoryContent />

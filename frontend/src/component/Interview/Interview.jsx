@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import useRecorder from './useRecorder.js';
-import { createAnswerRow, uploadAndAnalyze } from './../../api/interviewSessionApi';
+import { uploadAndAnalyze } from './../../api/interviewSessionApi';
 import Waveform from './Waveform.jsx';
 import AnalysisLoading from './AnalysisLoading.jsx';
 import PhoneFrame from '../Layout/PhoneFrame.jsx';
@@ -102,20 +102,16 @@ const Interview = () => {
     const isLastQuestion = currentQuestionIndex >= totalQuestions - 1;
 
     try {
-      // 1. 답변 row 생성
-      const answerRow = await createAnswerRow(
-        interviewId,
-        currentQuestion.q_id,
-        currentQuestion.q_order,
-      );
+      // 1. /start에서 이미 생성된 answer_id 사용
+      const answerId = currentQuestion.answer_id;
 
       // 2. 백그라운드 업로드 시작
-      uploadAndAnalyze(answerRow.i_answer_id, audioBlob).catch((err) => {
+      uploadAndAnalyze(answerId, audioBlob).catch((err) => {
         console.error('백그라운드 업로드 실패:', err);
       });
 
       // 3. answer_id 저장
-      setAnswer((prev) => [...prev, answerRow.i_answer_id]);
+      setAnswer((prev) => [...prev, answerId]);
 
       // 4. 바로 다음 질문으로 넘어감
       if (!isLastQuestion) {

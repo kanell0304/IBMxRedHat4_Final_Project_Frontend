@@ -21,6 +21,7 @@ import Profile from './component/Pages/Profile.jsx';
 import PresentationInformation from './component/Presentation/PresentationInformation.jsx';
 import PresentationCreate from './component/Presentation/PresentationCreate.jsx';
 import PresentationUpload from './component/Presentation/PresentationUpload.jsx';
+import PresentationAnalysisLoading from './component/Presentation/PresentationAnalysisLoading.jsx';
 import PresentationResult from './component/Presentation/PresentationResult.jsx';
 import PresentationDetail from './component/Presentation/PresentationDetail.jsx';
 import CommunicationInformation from './component/communication/CommunicationInformation.jsx';
@@ -73,6 +74,7 @@ export default function App() {
           <Route path="/presentation/info" element={<PresentationInformation />} />
           <Route path="/presentation/create" element={<PresentationCreate />} />
           <Route path="/presentation/upload/:prId" element={<PresentationUpload />} />
+          <Route path="/presentation/analyzing/:prId" element={<PresentationAnalysisLoading />} />
           <Route path="/presentation/result/:prId" element={<PresentationResult />} />
           <Route path="/presentation/detail/:prId" element={<PresentationDetail />} />
 

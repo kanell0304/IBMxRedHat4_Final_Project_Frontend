@@ -41,10 +41,12 @@ export default function Footer({ fullWidth = false }) {
     navigate(path);
   };
 
+  const containerWidth = fullWidth ? 'max-w-6xl' : 'max-w-4xl';
+
   return (
-    <footer className="sticky bottom-0 left-0 right-0 bg-transparent pointer-events-none">
-      <div className={fullWidth ? 'w-full mx-auto' : 'w-full max-w-3xl mx-auto'}>
-        <div className="pointer-events-auto bg-white border border-gray-100 grid grid-cols-5 items-center text-center h-18 min-h-[68px]">
+    <footer className="fixed bottom-0 left-0 right-0 z-30 bg-transparent pointer-events-none">
+      <div className={`w-full ${containerWidth} mx-auto px-4 pb-0`}>
+        <div className="pointer-events-auto bg-white/95 backdrop-blur border-t border-gray-200 shadow-sm grid grid-cols-5 items-center text-center h-18 min-h-[68px]">
           {items.map((item) => {
             if (item.key === "center") {
               return (
