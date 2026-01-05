@@ -97,23 +97,27 @@ const Interview = () => {
 
   // 백그라운드 업로드
   const handleBackgroundUpload = async () => {
-    if (!audioBlob) return;
+
+    if (!audioBlob) {
+      return;
+    }
 
     const isLastQuestion = currentQuestionIndex >= totalQuestions - 1;
 
     try {
-      // 1. /start에서 이미 생성된 answer_id 사용
       const answerId = currentQuestion.answer_id;
 
-      // 2. 백그라운드 업로드 시작
-      uploadAndAnalyze(answerId, audioBlob).catch((err) => {
-        console.error('백그라운드 업로드 실패:', err);
-      });
+      if (!isLastQuestion) {
+        uploadAndAnalyze(answerId, audioBlob).catch((err) => {
+          console.error('백그라운드 업로드 실패:', err);
+        });
+      } else {
+        await uploadAndAnalyze(answerId, audioBlob);
+      }
 
-      // 3. answer_id 저장
+
       setAnswer((prev) => [...prev, answerId]);
 
-      // 4. 바로 다음 질문으로 넘어감
       if (!isLastQuestion) {
         setTimeout(() => {
           setCurrentQuestionIndex((prev) => prev + 1);
@@ -122,7 +126,6 @@ const Interview = () => {
           setPreparingCountdown(10);
         }, 500);
       } else {
-        // 마지막 질문: 로딩 화면 표시
         setShowAnalysisLoading(true);
       }
     } catch (err) {
@@ -136,6 +139,7 @@ const Interview = () => {
   useEffect(()=>{
     if (audioBlob && !isRecording && uploadStatus === 'idle') {
       handleBackgroundUpload();
+    } else {
     }
   }, [audioBlob, isRecording, uploadStatus]);
 
