@@ -550,6 +550,7 @@ export default function History() {
       showTitleRow={false}
       contentClass="px-0 pt-[2px] pb-0"
       headerContent={<Header fullWidth dense />}
+      fullWidth
     >
       <MainLayout fullWidth showHeader={false}>
         <HistoryContent />

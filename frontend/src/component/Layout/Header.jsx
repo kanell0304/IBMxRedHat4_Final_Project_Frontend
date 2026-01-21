@@ -61,8 +61,8 @@ export default function Header({ fullWidth = false, dense = false }) {
   };
 
   const innerClasses = dense
-    ? 'flex justify-between items-center min-h-[56px] py-1'
-    : 'flex justify-between items-center min-h-[68px]';
+    ? 'flex justify-between items-center min-h-[50px] py-1'
+    : 'flex justify-between items-center min-h-[60px]';
 
   const Content = () => (
     <div className={innerClasses}>
@@ -98,8 +98,10 @@ export default function Header({ fullWidth = false, dense = false }) {
     </div>
   );
 
-  const wrapperClass = fullWidth ? 'w-full mx-auto bg-white border-b border-gray-100' : 'w-full max-w-3xl mx-auto bg-white border-b border-gray-100';
-  const innerWidth = fullWidth ? 'w-full mx-auto' : 'w-full max-w-2xl mx-auto';
+  const wrapperClass = fullWidth
+    ? 'w-full max-w-6xl mx-auto bg-white px-4'
+    : 'w-full max-w-4xl mx-auto bg-white px-4';
+  const innerWidth = 'w-full mx-auto';
 
   if (loading) {
     return (
