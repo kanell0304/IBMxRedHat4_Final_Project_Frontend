@@ -11,7 +11,7 @@ AI 기반 음성 분석 및 발표 코칭 플랫폼
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4.17-06B6D4?style=flat-square&logo=tailwindcss)](https://tailwindcss.com/)
 [![React Router](https://img.shields.io/badge/React_Router-7.10.1-CA4245?style=flat-square&logo=reactrouter)](https://reactrouter.com/)
 
-[Backend Repository](https://github.com/your-repo/TeamProject_Backend)
+[Backend Repository](https://github.com/kanell0304/IBMxRedHat4_Final_Project_Backend)
 
 </div>
 
