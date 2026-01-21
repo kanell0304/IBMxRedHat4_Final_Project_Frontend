@@ -314,12 +314,12 @@ This project is licensed under the MIT License.
 
 ## 👥 팀원
 
-| 이름 | 역할 |
-|------|------|--------|
-| 이경준 | PL, Presentation Service, Authentication, Minigame, Community, UI/UX |
-| 하태호 | Interview Service, History, MainPage, UI/UX |
-| 김가현 | Interview Service, UI/UX |
-| 손연서 | Commuincation service, UI/UX |
+| 이름 | 역할 | <br>
+|------|------|--------| <br>
+| 이경준 | PL, Presentation Service, Authentication, Minigame, Community, UI/UX | <br>
+| 하태호 | Interview Service, History, MainPage, UI/UX | <br>
+| 김가현 | Interview Service, UI/UX | <br>
+| 손연서 | Commuincation service, UI/UX | <br>
 
 ---
 
