@@ -191,15 +191,20 @@ frontend/
 
 ```bash
 # 1. 저장소 클론
-git clone https://github.com/your-repo/TeamProject_Frontend.git
+git clone https://github.com/kanell0304/IBMxRedHat4_Final_Project_Frontend .
 cd TeamProject_Frontend/frontend
 
 # 2. 의존성 설치
 npm install
 
 # 3. 환경변수 설정
-cp .env.example .env
-# .env 파일에 Backend API URL 입력
+cp frontend/ 경로에 .env 생성
+''' .env
+VITE_KAKAO_CLIENT_ID=954a35de48d932b17dd074183a7e6987
+VITE_KAKAO_REDIRECT_URI=http://localhost:5173/user/kakao
+VITE_API_BASE_URL=http://localhost:8081
+VITE_API_URL=http://localhost:8081
+'''
 
 # 4. 개발 서버 실행
 npm run dev
