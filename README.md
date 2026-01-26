@@ -109,7 +109,7 @@ AI 기반 음성 분석 및 발표 코칭 플랫폼
 | **스타일링** | Tailwind CSS 3.4.17, PostCSS, Autoprefixer |
 | **HTTP 통신** | Axios 1.13.2 |
 | **데이터 시각화** | Recharts 3.5.1 |
-| **인증** | JWT (localStorage 기반), 카카오 OAuth 2.0 |
+| **인증** | JWT (localStorage 기반), Kakao OAuth 2.0 |
 | **오디오 처리** | Web Audio API (MediaRecorder) |
 | **UI/UX** | React Device Frameset (모바일 프레임) |
 | **코드 품질** | ESLint 9.39.1 |
