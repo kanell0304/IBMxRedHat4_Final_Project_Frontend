@@ -200,7 +200,7 @@ npm install
 # 3. 환경변수 설정
 cp frontend/ 경로에 .env 생성
 ''' .env
-VITE_KAKAO_CLIENT_ID=954a35de48d932b17dd074183a7e6987
+VITE_KAKAO_CLIENT_ID=KEY
 VITE_KAKAO_REDIRECT_URI=http://localhost:5173/user/kakao
 VITE_API_BASE_URL=http://localhost:8081
 VITE_API_URL=http://localhost:8081
